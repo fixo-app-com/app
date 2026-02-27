@@ -47,9 +47,7 @@ export default function AddEditExpenseScreen() {
     async function loadExpense() {
       try {
         const allExpenses = await getExpenses(user!.uid, categoryId);
-        const expense = allExpenses.find(
-          (e: Expense) => e.id === expenseId,
-        );
+        const expense = allExpenses.find((e: Expense) => e.id === expenseId);
         if (expense) {
           setName(expense.name);
           setAmountText((expense.amountCents / 100).toFixed(2));
@@ -207,7 +205,9 @@ export default function AddEditExpenseScreen() {
 
       {/* Save button */}
       <Button
-        label={saving ? "Saving..." : isEditing ? "Save changes" : "Save expense"}
+        label={
+          saving ? "Saving..." : isEditing ? "Save changes" : "Save expense"
+        }
         onPress={handleSave}
         disabled={saving}
       />
