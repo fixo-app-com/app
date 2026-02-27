@@ -16,11 +16,23 @@
       "bundleIdentifier": "com.memmof.fixo",
       "googleServicesFile": "./GoogleService-Info.plist"
     },
-    "platforms": ["ios"],
+    "platforms": [
+      "ios"
+    ],
     "plugins": [
       "@react-native-firebase/app",
       "@react-native-firebase/auth",
-      "@react-native-google-signin/google-signin"
+      "@react-native-google-signin/google-signin",
+      "./plugins/withFirebaseIOS",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static",
+            "buildReactNativeFromSource": true
+          }
+        }
+      ]
     ]
   }
 }
