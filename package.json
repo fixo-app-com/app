@@ -1,22 +1,52 @@
 {
-  "name": "fixo-app-temp",
+  "name": "fixo-app",
   "version": "1.0.0",
   "main": "index.ts",
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\" \"App.tsx\"",
+    "test": "jest --forceExit",
+    "test:watch": "jest --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "jest": {
+    "preset": "jest-expo",
+    "setupFiles": [
+      "./src/test/setup.ts"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg|nativewind|react-native-css-interop|react-native-reanimated)"
+    ]
   },
   "dependencies": {
     "expo": "~55.0.3",
     "expo-status-bar": "~55.0.4",
+    "nativewind": "^4.2.2",
     "react": "19.2.0",
-    "react-native": "0.83.2"
+    "react-native": "0.83.2",
+    "react-native-reanimated": "^4.2.2",
+    "react-native-safe-area-context": "^5.7.0",
+    "tailwindcss": "^3.3.2"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.3",
+    "@expo/metro-config": "^55.0.9",
+    "@testing-library/react-native": "^13.3.3",
+    "@types/jest": "^30.0.0",
     "@types/react": "~19.2.2",
-    "typescript": "~5.9.2"
+    "babel-preset-expo": "^55.0.9",
+    "eslint": "^9.39.3",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "globals": "^17.3.0",
+    "jest-expo": "^55.0.9",
+    "prettier": "^3.8.1",
+    "react-test-renderer": "^19.2.0",
+    "typescript": "~5.9.2",
+    "typescript-eslint": "^8.56.1"
   },
   "private": true
 }
