@@ -1,12 +1,14 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { ActivityIndicator, View, Text } from "react-native";
+import { ActivityIndicator, View } from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { useAuth } from "../contexts/AuthContext";
 import SignInScreen from "../screens/auth/SignInScreen/SignInScreen";
 import SignUpScreen from "../screens/auth/SignUpScreen/SignUpScreen";
 import ForgotPasswordScreen from "../screens/auth/ForgotPasswordScreen/ForgotPasswordScreen";
 import VerifyEmailScreen from "../screens/auth/VerifyEmailScreen/VerifyEmailScreen";
 import HomeScreen from "../screens/app/HomeScreen/HomeScreen";
+import CategoriesScreen from "../screens/app/CategoriesScreen/CategoriesScreen";
 import CategoryDetailScreen from "../screens/app/CategoryDetailScreen/CategoryDetailScreen";
 import AddCategoryScreen from "../screens/app/AddCategoryScreen/AddCategoryScreen";
 import AddEditExpenseScreen from "../screens/app/AddEditExpenseScreen/AddEditExpenseScreen";
@@ -24,6 +26,10 @@ export type AuthStackParamList = {
 
 export type HomeStackParamList = {
   Home: undefined;
+};
+
+export type CategoriesStackParamList = {
+  Categories: undefined;
   CategoryDetail: { categoryId: string; categoryName: string };
   AddCategory: undefined;
   AddEditExpense: {
@@ -34,7 +40,7 @@ export type HomeStackParamList = {
 
 export type WalletsStackParamList = {
   Wallets: undefined;
-  AddEditWallet: { walletId?: string; walletName?: string };
+  AddEditWallet: { walletId?: string; walletName?: string; walletIcon?: string };
 };
 
 export type SettingsStackParamList = {
@@ -43,6 +49,7 @@ export type SettingsStackParamList = {
 
 export type TabParamList = {
   HomeTab: undefined;
+  CategoriesTab: undefined;
   WalletsTab: undefined;
   SettingsTab: undefined;
 };
@@ -51,6 +58,7 @@ export type TabParamList = {
 
 const AuthStack = createNativeStackNavigator<AuthStackParamList>();
 const HomeStack = createNativeStackNavigator<HomeStackParamList>();
+const CategoriesStack = createNativeStackNavigator<CategoriesStackParamList>();
 const WalletsStack = createNativeStackNavigator<WalletsStackParamList>();
 const SettingsStack = createNativeStackNavigator<SettingsStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -82,16 +90,27 @@ function HomeStackNavigator() {
   return (
     <HomeStack.Navigator screenOptions={darkStackOptions}>
       <HomeStack.Screen name="Home" component={HomeScreen} />
-      <HomeStack.Screen
+    </HomeStack.Navigator>
+  );
+}
+
+function CategoriesStackNavigator() {
+  return (
+    <CategoriesStack.Navigator screenOptions={darkStackOptions}>
+      <CategoriesStack.Screen name="Categories" component={CategoriesScreen} />
+      <CategoriesStack.Screen
         name="CategoryDetail"
         component={CategoryDetailScreen}
       />
-      <HomeStack.Screen name="AddCategory" component={AddCategoryScreen} />
-      <HomeStack.Screen
+      <CategoriesStack.Screen
+        name="AddCategory"
+        component={AddCategoryScreen}
+      />
+      <CategoriesStack.Screen
         name="AddEditExpense"
         component={AddEditExpenseScreen}
       />
-    </HomeStack.Navigator>
+    </CategoriesStack.Navigator>
   );
 }
 
@@ -115,20 +134,27 @@ function SettingsStackNavigator() {
   );
 }
 
+const TAB_ICONS: Record<string, { outline: string; filled: string }> = {
+  Home: { outline: "home-outline", filled: "home" },
+  Categories: { outline: "grid-outline", filled: "grid" },
+  Wallets: { outline: "wallet-outline", filled: "wallet" },
+  Settings: { outline: "settings-outline", filled: "settings" },
+};
+
 function TabIcon({
   label,
+  focused,
   color,
 }: {
   label: string;
   focused: boolean;
   color: string;
 }) {
-  const icons: Record<string, string> = {
-    Home: "🏠",
-    Wallets: "💳",
-    Settings: "⚙️",
-  };
-  return <Text style={{ fontSize: 22, color }}>{icons[label] ?? "●"}</Text>;
+  const entry = TAB_ICONS[label];
+  const iconName = focused ? entry?.filled : entry?.outline;
+  return (
+    <Ionicons name={(iconName ?? "ellipse") as any} size={24} color={color} />
+  );
 }
 
 function AppNavigator() {
@@ -151,6 +177,13 @@ function AppNavigator() {
         component={HomeStackNavigator}
         options={{
           tabBarIcon: (props) => <TabIcon {...props} label="Home" />,
+        }}
+      />
+      <Tab.Screen
+        name="CategoriesTab"
+        component={CategoriesStackNavigator}
+        options={{
+          tabBarIcon: (props) => <TabIcon {...props} label="Categories" />,
         }}
       />
       <Tab.Screen

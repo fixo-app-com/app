@@ -1,4 +1,4 @@
-import { Alert, FlatList, Text } from "react-native";
+import { Alert, FlatList, Text, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useData } from "../../../contexts/DataContext";
@@ -31,7 +31,7 @@ export default function WalletsScreen() {
 
   return (
     <ScreenWrapper>
-      <Text className="mb-6 text-xl font-bold text-white">Wallets</Text>
+      <Text className="mb-6 text-2xl font-bold text-white">Wallets</Text>
 
       <FlatList
         data={wallets}
@@ -40,16 +40,18 @@ export default function WalletsScreen() {
         renderItem={({ item }) => (
           <WalletCard
             name={item.name}
+            icon={item.icon ?? ""}
             onPress={() =>
               navigation.navigate("AddEditWallet", {
                 walletId: item.id,
                 walletName: item.name,
+                walletIcon: item.icon,
               })
             }
             onLongPress={() => handleDelete(item.id, item.name)}
           />
         )}
-        ItemSeparatorComponent={() => <></> }
+        ItemSeparatorComponent={() => <View className="h-3" />}
         ListEmptyComponent={
           <EmptyState message="No wallets yet. Add one!" />
         }

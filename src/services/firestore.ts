@@ -1,7 +1,7 @@
 import firestore, {
   FirebaseFirestoreTypes,
 } from "@react-native-firebase/firestore";
-import type { Category, Expense, Wallet } from "../types/firestore";
+import type { Category, Expense, UserSettings, Wallet } from "../types/firestore";
 
 // --- Helpers ---
 
@@ -116,6 +116,19 @@ export async function deleteExpense(
   await expensesRef(userId).doc(expenseId).delete();
 }
 
+export async function deleteExpensesByCategory(
+  userId: string,
+  categoryId: string,
+): Promise<number> {
+  const snapshot = await expensesRef(userId)
+    .where("categoryId", "==", categoryId)
+    .get();
+  const batch = firestore().batch();
+  snapshot.docs.forEach((doc) => batch.delete(doc.ref));
+  await batch.commit();
+  return snapshot.size;
+}
+
 // --- Wallets ---
 
 export function subscribeWallets(
@@ -140,10 +153,11 @@ export function subscribeWallets(
 
 export async function addWallet(
   userId: string,
-  data: Pick<Wallet, "name">,
+  data: Pick<Wallet, "name" | "icon">,
 ): Promise<string> {
   const ref = await walletsRef(userId).add({
     name: data.name,
+    icon: data.icon,
     createdAt: firestore.FieldValue.serverTimestamp(),
   });
   return ref.id;
@@ -152,7 +166,7 @@ export async function addWallet(
 export async function updateWallet(
   userId: string,
   walletId: string,
-  data: Partial<Pick<Wallet, "name">>,
+  data: Partial<Pick<Wallet, "name" | "icon">>,
 ): Promise<void> {
   await walletsRef(userId).doc(walletId).update(data);
 }
@@ -162,4 +176,33 @@ export async function deleteWallet(
   walletId: string,
 ): Promise<void> {
   await walletsRef(userId).doc(walletId).delete();
+}
+
+// --- User Settings ---
+
+const DEFAULT_SETTINGS: UserSettings = { currency: "EUR" };
+
+export function subscribeUserSettings(
+  userId: string,
+  onResult: (settings: UserSettings) => void,
+  onError: (error: Error) => void,
+): () => void {
+  return usersRef()
+    .doc(userId)
+    .onSnapshot(
+      (snapshot) => {
+        const data = snapshot.data();
+        onResult({
+          currency: data?.currency ?? DEFAULT_SETTINGS.currency,
+        });
+      },
+      (error) => onError(error),
+    );
+}
+
+export async function updateUserSettings(
+  userId: string,
+  data: Partial<UserSettings>,
+): Promise<void> {
+  await usersRef().doc(userId).set(data, { merge: true });
 }

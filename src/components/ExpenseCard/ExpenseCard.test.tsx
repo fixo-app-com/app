@@ -1,6 +1,11 @@
 import { fireEvent, render, screen } from "@testing-library/react-native";
 import { ExpenseCard } from "./ExpenseCard";
 
+// Mock DataContext for CurrencyText
+jest.mock("../../contexts/DataContext", () => ({
+  useData: () => ({ currency: "EUR" }),
+}));
+
 describe("ExpenseCard", () => {
   const props = {
     name: "Netflix",
@@ -19,14 +24,14 @@ describe("ExpenseCard", () => {
     expect(screen.getByText("\u20AC12.99")).toBeOnTheScreen();
   });
 
-  it("shows Fixed label when essential", () => {
+  it("shows Essential label when essential", () => {
     render(<ExpenseCard {...props} essential />);
-    expect(screen.getByText(/Fixed/)).toBeOnTheScreen();
+    expect(screen.getByText(/Essential/)).toBeOnTheScreen();
   });
 
-  it("does not show Fixed label when not essential", () => {
+  it("does not show Essential label when not essential", () => {
     render(<ExpenseCard {...props} essential={false} />);
-    expect(screen.queryByText(/Fixed/)).not.toBeOnTheScreen();
+    expect(screen.queryByText(/Essential/)).not.toBeOnTheScreen();
   });
 
   it("renders notes when provided", () => {

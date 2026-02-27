@@ -28,7 +28,7 @@ export function ExpenseCard({
           <Text className="text-base font-semibold text-white">{name}</Text>
           <Text className="mt-1 text-sm text-gray-400">
             {walletName}
-            {essential ? " \u00B7 Fixed" : ""}
+            {essential ? " \u00B7 Essential" : ""}
           </Text>
           {notes ? (
             <Text className="mt-1 text-sm text-gray-500">{notes}</Text>

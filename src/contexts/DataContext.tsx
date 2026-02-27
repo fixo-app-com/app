@@ -6,6 +6,7 @@ import * as firestoreService from "../services/firestore";
 interface DataContextValue {
   categories: Category[];
   wallets: Wallet[];
+  currency: string;
   isLoading: boolean;
   addCategory: (data: Pick<Category, "name" | "icon">) => Promise<string>;
   updateCategory: (
@@ -13,17 +14,19 @@ interface DataContextValue {
     data: Partial<Pick<Category, "name" | "icon">>,
   ) => Promise<void>;
   deleteCategory: (categoryId: string) => Promise<void>;
-  addWallet: (data: Pick<Wallet, "name">) => Promise<string>;
+  addWallet: (data: Pick<Wallet, "name" | "icon">) => Promise<string>;
   updateWallet: (
     walletId: string,
-    data: Partial<Pick<Wallet, "name">>,
+    data: Partial<Pick<Wallet, "name" | "icon">>,
   ) => Promise<void>;
   deleteWallet: (walletId: string) => Promise<void>;
+  setCurrency: (currency: string) => Promise<void>;
 }
 
 const DataContext = createContext<DataContextValue>({
   categories: [],
   wallets: [],
+  currency: "EUR",
   isLoading: true,
   addCategory: async () => "",
   updateCategory: async () => {},
@@ -31,27 +34,31 @@ const DataContext = createContext<DataContextValue>({
   addWallet: async () => "",
   updateWallet: async () => {},
   deleteWallet: async () => {},
+  setCurrency: async () => {},
 });
 
 export function DataProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
   const [categories, setCategories] = useState<Category[]>([]);
   const [wallets, setWallets] = useState<Wallet[]>([]);
+  const [currency, setCurrencyState] = useState("EUR");
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (!user) {
       setCategories([]);
       setWallets([]);
+      setCurrencyState("EUR");
       setIsLoading(false);
       return;
     }
 
     let categoriesReady = false;
     let walletsReady = false;
+    let settingsReady = false;
 
     function checkReady() {
-      if (categoriesReady && walletsReady) {
+      if (categoriesReady && walletsReady && settingsReady) {
         setIsLoading(false);
       }
     }
@@ -84,9 +91,24 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       },
     );
 
+    const unsubSettings = firestoreService.subscribeUserSettings(
+      user.uid,
+      (settings) => {
+        setCurrencyState(settings.currency);
+        settingsReady = true;
+        checkReady();
+      },
+      (error) => {
+        console.error("Settings subscription error:", error);
+        settingsReady = true;
+        checkReady();
+      },
+    );
+
     return () => {
       unsubCategories();
       unsubWallets();
+      unsubSettings();
     };
   }, [user]);
 
@@ -95,6 +117,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   const value: DataContextValue = {
     categories,
     wallets,
+    currency,
     isLoading,
     addCategory: (data) => firestoreService.addCategory(userId, data),
     updateCategory: (id, data) =>
@@ -104,6 +127,10 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     updateWallet: (id, data) =>
       firestoreService.updateWallet(userId, id, data),
     deleteWallet: (id) => firestoreService.deleteWallet(userId, id),
+    setCurrency: async (curr) => {
+      setCurrencyState(curr);
+      await firestoreService.updateUserSettings(userId, { currency: curr });
+    },
   };
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;

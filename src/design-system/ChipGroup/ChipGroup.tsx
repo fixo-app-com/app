@@ -4,13 +4,18 @@ interface ChipGroupProps<T extends string> {
   options: { value: T; label: string }[];
   selected: T;
   onSelect: (value: T) => void;
+  compact?: boolean;
 }
 
 export function ChipGroup<T extends string>({
   options,
   selected,
   onSelect,
+  compact = false,
 }: ChipGroupProps<T>) {
+  const chipPadding = compact ? "px-3 py-2" : "p-3";
+  const textSize = compact ? "text-sm" : "text-2xl";
+
   return (
     <View className="flex-row flex-wrap">
       {options.map((option) => {
@@ -19,14 +24,14 @@ export function ChipGroup<T extends string>({
           <Pressable
             key={option.value}
             onPress={() => onSelect(option.value)}
-            className={`m-1 items-center justify-center rounded-xl p-3 ${
+            className={`m-1 items-center justify-center rounded-xl ${chipPadding} ${
               isSelected
                 ? "border-2 border-fixo-400 bg-gray-800"
                 : "border border-gray-700 bg-gray-900"
             }`}
           >
             <Text
-              className={`text-2xl ${isSelected ? "text-fixo-400" : "text-gray-300"}`}
+              className={`${textSize} ${isSelected ? "text-fixo-400" : "text-gray-300"}`}
             >
               {option.label}
             </Text>

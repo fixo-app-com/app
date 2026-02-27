@@ -4,21 +4,33 @@ import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useData } from "../../../contexts/DataContext";
-import { getExpenses, deleteExpense } from "../../../services/firestore";
-import type { HomeStackParamList } from "../../../navigation/RootNavigator";
+import {
+  getExpenses,
+  deleteExpense,
+  deleteExpensesByCategory,
+} from "../../../services/firestore";
+import type { CategoriesStackParamList } from "../../../navigation/RootNavigator";
 import type { Expense } from "../../../types/firestore";
-import { EmptyState, ScreenHeader, ScreenWrapper } from "../../../design-system";
+import {
+  Button,
+  EmptyState,
+  ScreenHeader,
+  ScreenWrapper,
+} from "../../../design-system";
 import { CurrencyText, ExpenseCard, FloatingAction } from "../../../components";
 
-type Nav = NativeStackNavigationProp<HomeStackParamList, "CategoryDetail">;
-type Route = RouteProp<HomeStackParamList, "CategoryDetail">;
+type Nav = NativeStackNavigationProp<
+  CategoriesStackParamList,
+  "CategoryDetail"
+>;
+type Route = RouteProp<CategoriesStackParamList, "CategoryDetail">;
 
 export default function CategoryDetailScreen() {
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
   const { categoryId, categoryName } = route.params;
   const { user } = useAuth();
-  const { wallets } = useData();
+  const { wallets, deleteCategory } = useData();
 
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(true);
@@ -70,6 +82,34 @@ export default function CategoryDetailScreen() {
     ]);
   }
 
+  function handleDeleteCategory() {
+    const count = expenses.length;
+    const message =
+      count > 0
+        ? `This will permanently delete "${categoryName}" and all ${count} expense${count === 1 ? "" : "s"} inside it. This action cannot be undone.`
+        : `Delete "${categoryName}"? This action cannot be undone.`;
+
+    Alert.alert("Delete category", message, [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: async () => {
+          if (!user) return;
+          try {
+            if (count > 0) {
+              await deleteExpensesByCategory(user.uid, categoryId);
+            }
+            await deleteCategory(categoryId);
+            navigation.goBack();
+          } catch (error) {
+            console.error("Failed to delete category:", error);
+          }
+        },
+      },
+    ]);
+  }
+
   const totalCents = expenses.reduce((sum, e) => sum + e.amountCents, 0);
 
   return (
@@ -92,7 +132,7 @@ export default function CategoryDetailScreen() {
         <FlatList
           data={expenses}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={{ paddingBottom: 100 }}
+          contentContainerStyle={{ paddingBottom: 160 }}
           renderItem={({ item }) => (
             <ExpenseCard
               name={item.name}
@@ -112,6 +152,15 @@ export default function CategoryDetailScreen() {
           ItemSeparatorComponent={() => <View className="h-3" />}
           ListEmptyComponent={
             <EmptyState message="No expenses in this category." />
+          }
+          ListFooterComponent={
+            <View className="mt-6">
+              <Button
+                label="Delete category"
+                variant="destructive"
+                onPress={handleDeleteCategory}
+              />
+            </View>
           }
         />
       )}

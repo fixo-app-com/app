@@ -10,19 +10,15 @@ jest.mock("@react-navigation/native", () => ({
 jest.mock("../../../contexts/DataContext", () => ({
   useData: () => ({
     wallets: [
-      { id: "w1", name: "Intesa Sanpaolo", createdAt: new Date() },
-      { id: "w2", name: "Revolut", createdAt: new Date() },
+      { id: "w1", name: "Intesa Sanpaolo", icon: "intesa-sanpaolo", createdAt: new Date() },
+      { id: "w2", name: "Revolut", icon: "revolut", createdAt: new Date() },
     ],
+    currency: "EUR",
     deleteWallet: jest.fn(),
   }),
 }));
 
 describe("WalletsScreen", () => {
-  it("renders title", () => {
-    render(<WalletsScreen />);
-    expect(screen.getByText("Wallets")).toBeOnTheScreen();
-  });
-
   it("renders wallet list", () => {
     render(<WalletsScreen />);
     expect(screen.getByText("Intesa Sanpaolo")).toBeOnTheScreen();

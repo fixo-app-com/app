@@ -33,7 +33,7 @@ describe("AddEditWalletScreen", () => {
   it("renders name input", () => {
     render(<AddEditWalletScreen />);
     expect(
-      screen.getByPlaceholderText("e.g. Chase, Revolut..."),
+      screen.getByPlaceholderText("e.g. Revolut, N26..."),
     ).toBeOnTheScreen();
   });
 
@@ -44,13 +44,11 @@ describe("AddEditWalletScreen", () => {
 
   it("calls addWallet on save", async () => {
     render(<AddEditWalletScreen />);
-    const input = screen.getByPlaceholderText(
-      "e.g. Chase, Revolut...",
-    );
+    const input = screen.getByPlaceholderText("e.g. Revolut, N26...");
     fireEvent.changeText(input, "My Bank");
     fireEvent.press(screen.getByText("Save wallet"));
 
     await screen.findByText("Save wallet");
-    expect(mockAddWallet).toHaveBeenCalledWith({ name: "My Bank" });
+    expect(mockAddWallet).toHaveBeenCalledWith({ name: "My Bank", icon: "" });
   });
 });

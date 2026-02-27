@@ -17,8 +17,9 @@ jest.mock("../../../contexts/AuthContext", () => ({
 jest.mock("../../../contexts/DataContext", () => ({
   useData: () => ({
     wallets: [
-      { id: "w1", name: "Intesa Sanpaolo", createdAt: new Date() },
+      { id: "w1", name: "Intesa Sanpaolo", icon: "intesa-sanpaolo", createdAt: new Date() },
     ],
+    currency: "EUR",
   }),
 }));
 
@@ -54,7 +55,7 @@ describe("AddEditExpenseScreen", () => {
 
   it("renders essential toggle", () => {
     render(<AddEditExpenseScreen />);
-    expect(screen.getByText("Fixed cost")).toBeOnTheScreen();
+    expect(screen.getByText("Essential expense")).toBeOnTheScreen();
   });
 
   it("renders save button", () => {

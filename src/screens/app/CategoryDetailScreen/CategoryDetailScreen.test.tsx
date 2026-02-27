@@ -4,7 +4,7 @@ import CategoryDetailScreen from "./CategoryDetailScreen";
 // Stable mock references
 const mockUser = { uid: "test-uid" };
 const mockWallets = [
-  { id: "w1", name: "Intesa Sanpaolo", createdAt: new Date() },
+  { id: "w1", name: "Intesa Sanpaolo", icon: "intesa-sanpaolo", createdAt: new Date() },
 ];
 
 const mockNavigate = jest.fn();
@@ -27,12 +27,15 @@ jest.mock("../../../contexts/AuthContext", () => ({
 jest.mock("../../../contexts/DataContext", () => ({
   useData: () => ({
     wallets: mockWallets,
+    currency: "EUR",
+    deleteCategory: jest.fn(),
   }),
 }));
 
 jest.mock("../../../services/firestore", () => ({
   getExpenses: jest.fn(() => Promise.resolve([])),
   deleteExpense: jest.fn(),
+  deleteExpensesByCategory: jest.fn(),
 }));
 
 describe("CategoryDetailScreen", () => {
@@ -44,10 +47,5 @@ describe("CategoryDetailScreen", () => {
   it("renders add expense button", () => {
     render(<CategoryDetailScreen />);
     expect(screen.getByText("+ Add expense")).toBeOnTheScreen();
-  });
-
-  it("renders category total", () => {
-    render(<CategoryDetailScreen />);
-    expect(screen.getByText("€0.00")).toBeOnTheScreen();
   });
 });

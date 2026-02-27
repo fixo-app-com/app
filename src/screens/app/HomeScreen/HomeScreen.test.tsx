@@ -3,8 +3,11 @@ import HomeScreen from "./HomeScreen";
 
 // Stable mock references to prevent infinite re-render loops
 const mockUser = { uid: "test-uid" };
-const mockCategories = [
-  { id: "cat1", name: "Famiglia", icon: "👨‍👩‍👧‍👦", createdAt: new Date() },
+const mockWallets = [
+  { id: "w1", name: "Intesa Sanpaolo", icon: "intesa-sanpaolo", createdAt: new Date() },
+];
+const mockExpenses = [
+  { id: "e1", categoryId: "cat1", name: "Netflix", amountCents: 1299, walletId: "w1", essential: false, notes: "", createdAt: new Date() },
 ];
 
 const mockNavigate = jest.fn();
@@ -21,13 +24,14 @@ jest.mock("../../../contexts/AuthContext", () => ({
 
 jest.mock("../../../contexts/DataContext", () => ({
   useData: () => ({
-    categories: mockCategories,
+    wallets: mockWallets,
+    currency: "EUR",
     isLoading: false,
   }),
 }));
 
 jest.mock("../../../services/firestore", () => ({
-  getExpenses: jest.fn(() => Promise.resolve([])),
+  getExpenses: jest.fn(() => Promise.resolve(mockExpenses)),
 }));
 
 describe("HomeScreen", () => {
@@ -35,20 +39,20 @@ describe("HomeScreen", () => {
     jest.clearAllMocks();
   });
 
-  it("renders month selector", () => {
+  it("renders monthly total header", () => {
     render(<HomeScreen />);
     expect(screen.getByText("Monthly total")).toBeOnTheScreen();
   });
 
-  it("renders category cards after loading", async () => {
+  it("renders yearly estimate", () => {
     render(<HomeScreen />);
-    await waitFor(() => {
-      expect(screen.getByText("Famiglia")).toBeOnTheScreen();
-    });
+    expect(screen.getByText("Yearly estimate")).toBeOnTheScreen();
   });
 
-  it("renders add category button", () => {
+  it("renders wallet cards with expenses after loading", async () => {
     render(<HomeScreen />);
-    expect(screen.getByText("+ Add category")).toBeOnTheScreen();
+    await waitFor(() => {
+      expect(screen.getByText("Intesa Sanpaolo")).toBeOnTheScreen();
+    });
   });
 });

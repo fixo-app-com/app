@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -7,15 +7,15 @@ import { useData } from "../../../contexts/DataContext";
 import { getExpenses } from "../../../services/firestore";
 import type { HomeStackParamList } from "../../../navigation/RootNavigator";
 import type { Expense } from "../../../types/firestore";
-import { EmptyState, FullScreenLoader, ScreenWrapper } from "../../../design-system";
-import { CategoryCard, CurrencyText, FloatingAction } from "../../../components";
+import { Card, FullScreenLoader, ScreenWrapper } from "../../../design-system";
+import { CurrencyText, WalletCard } from "../../../components";
 
 type Nav = NativeStackNavigationProp<HomeStackParamList, "Home">;
 
 export default function HomeScreen() {
   const navigation = useNavigation<Nav>();
   const { user } = useAuth();
-  const { categories, isLoading: dataLoading } = useData();
+  const { wallets, isLoading: dataLoading } = useData();
 
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loadingExpenses, setLoadingExpenses] = useState(true);
@@ -37,7 +37,6 @@ export default function HomeScreen() {
     fetchExpenses();
   }, [fetchExpenses]);
 
-  // Refetch when returning from other screens
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       fetchExpenses();
@@ -45,17 +44,22 @@ export default function HomeScreen() {
     return unsubscribe;
   }, [navigation, fetchExpenses]);
 
-  function getCategoryTotal(categoryId: string): number {
+  function getWalletTotal(walletId: string): number {
     return expenses
-      .filter((e) => e.categoryId === categoryId)
+      .filter((e) => e.walletId === walletId)
       .reduce((sum, e) => sum + e.amountCents, 0);
   }
 
-  function getCategoryCount(categoryId: string): number {
-    return expenses.filter((e) => e.categoryId === categoryId).length;
-  }
+  const monthlyTotalCents = expenses.reduce(
+    (sum, e) => sum + e.amountCents,
+    0,
+  );
+  const yearlyTotalCents = monthlyTotalCents * 12;
 
-  const totalCents = expenses.reduce((sum, e) => sum + e.amountCents, 0);
+  const walletsWithExpenses = useMemo(
+    () => wallets.filter((w) => getWalletTotal(w.id) > 0),
+    [wallets, expenses],
+  );
 
   if (dataLoading) {
     return <FullScreenLoader />;
@@ -63,50 +67,52 @@ export default function HomeScreen() {
 
   return (
     <ScreenWrapper>
-      {/* Header */}
-      <View className="mb-6 items-center">
-        <Text className="text-lg font-semibold text-white">
-          Monthly total
-        </Text>
-        <CurrencyText
-          cents={totalCents}
-          className="mt-1 text-2xl font-bold text-fixo-400"
-        />
-      </View>
+      <Text className="mb-6 text-2xl font-bold text-white">Home</Text>
 
-      {/* Category cards */}
+      {/* Monthly total card */}
+      <Card>
+        <View className="items-center py-2">
+          <Text className="text-sm font-medium text-gray-400">
+            Monthly total
+          </Text>
+          <CurrencyText
+            cents={monthlyTotalCents}
+            className="mt-1 text-3xl font-bold text-fixo-400"
+          />
+          <View className="mt-3 h-px w-16 bg-gray-700" />
+          <Text className="mt-3 text-xs text-gray-500">Yearly estimate</Text>
+          <CurrencyText
+            cents={yearlyTotalCents}
+            className="text-sm text-gray-400"
+          />
+        </View>
+      </Card>
+
+      <View className="mb-6" />
+
+      {/* Wallet spending breakdown */}
       {loadingExpenses ? (
         <ActivityIndicator color="#818cf8" className="mt-8" />
-      ) : (
+      ) : walletsWithExpenses.length > 0 ? (
         <FlatList
-          data={categories}
+          data={walletsWithExpenses}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={{ paddingBottom: 100 }}
+          contentContainerStyle={{ paddingBottom: 40 }}
           renderItem={({ item }) => (
-            <CategoryCard
-              icon={item.icon}
+            <WalletCard
               name={item.name}
-              expenseCount={getCategoryCount(item.id)}
-              totalCents={getCategoryTotal(item.id)}
-              onPress={() =>
-                navigation.navigate("CategoryDetail", {
-                  categoryId: item.id,
-                  categoryName: item.name,
-                })
-              }
+              icon={item.icon ?? ""}
+              totalCents={getWalletTotal(item.id)}
+              onPress={() => {}}
             />
           )}
           ItemSeparatorComponent={() => <View className="h-3" />}
-          ListEmptyComponent={
-            <EmptyState message="No categories yet. Add one!" />
-          }
         />
+      ) : (
+        <Text className="mt-4 text-center text-sm text-gray-500">
+          No expenses yet.
+        </Text>
       )}
-
-      <FloatingAction
-        label="+ Add category"
-        onPress={() => navigation.navigate("AddCategory")}
-      />
     </ScreenWrapper>
   );
 }

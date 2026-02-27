@@ -1,9 +1,15 @@
 import { fireEvent, render, screen } from "@testing-library/react-native";
 import { WalletCard } from "./WalletCard";
 
+// Mock DataContext for CurrencyText
+jest.mock("../../contexts/DataContext", () => ({
+  useData: () => ({ currency: "EUR" }),
+}));
+
 describe("WalletCard", () => {
   const props = {
     name: "Revolut",
+    icon: "revolut",
     onPress: jest.fn(),
     onLongPress: jest.fn(),
   };
@@ -13,10 +19,9 @@ describe("WalletCard", () => {
     expect(screen.getByText("Revolut")).toBeOnTheScreen();
   });
 
-  it("renders card icon and chevron", () => {
+  it("renders bank icon abbreviation", () => {
     render(<WalletCard {...props} />);
-    expect(screen.getByText("\uD83D\uDCB3")).toBeOnTheScreen();
-    expect(screen.getByText("\u203A")).toBeOnTheScreen();
+    expect(screen.getByText("R")).toBeOnTheScreen();
   });
 
   it("calls onPress when tapped", () => {

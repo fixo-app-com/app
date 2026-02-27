@@ -10,8 +10,9 @@ import {
   deleteExpense,
   getExpenses,
 } from "../../../services/firestore";
-import type { HomeStackParamList } from "../../../navigation/RootNavigator";
+import type { CategoriesStackParamList } from "../../../navigation/RootNavigator";
 import type { Expense } from "../../../types/firestore";
+import { getCurrencySymbol } from "../../../constants/banks";
 import {
   Button,
   ChipGroup,
@@ -21,15 +22,18 @@ import {
   ScreenWrapper,
 } from "../../../design-system";
 
-type Nav = NativeStackNavigationProp<HomeStackParamList, "AddEditExpense">;
-type Route = RouteProp<HomeStackParamList, "AddEditExpense">;
+type Nav = NativeStackNavigationProp<
+  CategoriesStackParamList,
+  "AddEditExpense"
+>;
+type Route = RouteProp<CategoriesStackParamList, "AddEditExpense">;
 
 export default function AddEditExpenseScreen() {
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
   const { categoryId, expenseId } = route.params;
   const { user } = useAuth();
-  const { wallets } = useData();
+  const { wallets, currency } = useData();
 
   const isEditing = !!expenseId;
 
@@ -136,6 +140,8 @@ export default function AddEditExpenseScreen() {
     return <FullScreenLoader />;
   }
 
+  const currencySymbol = getCurrencySymbol(currency);
+
   return (
     <ScreenWrapper scroll>
       <ScreenHeader
@@ -155,7 +161,7 @@ export default function AddEditExpenseScreen() {
 
       {/* Amount */}
       <Input
-        label="Amount (\u20AC)"
+        label={`Amount (${currencySymbol})`}
         value={amountText}
         onChangeText={setAmountText}
         placeholder="12.99"
@@ -175,6 +181,7 @@ export default function AddEditExpenseScreen() {
           options={wallets.map((w) => ({ value: w.id, label: w.name }))}
           selected={walletId}
           onSelect={setWalletId}
+          compact
         />
       )}
 
@@ -182,7 +189,7 @@ export default function AddEditExpenseScreen() {
 
       {/* Essential toggle */}
       <View className="mb-4 flex-row items-center justify-between rounded-xl border border-gray-700 bg-gray-900 px-4 py-3">
-        <Text className="text-base text-white">Fixed cost</Text>
+        <Text className="text-base text-white">Essential expense</Text>
         <Switch
           value={essential}
           onValueChange={setEssential}
