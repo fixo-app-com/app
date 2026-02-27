@@ -6,4 +6,9 @@ describe("HomeScreen", () => {
     render(<HomeScreen />);
     expect(screen.getByText("FIXO")).toBeOnTheScreen();
   });
+
+  it("renders logout button", () => {
+    render(<HomeScreen />);
+    expect(screen.getByText("Sign Out")).toBeOnTheScreen();
+  });
 });
