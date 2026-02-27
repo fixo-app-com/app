@@ -1,11 +1,20 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { ActivityIndicator, View } from "react-native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { ActivityIndicator, View, Text } from "react-native";
 import { useAuth } from "../contexts/AuthContext";
 import SignInScreen from "../screens/auth/SignInScreen/SignInScreen";
 import SignUpScreen from "../screens/auth/SignUpScreen/SignUpScreen";
 import ForgotPasswordScreen from "../screens/auth/ForgotPasswordScreen/ForgotPasswordScreen";
 import VerifyEmailScreen from "../screens/auth/VerifyEmailScreen/VerifyEmailScreen";
 import HomeScreen from "../screens/app/HomeScreen/HomeScreen";
+import CategoryDetailScreen from "../screens/app/CategoryDetailScreen/CategoryDetailScreen";
+import AddCategoryScreen from "../screens/app/AddCategoryScreen/AddCategoryScreen";
+import AddEditExpenseScreen from "../screens/app/AddEditExpenseScreen/AddEditExpenseScreen";
+import WalletsScreen from "../screens/app/WalletsScreen/WalletsScreen";
+import AddEditWalletScreen from "../screens/app/AddEditWalletScreen/AddEditWalletScreen";
+import SettingsScreen from "../screens/app/SettingsScreen/SettingsScreen";
+
+// --- Param lists ---
 
 export type AuthStackParamList = {
   SignIn: { pendingGoogleIdToken?: string } | undefined;
@@ -13,19 +22,49 @@ export type AuthStackParamList = {
   ForgotPassword: undefined;
 };
 
-export type AppStackParamList = {
+export type HomeStackParamList = {
   Home: undefined;
+  CategoryDetail: { categoryId: string; categoryName: string };
+  AddCategory: undefined;
+  AddEditExpense: {
+    categoryId: string;
+    expenseId?: string;
+  };
 };
 
+export type WalletsStackParamList = {
+  Wallets: undefined;
+  AddEditWallet: { walletId?: string; walletName?: string };
+};
+
+export type SettingsStackParamList = {
+  Settings: undefined;
+};
+
+export type TabParamList = {
+  HomeTab: undefined;
+  WalletsTab: undefined;
+  SettingsTab: undefined;
+};
+
+// --- Navigators ---
+
 const AuthStack = createNativeStackNavigator<AuthStackParamList>();
-const AppStack = createNativeStackNavigator<AppStackParamList>();
+const HomeStack = createNativeStackNavigator<HomeStackParamList>();
+const WalletsStack = createNativeStackNavigator<WalletsStackParamList>();
+const SettingsStack = createNativeStackNavigator<SettingsStackParamList>();
+const Tab = createBottomTabNavigator<TabParamList>();
+
+const darkStackOptions = {
+  headerShown: false,
+  contentStyle: { backgroundColor: "#030712" },
+} as const;
 
 function AuthNavigator() {
   return (
     <AuthStack.Navigator
       screenOptions={{
-        headerShown: false,
-        contentStyle: { backgroundColor: "#030712" },
+        ...darkStackOptions,
         animation: "slide_from_right",
       }}
     >
@@ -39,16 +78,96 @@ function AuthNavigator() {
   );
 }
 
+function HomeStackNavigator() {
+  return (
+    <HomeStack.Navigator screenOptions={darkStackOptions}>
+      <HomeStack.Screen name="Home" component={HomeScreen} />
+      <HomeStack.Screen
+        name="CategoryDetail"
+        component={CategoryDetailScreen}
+      />
+      <HomeStack.Screen name="AddCategory" component={AddCategoryScreen} />
+      <HomeStack.Screen
+        name="AddEditExpense"
+        component={AddEditExpenseScreen}
+      />
+    </HomeStack.Navigator>
+  );
+}
+
+function WalletsStackNavigator() {
+  return (
+    <WalletsStack.Navigator screenOptions={darkStackOptions}>
+      <WalletsStack.Screen name="Wallets" component={WalletsScreen} />
+      <WalletsStack.Screen
+        name="AddEditWallet"
+        component={AddEditWalletScreen}
+      />
+    </WalletsStack.Navigator>
+  );
+}
+
+function SettingsStackNavigator() {
+  return (
+    <SettingsStack.Navigator screenOptions={darkStackOptions}>
+      <SettingsStack.Screen name="Settings" component={SettingsScreen} />
+    </SettingsStack.Navigator>
+  );
+}
+
+function TabIcon({
+  label,
+  color,
+}: {
+  label: string;
+  focused: boolean;
+  color: string;
+}) {
+  const icons: Record<string, string> = {
+    Home: "🏠",
+    Wallets: "💳",
+    Settings: "⚙️",
+  };
+  return <Text style={{ fontSize: 22, color }}>{icons[label] ?? "●"}</Text>;
+}
+
 function AppNavigator() {
   return (
-    <AppStack.Navigator
+    <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        contentStyle: { backgroundColor: "#030712" },
+        tabBarStyle: {
+          backgroundColor: "#030712",
+          borderTopColor: "#1f2937",
+          borderTopWidth: 0.5,
+        },
+        tabBarActiveTintColor: "#818cf8",
+        tabBarInactiveTintColor: "#6b7280",
+        tabBarShowLabel: false,
       }}
     >
-      <AppStack.Screen name="Home" component={HomeScreen} />
-    </AppStack.Navigator>
+      <Tab.Screen
+        name="HomeTab"
+        component={HomeStackNavigator}
+        options={{
+          tabBarIcon: (props) => <TabIcon {...props} label="Home" />,
+        }}
+      />
+      <Tab.Screen
+        name="WalletsTab"
+        component={WalletsStackNavigator}
+        options={{
+          tabBarIcon: (props) => <TabIcon {...props} label="Wallets" />,
+        }}
+      />
+      <Tab.Screen
+        name="SettingsTab"
+        component={SettingsStackNavigator}
+        options={{
+          tabBarIcon: (props) => <TabIcon {...props} label="Settings" />,
+        }}
+      />
+    </Tab.Navigator>
   );
 }
 

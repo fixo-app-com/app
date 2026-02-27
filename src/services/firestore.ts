@@ -1,0 +1,165 @@
+import firestore, {
+  FirebaseFirestoreTypes,
+} from "@react-native-firebase/firestore";
+import type { Category, Expense, Wallet } from "../types/firestore";
+
+// --- Helpers ---
+
+function usersRef() {
+  return firestore().collection("users");
+}
+
+function categoriesRef(userId: string) {
+  return usersRef().doc(userId).collection("categories");
+}
+
+function expensesRef(userId: string) {
+  return usersRef().doc(userId).collection("expenses");
+}
+
+function walletsRef(userId: string) {
+  return usersRef().doc(userId).collection("wallets");
+}
+
+// --- Categories ---
+
+export function subscribeCategories(
+  userId: string,
+  onResult: (categories: Category[]) => void,
+  onError: (error: Error) => void,
+): () => void {
+  return categoriesRef(userId)
+    .orderBy("createdAt", "asc")
+    .onSnapshot(
+      (snapshot) => {
+        const categories: Category[] = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          createdAt: doc.data().createdAt?.toDate() ?? new Date(),
+        })) as Category[];
+        onResult(categories);
+      },
+      (error) => onError(error),
+    );
+}
+
+export async function addCategory(
+  userId: string,
+  data: Pick<Category, "name" | "icon">,
+): Promise<string> {
+  const ref = await categoriesRef(userId).add({
+    name: data.name,
+    icon: data.icon,
+    createdAt: firestore.FieldValue.serverTimestamp(),
+  });
+  return ref.id;
+}
+
+export async function updateCategory(
+  userId: string,
+  categoryId: string,
+  data: Partial<Pick<Category, "name" | "icon">>,
+): Promise<void> {
+  await categoriesRef(userId).doc(categoryId).update(data);
+}
+
+export async function deleteCategory(
+  userId: string,
+  categoryId: string,
+): Promise<void> {
+  await categoriesRef(userId).doc(categoryId).delete();
+}
+
+// --- Expenses ---
+
+export async function getExpenses(
+  userId: string,
+  categoryId?: string,
+): Promise<Expense[]> {
+  let query: FirebaseFirestoreTypes.Query = expensesRef(userId);
+
+  if (categoryId) {
+    query = query.where("categoryId", "==", categoryId);
+  }
+
+  const snapshot = await query.orderBy("amountCents", "desc").get();
+  return snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+    createdAt: doc.data().createdAt?.toDate() ?? new Date(),
+  })) as Expense[];
+}
+
+export async function addExpense(
+  userId: string,
+  data: Omit<Expense, "id" | "createdAt">,
+): Promise<string> {
+  const ref = await expensesRef(userId).add({
+    ...data,
+    createdAt: firestore.FieldValue.serverTimestamp(),
+  });
+  return ref.id;
+}
+
+export async function updateExpense(
+  userId: string,
+  expenseId: string,
+  data: Partial<Omit<Expense, "id" | "createdAt">>,
+): Promise<void> {
+  await expensesRef(userId).doc(expenseId).update(data);
+}
+
+export async function deleteExpense(
+  userId: string,
+  expenseId: string,
+): Promise<void> {
+  await expensesRef(userId).doc(expenseId).delete();
+}
+
+// --- Wallets ---
+
+export function subscribeWallets(
+  userId: string,
+  onResult: (wallets: Wallet[]) => void,
+  onError: (error: Error) => void,
+): () => void {
+  return walletsRef(userId)
+    .orderBy("createdAt", "asc")
+    .onSnapshot(
+      (snapshot) => {
+        const wallets: Wallet[] = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          createdAt: doc.data().createdAt?.toDate() ?? new Date(),
+        })) as Wallet[];
+        onResult(wallets);
+      },
+      (error) => onError(error),
+    );
+}
+
+export async function addWallet(
+  userId: string,
+  data: Pick<Wallet, "name">,
+): Promise<string> {
+  const ref = await walletsRef(userId).add({
+    name: data.name,
+    createdAt: firestore.FieldValue.serverTimestamp(),
+  });
+  return ref.id;
+}
+
+export async function updateWallet(
+  userId: string,
+  walletId: string,
+  data: Partial<Pick<Wallet, "name">>,
+): Promise<void> {
+  await walletsRef(userId).doc(walletId).update(data);
+}
+
+export async function deleteWallet(
+  userId: string,
+  walletId: string,
+): Promise<void> {
+  await walletsRef(userId).doc(walletId).delete();
+}
