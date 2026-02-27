@@ -28,15 +28,17 @@ export function ExpenseCard({
           <Text className="text-base font-semibold text-white">{name}</Text>
           <Text className="mt-1 text-sm text-gray-400">
             {walletName}
-            {essential ? " \u00B7 Essential" : ""}
+            {essential ? " · Essential" : ""}
           </Text>
           {notes ? (
-            <Text className="mt-1 text-sm text-gray-500">{notes}</Text>
+            <Text className="mt-1 text-sm text-gray-500" numberOfLines={2}>
+              {notes}
+            </Text>
           ) : null}
         </View>
         <CurrencyText
           cents={amountCents}
-          className="text-base font-semibold text-fixo-400"
+          className="text-base font-semibold text-white"
         />
       </View>
     </Card>

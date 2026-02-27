@@ -8,15 +8,12 @@ describe("ScreenHeader", () => {
     expect(screen.getByText("Details")).toBeOnTheScreen();
   });
 
-  it("renders back chevron", () => {
-    render(<ScreenHeader title="Details" onBack={jest.fn()} />);
-    expect(screen.getByText("\u2039")).toBeOnTheScreen();
-  });
-
   it("calls onBack when back button is pressed", () => {
     const onBack = jest.fn();
     render(<ScreenHeader title="Details" onBack={onBack} />);
-    fireEvent.press(screen.getByText("\u2039"));
+    // The back button wraps the Ionicons icon; find the Pressable by role
+    const backButton = screen.getByRole("button");
+    fireEvent.press(backButton);
     expect(onBack).toHaveBeenCalledTimes(1);
   });
 

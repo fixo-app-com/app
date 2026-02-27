@@ -26,8 +26,13 @@ describe("Button", () => {
     expect(screen.getByText("Delete")).toBeOnTheScreen();
   });
 
-  it("renders outline variant text", () => {
-    render(<Button label="Cancel" variant="outline" onPress={jest.fn()} />);
+  it("renders secondary variant text", () => {
+    render(<Button label="Cancel" variant="secondary" onPress={jest.fn()} />);
     expect(screen.getByText("Cancel")).toBeOnTheScreen();
+  });
+
+  it("shows activity indicator when loading", () => {
+    render(<Button label="Save" onPress={jest.fn()} loading />);
+    expect(screen.queryByText("Save")).not.toBeOnTheScreen();
   });
 });

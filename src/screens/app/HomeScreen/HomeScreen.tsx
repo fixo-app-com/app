@@ -7,7 +7,12 @@ import { useData } from "../../../contexts/DataContext";
 import { getExpenses } from "../../../services/firestore";
 import type { HomeStackParamList } from "../../../navigation/RootNavigator";
 import type { Expense } from "../../../types/firestore";
-import { Card, FullScreenLoader, ScreenWrapper } from "../../../design-system";
+import {
+  Card,
+  EmptyState,
+  FullScreenLoader,
+  ScreenWrapper,
+} from "../../../design-system";
 import { CurrencyText, WalletCard } from "../../../components";
 
 type Nav = NativeStackNavigationProp<HomeStackParamList, "Home">;
@@ -67,7 +72,7 @@ export default function HomeScreen() {
 
   return (
     <ScreenWrapper>
-      <Text className="mb-6 text-2xl font-bold text-white">Home</Text>
+      <Text className="mb-6 text-3xl font-bold text-white">Home</Text>
 
       {/* Monthly total card */}
       <Card>
@@ -77,14 +82,15 @@ export default function HomeScreen() {
           </Text>
           <CurrencyText
             cents={monthlyTotalCents}
-            className="mt-1 text-3xl font-bold text-fixo-400"
+            className="mt-1 text-4xl font-bold text-white"
           />
-          <View className="mt-3 h-px w-16 bg-gray-700" />
-          <Text className="mt-3 text-xs text-gray-500">Yearly estimate</Text>
-          <CurrencyText
-            cents={yearlyTotalCents}
-            className="text-sm text-gray-400"
-          />
+          <View className="mt-3 flex-row items-center">
+            <Text className="text-xs text-gray-500">Yearly estimate  </Text>
+            <CurrencyText
+              cents={yearlyTotalCents}
+              className="text-sm text-gray-400"
+            />
+          </View>
         </View>
       </Card>
 
@@ -109,9 +115,10 @@ export default function HomeScreen() {
           ItemSeparatorComponent={() => <View className="h-3" />}
         />
       ) : (
-        <Text className="mt-4 text-center text-sm text-gray-500">
-          No expenses yet.
-        </Text>
+        <EmptyState
+          icon="receipt-outline"
+          message="No expenses yet."
+        />
       )}
     </ScreenWrapper>
   );

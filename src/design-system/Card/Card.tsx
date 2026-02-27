@@ -8,12 +8,16 @@ interface CardProps {
 }
 
 export function Card({ onPress, onLongPress, children }: CardProps) {
+  const isInteractive = !!onPress || !!onLongPress;
+
   return (
     <Pressable
       onPress={onPress}
       onLongPress={onLongPress}
-      className="rounded-xl border border-gray-800 bg-gray-900 p-4"
-      style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
+      className="rounded-2xl bg-gray-900 p-4"
+      style={({ pressed }) => ({
+        opacity: pressed && isInteractive ? 0.7 : 1,
+      })}
     >
       {children}
     </Pressable>

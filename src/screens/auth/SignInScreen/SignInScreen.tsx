@@ -5,7 +5,6 @@ import {
   Platform,
   Pressable,
   Text,
-  TextInput,
   View,
 } from "react-native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -16,6 +15,7 @@ import {
   linkGoogleToEmailAccount,
   getFirebaseAuthErrorMessage,
 } from "../../../services/auth";
+import { Button, Input } from "../../../design-system";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "SignIn">;
 
@@ -89,29 +89,29 @@ export default function SignInScreen({ navigation, route }: Props) {
         )}
 
         {/* Email input */}
-        <TextInput
-          className="mb-4 rounded-xl border border-gray-700 bg-gray-900 px-4 py-4 text-base text-white"
-          placeholder="Email"
-          placeholderTextColor="#64748b"
-          value={email}
-          onChangeText={setEmail}
-          autoCapitalize="none"
-          keyboardType="email-address"
-          autoComplete="email"
-          editable={!isLoading}
-        />
+        <View className="mb-4">
+          <Input
+            value={email}
+            onChangeText={setEmail}
+            placeholder="Email"
+            autoCapitalize="none"
+            keyboardType="email-address"
+            autoComplete="email"
+            editable={!isLoading}
+          />
+        </View>
 
         {/* Password input */}
-        <TextInput
-          className="mb-2 rounded-xl border border-gray-700 bg-gray-900 px-4 py-4 text-base text-white"
-          placeholder="Password"
-          placeholderTextColor="#64748b"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          autoComplete="password"
-          editable={!isLoading}
-        />
+        <View className="mb-2">
+          <Input
+            value={password}
+            onChangeText={setPassword}
+            placeholder="Password"
+            secureTextEntry
+            autoComplete="password"
+            editable={!isLoading}
+          />
+        </View>
 
         {/* Forgot password link */}
         <Pressable
@@ -123,16 +123,13 @@ export default function SignInScreen({ navigation, route }: Props) {
         </Pressable>
 
         {/* Sign in button */}
-        <Pressable
-          onPress={handleSignIn}
-          disabled={isLoading}
-          className="mb-4 items-center rounded-xl bg-fixo-600 py-4"
-          style={({ pressed }) => ({ opacity: pressed || isLoading ? 0.7 : 1 })}
-        >
-          <Text className="text-base font-semibold text-white">
-            {isLoading ? "Signing in..." : "Sign In"}
-          </Text>
-        </Pressable>
+        <View className="mb-4">
+          <Button
+            label="Sign In"
+            onPress={handleSignIn}
+            loading={isLoading}
+          />
+        </View>
 
         {/* Divider */}
         {!pendingGoogleIdToken && (
@@ -144,18 +141,14 @@ export default function SignInScreen({ navigation, route }: Props) {
             </View>
 
             {/* Google Sign-In button */}
-            <Pressable
-              onPress={handleGoogleSignIn}
-              disabled={isLoading}
-              className="mb-8 items-center rounded-xl border border-gray-700 bg-gray-900 py-4"
-              style={({ pressed }) => ({
-                opacity: pressed || isLoading ? 0.7 : 1,
-              })}
-            >
-              <Text className="text-base font-semibold text-white">
-                Sign in with Google
-              </Text>
-            </Pressable>
+            <View className="mb-8">
+              <Button
+                label="Sign in with Google"
+                variant="secondary"
+                onPress={handleGoogleSignIn}
+                disabled={isLoading}
+              />
+            </View>
           </>
         )}
 

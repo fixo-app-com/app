@@ -1,9 +1,15 @@
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useData } from "../../../contexts/DataContext";
 import { signOut } from "../../../services/auth";
 import { CURRENCIES } from "../../../constants/banks";
-import { Button, Card, ScreenWrapper } from "../../../design-system";
+import {
+  Button,
+  ChipGroup,
+  FormRow,
+  ScreenWrapper,
+  SectionHeader,
+} from "../../../design-system";
 
 export default function SettingsScreen() {
   const { user } = useAuth();
@@ -11,49 +17,38 @@ export default function SettingsScreen() {
 
   return (
     <ScreenWrapper scroll>
-      <Text className="mb-6 text-2xl font-bold text-white">Settings</Text>
+      <Text className="mb-6 text-3xl font-bold text-white">Settings</Text>
 
-      {/* User info */}
-      <Card>
-        <Text className="text-sm text-gray-400">Email</Text>
-        <Text className="mt-1 text-base text-white">
-          {user?.email ?? "\u2014"}
-        </Text>
-      </Card>
+      <SectionHeader title="Account" />
 
-      <View className="mt-6" />
+      <FormRow
+        label="Email"
+        first
+        last
+        right={
+          <Text className="text-base text-gray-400">
+            {user?.email ?? "—"}
+          </Text>
+        }
+      />
 
-      {/* Currency */}
-      <Text className="mb-2 text-sm text-gray-400">Currency</Text>
-      <View className="flex-row flex-wrap">
-        {CURRENCIES.map((c) => {
-          const isSelected = c.code === currency;
-          return (
-            <Pressable
-              key={c.code}
-              onPress={() => setCurrency(c.code)}
-              className={`m-1 rounded-xl px-4 py-2 ${
-                isSelected
-                  ? "border-2 border-fixo-400 bg-gray-800"
-                  : "border border-gray-700 bg-gray-900"
-              }`}
-            >
-              <Text
-                className={`text-sm font-medium ${isSelected ? "text-fixo-400" : "text-gray-300"}`}
-              >
-                {c.symbol} {c.code}
-              </Text>
-            </Pressable>
-          );
-        })}
-      </View>
+      <SectionHeader title="Currency" />
 
-      <View className="mt-6" />
+      <ChipGroup
+        options={CURRENCIES.map((c) => ({
+          value: c.code,
+          label: `${c.symbol} ${c.code}`,
+        }))}
+        selected={currency}
+        onSelect={setCurrency}
+        compact
+      />
 
-      {/* Sign out */}
+      <View className="mt-8" />
+
       <Button
         label="Sign out"
-        variant="outline"
+        variant="secondary"
         onPress={() => signOut()}
       />
     </ScreenWrapper>

@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Alert, Pressable, Text, View } from "react-native";
+import { Alert, Text, View } from "react-native";
 import { useAuth } from "../../../contexts/AuthContext";
 import {
   resendVerificationEmail,
   signOut,
   getFirebaseAuthErrorMessage,
 } from "../../../services/auth";
+import { Button } from "../../../design-system";
 
 export default function VerifyEmailScreen() {
   const { user, reloadUser } = useAuth();
@@ -53,40 +54,30 @@ export default function VerifyEmailScreen() {
       </Text>
 
       {/* Check verification button */}
-      <Pressable
-        onPress={handleCheckVerification}
-        disabled={isChecking}
-        className="mb-4 items-center rounded-xl bg-fixo-600 py-4"
-        style={({ pressed }) => ({
-          opacity: pressed || isChecking ? 0.7 : 1,
-        })}
-      >
-        <Text className="text-base font-semibold text-white">
-          {isChecking ? "Checking..." : "I've verified my email"}
-        </Text>
-      </Pressable>
+      <View className="mb-4">
+        <Button
+          label="I've verified my email"
+          onPress={handleCheckVerification}
+          loading={isChecking}
+        />
+      </View>
 
       {/* Resend email button */}
-      <Pressable
-        onPress={handleResend}
-        disabled={isResending}
-        className="mb-4 items-center rounded-xl border border-gray-700 py-4"
-        style={({ pressed }) => ({
-          opacity: pressed || isResending ? 0.7 : 1,
-        })}
-      >
-        <Text className="text-base text-gray-300">
-          {isResending ? "Sending..." : "Resend verification email"}
-        </Text>
-      </Pressable>
+      <View className="mb-4">
+        <Button
+          label="Resend verification email"
+          variant="secondary"
+          onPress={handleResend}
+          loading={isResending}
+        />
+      </View>
 
       {/* Sign out button */}
-      <Pressable
+      <Button
+        label="Sign out"
+        variant="destructive"
         onPress={() => signOut()}
-        className="items-center py-4"
-      >
-        <Text className="text-sm text-gray-500">Sign out</Text>
-      </Pressable>
+      />
     </View>
   );
 }

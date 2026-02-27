@@ -5,12 +5,12 @@ import {
   Platform,
   Pressable,
   Text,
-  TextInput,
   View,
 } from "react-native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { AuthStackParamList } from "../../../navigation/RootNavigator";
 import { signUpWithEmail, getFirebaseAuthErrorMessage } from "../../../services/auth";
+import { Button, Input } from "../../../design-system";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "SignUp">;
 
@@ -59,53 +59,50 @@ export default function SignUpScreen({ navigation }: Props) {
         </Text>
 
         {/* Email input */}
-        <TextInput
-          className="mb-4 rounded-xl border border-gray-700 bg-gray-900 px-4 py-4 text-base text-white"
-          placeholder="Email"
-          placeholderTextColor="#64748b"
-          value={email}
-          onChangeText={setEmail}
-          autoCapitalize="none"
-          keyboardType="email-address"
-          autoComplete="email"
-          editable={!isLoading}
-        />
+        <View className="mb-4">
+          <Input
+            value={email}
+            onChangeText={setEmail}
+            placeholder="Email"
+            autoCapitalize="none"
+            keyboardType="email-address"
+            autoComplete="email"
+            editable={!isLoading}
+          />
+        </View>
 
         {/* Password input */}
-        <TextInput
-          className="mb-4 rounded-xl border border-gray-700 bg-gray-900 px-4 py-4 text-base text-white"
-          placeholder="Password"
-          placeholderTextColor="#64748b"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          autoComplete="new-password"
-          editable={!isLoading}
-        />
+        <View className="mb-4">
+          <Input
+            value={password}
+            onChangeText={setPassword}
+            placeholder="Password"
+            secureTextEntry
+            autoComplete="new-password"
+            editable={!isLoading}
+          />
+        </View>
 
         {/* Confirm password input */}
-        <TextInput
-          className="mb-8 rounded-xl border border-gray-700 bg-gray-900 px-4 py-4 text-base text-white"
-          placeholder="Confirm password"
-          placeholderTextColor="#64748b"
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          secureTextEntry
-          autoComplete="new-password"
-          editable={!isLoading}
-        />
+        <View className="mb-8">
+          <Input
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            placeholder="Confirm password"
+            secureTextEntry
+            autoComplete="new-password"
+            editable={!isLoading}
+          />
+        </View>
 
         {/* Sign up button */}
-        <Pressable
-          onPress={handleSignUp}
-          disabled={isLoading}
-          className="mb-8 items-center rounded-xl bg-fixo-600 py-4"
-          style={({ pressed }) => ({ opacity: pressed || isLoading ? 0.7 : 1 })}
-        >
-          <Text className="text-base font-semibold text-white">
-            {isLoading ? "Signing up..." : "Sign Up"}
-          </Text>
-        </Pressable>
+        <View className="mb-8">
+          <Button
+            label="Sign Up"
+            onPress={handleSignUp}
+            loading={isLoading}
+          />
+        </View>
 
         {/* Sign in link */}
         <View className="flex-row justify-center">

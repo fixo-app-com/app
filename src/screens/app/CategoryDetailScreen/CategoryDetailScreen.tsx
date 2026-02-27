@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { ActivityIndicator, Alert, FlatList, View } from "react-native";
+import { ActivityIndicator, Alert, FlatList, Text, View } from "react-native";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAuth } from "../../../contexts/AuthContext";
@@ -60,7 +60,7 @@ export default function CategoryDetailScreen() {
   }, [navigation, fetchExpenses]);
 
   function getWalletName(walletId: string): string {
-    return wallets.find((w) => w.id === walletId)?.name ?? "\u2014";
+    return wallets.find((w) => w.id === walletId)?.name ?? "—";
   }
 
   function handleDeleteExpense(expenseId: string, expenseName: string) {
@@ -117,13 +117,18 @@ export default function CategoryDetailScreen() {
       <ScreenHeader
         title={categoryName}
         onBack={() => navigation.goBack()}
-        right={
+      />
+
+      {/* Summary */}
+      <View className="mb-4">
+        <Text className="text-sm text-gray-400">
+          Total:{" "}
           <CurrencyText
             cents={totalCents}
-            className="text-base font-semibold text-fixo-400"
+            className="text-sm font-semibold text-fixo-400"
           />
-        }
-      />
+        </Text>
+      </View>
 
       {/* Expenses list */}
       {loading ? (
@@ -151,10 +156,17 @@ export default function CategoryDetailScreen() {
           )}
           ItemSeparatorComponent={() => <View className="h-3" />}
           ListEmptyComponent={
-            <EmptyState message="No expenses in this category." />
+            <EmptyState
+              icon="receipt-outline"
+              message="No expenses in this category."
+              actionLabel="Add expense"
+              onAction={() =>
+                navigation.navigate("AddEditExpense", { categoryId })
+              }
+            />
           }
           ListFooterComponent={
-            <View className="mt-6">
+            <View className="mt-8">
               <Button
                 label="Delete category"
                 variant="destructive"

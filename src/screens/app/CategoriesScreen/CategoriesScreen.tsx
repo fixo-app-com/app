@@ -60,7 +60,7 @@ export default function CategoriesScreen() {
 
   return (
     <ScreenWrapper>
-      <Text className="mb-6 text-2xl font-bold text-white">Categories</Text>
+      <Text className="mb-6 text-3xl font-bold text-white">Categories</Text>
 
       {loadingExpenses ? (
         <ActivityIndicator color="#818cf8" className="mt-8" />
@@ -85,7 +85,12 @@ export default function CategoriesScreen() {
           )}
           ItemSeparatorComponent={() => <View className="h-3" />}
           ListEmptyComponent={
-            <EmptyState message="No categories yet. Add one!" />
+            <EmptyState
+              icon="grid-outline"
+              message="No categories yet."
+              actionLabel="Add category"
+              onAction={() => navigation.navigate("AddCategory")}
+            />
           }
         />
       )}

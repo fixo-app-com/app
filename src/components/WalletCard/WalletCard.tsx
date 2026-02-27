@@ -1,4 +1,6 @@
-import { Text, View } from "react-native";
+import { View } from "react-native";
+import { Text } from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { Card } from "../../design-system";
 import { BankIcon } from "../BankIcon/BankIcon";
 import { CurrencyText } from "../CurrencyText/CurrencyText";
@@ -30,10 +32,10 @@ export function WalletCard({
         {totalCents !== undefined ? (
           <CurrencyText
             cents={totalCents}
-            className="text-base font-semibold text-fixo-400"
+            className="text-base font-semibold text-white"
           />
         ) : (
-          <Text className="text-gray-500">{"\u203A"}</Text>
+          <Ionicons name="chevron-forward" size={20} color="#64748b" />
         )}
       </View>
     </Card>

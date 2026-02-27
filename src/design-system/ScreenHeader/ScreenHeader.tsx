@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Pressable, Text, View } from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 interface ScreenHeaderProps {
   title: string;
@@ -10,15 +11,27 @@ interface ScreenHeaderProps {
 export function ScreenHeader({ title, onBack, right }: ScreenHeaderProps) {
   return (
     <View className="mb-6 flex-row items-center justify-between">
-      <View className="flex-row items-center">
+      <View className="flex-1 flex-row items-center">
         <Pressable
           onPress={onBack}
-          className="mr-3 rounded-lg px-2 py-1"
-          style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+          accessibilityRole="button"
+          accessibilityLabel="Go back"
+          className="mr-2 items-center justify-center"
+          style={({ pressed }) => ({
+            opacity: pressed ? 0.6 : 1,
+            width: 44,
+            height: 44,
+          })}
+          hitSlop={8}
         >
-          <Text className="text-2xl text-gray-400">{"\u2039"}</Text>
+          <Ionicons name="chevron-back" size={24} color="#94a3b8" />
         </Pressable>
-        <Text className="text-xl font-bold text-white">{title}</Text>
+        <Text
+          className="flex-1 text-lg font-semibold text-white"
+          numberOfLines={1}
+        >
+          {title}
+        </Text>
       </View>
       {right}
     </View>

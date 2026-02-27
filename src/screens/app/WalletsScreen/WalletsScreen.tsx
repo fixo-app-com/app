@@ -31,7 +31,7 @@ export default function WalletsScreen() {
 
   return (
     <ScreenWrapper>
-      <Text className="mb-6 text-2xl font-bold text-white">Wallets</Text>
+      <Text className="mb-6 text-3xl font-bold text-white">Wallets</Text>
 
       <FlatList
         data={wallets}
@@ -53,7 +53,12 @@ export default function WalletsScreen() {
         )}
         ItemSeparatorComponent={() => <View className="h-3" />}
         ListEmptyComponent={
-          <EmptyState message="No wallets yet. Add one!" />
+          <EmptyState
+            icon="wallet-outline"
+            message="No wallets yet."
+            actionLabel="Add wallet"
+            onAction={() => navigation.navigate("AddEditWallet", {})}
+          />
         }
       />
 

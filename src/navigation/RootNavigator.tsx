@@ -169,13 +169,15 @@ function AppNavigator() {
         },
         tabBarActiveTintColor: "#818cf8",
         tabBarInactiveTintColor: "#6b7280",
-        tabBarShowLabel: false,
+        tabBarShowLabel: true,
+        tabBarLabelStyle: { fontSize: 10, fontWeight: "500" },
       }}
     >
       <Tab.Screen
         name="HomeTab"
         component={HomeStackNavigator}
         options={{
+          tabBarLabel: "Home",
           tabBarIcon: (props) => <TabIcon {...props} label="Home" />,
         }}
       />
@@ -183,6 +185,7 @@ function AppNavigator() {
         name="CategoriesTab"
         component={CategoriesStackNavigator}
         options={{
+          tabBarLabel: "Categories",
           tabBarIcon: (props) => <TabIcon {...props} label="Categories" />,
         }}
       />
@@ -190,6 +193,7 @@ function AppNavigator() {
         name="WalletsTab"
         component={WalletsStackNavigator}
         options={{
+          tabBarLabel: "Wallets",
           tabBarIcon: (props) => <TabIcon {...props} label="Wallets" />,
         }}
       />
@@ -197,6 +201,7 @@ function AppNavigator() {
         name="SettingsTab"
         component={SettingsStackNavigator}
         options={{
+          tabBarLabel: "Settings",
           tabBarIcon: (props) => <TabIcon {...props} label="Settings" />,
         }}
       />

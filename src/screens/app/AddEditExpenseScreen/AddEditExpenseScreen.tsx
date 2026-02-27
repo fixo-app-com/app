@@ -16,10 +16,12 @@ import { getCurrencySymbol } from "../../../constants/banks";
 import {
   Button,
   ChipGroup,
+  FormRow,
   FullScreenLoader,
   Input,
   ScreenHeader,
   ScreenWrapper,
+  SectionHeader,
 } from "../../../design-system";
 
 type Nav = NativeStackNavigationProp<
@@ -149,29 +151,27 @@ export default function AddEditExpenseScreen() {
         onBack={() => navigation.goBack()}
       />
 
-      {/* Name */}
-      <Input
-        label="Name"
-        value={name}
-        onChangeText={setName}
-        placeholder="e.g. Netflix, Insurance..."
-      />
+      <SectionHeader title="Details" />
 
-      <View className="mb-4" />
+      <View className="gap-4">
+        <Input
+          label="Name"
+          value={name}
+          onChangeText={setName}
+          placeholder="e.g. Netflix, Insurance..."
+        />
 
-      {/* Amount */}
-      <Input
-        label={`Amount (${currencySymbol})`}
-        value={amountText}
-        onChangeText={setAmountText}
-        placeholder="12.99"
-        keyboardType="decimal-pad"
-      />
+        <Input
+          label={`Amount (${currencySymbol})`}
+          value={amountText}
+          onChangeText={setAmountText}
+          placeholder="12.99"
+          keyboardType="decimal-pad"
+        />
+      </View>
 
-      <View className="mb-4" />
+      <SectionHeader title="Wallet" />
 
-      {/* Wallet picker */}
-      <Text className="mb-2 text-sm text-gray-400">Wallet</Text>
       {wallets.length === 0 ? (
         <Text className="text-sm text-gray-500">
           No wallets yet. Add one from the Wallets tab.
@@ -185,22 +185,25 @@ export default function AddEditExpenseScreen() {
         />
       )}
 
-      <View className="mb-4" />
+      <SectionHeader title="Options" />
 
-      {/* Essential toggle */}
-      <View className="mb-4 flex-row items-center justify-between rounded-xl border border-gray-700 bg-gray-900 px-4 py-3">
-        <Text className="text-base text-white">Essential expense</Text>
-        <Switch
-          value={essential}
-          onValueChange={setEssential}
-          trackColor={{ false: "#374151", true: "#818cf8" }}
-          thumbColor="#fff"
-        />
-      </View>
+      <FormRow
+        label="Essential expense"
+        first
+        last
+        right={
+          <Switch
+            value={essential}
+            onValueChange={setEssential}
+            trackColor={{ false: "#374151", true: "#818cf8" }}
+            thumbColor="#fff"
+          />
+        }
+      />
 
-      {/* Notes */}
+      <SectionHeader title="Notes" />
+
       <Input
-        label="Notes"
         value={notes}
         onChangeText={setNotes}
         placeholder="Optional notes..."
@@ -210,25 +213,20 @@ export default function AddEditExpenseScreen() {
 
       <View className="mb-6" />
 
-      {/* Save button */}
       <Button
-        label={
-          saving ? "Saving..." : isEditing ? "Save changes" : "Save expense"
-        }
+        label={isEditing ? "Save changes" : "Save expense"}
         onPress={handleSave}
-        disabled={saving}
+        loading={saving}
       />
 
-      {/* Delete button (edit mode only) */}
       {isEditing && (
-        <>
-          <View className="mb-3" />
+        <View className="mt-3">
           <Button
             label="Delete expense"
             variant="destructive"
             onPress={handleDelete}
           />
-        </>
+        </View>
       )}
 
       <View className="mb-8" />

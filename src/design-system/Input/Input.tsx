@@ -1,4 +1,4 @@
-import { Text, TextInput, type KeyboardTypeOptions } from "react-native";
+import { Text, TextInput, View, type KeyboardTypeOptions } from "react-native";
 
 interface InputProps {
   label?: string;
@@ -8,6 +8,10 @@ interface InputProps {
   multiline?: boolean;
   autoFocus?: boolean;
   keyboardType?: KeyboardTypeOptions;
+  secureTextEntry?: boolean;
+  autoCapitalize?: "none" | "sentences" | "words" | "characters";
+  autoComplete?: string;
+  editable?: boolean;
   style?: object;
 }
 
@@ -19,10 +23,14 @@ export function Input({
   multiline,
   autoFocus,
   keyboardType,
+  secureTextEntry,
+  autoCapitalize,
+  autoComplete,
+  editable,
   style,
 }: InputProps) {
   return (
-    <>
+    <View>
       {label ? (
         <Text className="mb-2 text-sm text-gray-400">{label}</Text>
       ) : null}
@@ -30,13 +38,17 @@ export function Input({
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
-        placeholderTextColor="#6b7280"
+        placeholderTextColor="#475569"
         multiline={multiline}
         autoFocus={autoFocus}
         keyboardType={keyboardType}
-        className="rounded-xl border border-gray-700 bg-gray-900 px-4 py-3 text-base text-white"
+        secureTextEntry={secureTextEntry}
+        autoCapitalize={autoCapitalize}
+        autoComplete={autoComplete as any}
+        editable={editable}
+        className="rounded-xl bg-gray-900 px-4 py-3.5 text-base text-white"
         style={style}
       />
-    </>
+    </View>
   );
 }

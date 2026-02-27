@@ -5,12 +5,12 @@ import {
   Platform,
   Pressable,
   Text,
-  TextInput,
   View,
 } from "react-native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { AuthStackParamList } from "../../../navigation/RootNavigator";
 import { resetPassword, getFirebaseAuthErrorMessage } from "../../../services/auth";
+import { Button, Input } from "../../../design-system";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "ForgotPassword">;
 
@@ -47,15 +47,10 @@ export default function ForgotPasswordScreen({ navigation }: Props) {
           We sent you an email with a link to reset your password. Check your
           inbox.
         </Text>
-        <Pressable
+        <Button
+          label="Back to login"
           onPress={() => navigation.navigate("SignIn")}
-          className="items-center rounded-xl bg-fixo-600 py-4"
-          style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
-        >
-          <Text className="text-base font-semibold text-white">
-            Back to login
-          </Text>
-        </Pressable>
+        />
       </View>
     );
   }
@@ -76,29 +71,26 @@ export default function ForgotPasswordScreen({ navigation }: Props) {
         </Text>
 
         {/* Email input */}
-        <TextInput
-          className="mb-6 rounded-xl border border-gray-700 bg-gray-900 px-4 py-4 text-base text-white"
-          placeholder="Email"
-          placeholderTextColor="#64748b"
-          value={email}
-          onChangeText={setEmail}
-          autoCapitalize="none"
-          keyboardType="email-address"
-          autoComplete="email"
-          editable={!isLoading}
-        />
+        <View className="mb-6">
+          <Input
+            value={email}
+            onChangeText={setEmail}
+            placeholder="Email"
+            autoCapitalize="none"
+            keyboardType="email-address"
+            autoComplete="email"
+            editable={!isLoading}
+          />
+        </View>
 
         {/* Reset password button */}
-        <Pressable
-          onPress={handleResetPassword}
-          disabled={isLoading}
-          className="mb-6 items-center rounded-xl bg-fixo-600 py-4"
-          style={({ pressed }) => ({ opacity: pressed || isLoading ? 0.7 : 1 })}
-        >
-          <Text className="text-base font-semibold text-white">
-            {isLoading ? "Sending..." : "Send reset link"}
-          </Text>
-        </Pressable>
+        <View className="mb-6">
+          <Button
+            label="Send reset link"
+            onPress={handleResetPassword}
+            loading={isLoading}
+          />
+        </View>
 
         {/* Back to sign in */}
         <Pressable

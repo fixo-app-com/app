@@ -1,5 +1,21 @@
 import "@testing-library/react-native/matchers";
 
+// Mock react-native-safe-area-context
+jest.mock("react-native-safe-area-context", () => {
+  const insets = { top: 47, bottom: 34, left: 0, right: 0 };
+  return {
+    useSafeAreaInsets: () => insets,
+    SafeAreaProvider: ({ children }: { children: React.ReactNode }) => children,
+    SafeAreaView: ({ children }: { children: React.ReactNode }) => children,
+  };
+});
+
+// Mock @expo/vector-icons/Ionicons
+jest.mock("@expo/vector-icons/Ionicons", () => ({
+  __esModule: true,
+  default: "Ionicons",
+}));
+
 // Mock @react-native-firebase/auth
 jest.mock("@react-native-firebase/auth", () => {
   const mockOnAuthStateChanged = jest.fn((callback) => {

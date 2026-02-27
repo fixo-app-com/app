@@ -1,23 +1,24 @@
-import { Pressable, Text } from "react-native";
+import { ActivityIndicator, Pressable, Text } from "react-native";
 
 interface ButtonProps {
   label: string;
   onPress: () => void;
-  variant?: "primary" | "destructive" | "outline";
+  variant?: "primary" | "secondary" | "destructive";
   disabled?: boolean;
+  loading?: boolean;
 }
 
 const variantStyles = {
   primary: {
-    container: "items-center rounded-xl bg-fixo-400 py-4",
+    container: "items-center rounded-xl bg-fixo-500 py-3.5",
+    text: "text-base font-semibold text-white",
+  },
+  secondary: {
+    container: "items-center rounded-xl bg-gray-800 py-3.5",
     text: "text-base font-semibold text-white",
   },
   destructive: {
-    container: "items-center rounded-xl border border-red-800 py-4",
-    text: "text-base font-semibold text-red-400",
-  },
-  outline: {
-    container: "items-center rounded-xl border border-gray-700 py-4",
+    container: "items-center rounded-xl py-3.5",
     text: "text-base font-semibold text-red-400",
   },
 };
@@ -27,17 +28,26 @@ export function Button({
   onPress,
   variant = "primary",
   disabled,
+  loading,
 }: ButtonProps) {
   const styles = variantStyles[variant];
+  const isDisabled = disabled || loading;
 
   return (
     <Pressable
       onPress={onPress}
-      disabled={disabled}
+      disabled={isDisabled}
       className={styles.container}
-      style={({ pressed }) => ({ opacity: pressed || disabled ? 0.7 : 1 })}
+      style={({ pressed }) => ({ opacity: pressed || isDisabled ? 0.7 : 1 })}
     >
-      <Text className={styles.text}>{label}</Text>
+      {loading ? (
+        <ActivityIndicator
+          color={variant === "destructive" ? "#f87171" : "#ffffff"}
+          size="small"
+        />
+      ) : (
+        <Text className={styles.text}>{label}</Text>
+      )}
     </Pressable>
   );
 }

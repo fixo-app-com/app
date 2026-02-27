@@ -6,7 +6,13 @@ import { useData } from "../../../contexts/DataContext";
 import type { WalletsStackParamList } from "../../../navigation/RootNavigator";
 import { BANKS } from "../../../constants/banks";
 import { BankIcon } from "../../../components";
-import { Button, Input, ScreenHeader, ScreenWrapper } from "../../../design-system";
+import {
+  Button,
+  Input,
+  ScreenHeader,
+  ScreenWrapper,
+  SectionHeader,
+} from "../../../design-system";
 
 type Nav = NativeStackNavigationProp<WalletsStackParamList, "AddEditWallet">;
 type Route = RouteProp<WalletsStackParamList, "AddEditWallet">;
@@ -81,10 +87,8 @@ export default function AddEditWalletScreen() {
         autoFocus
       />
 
-      <View className="mb-6" />
+      <SectionHeader title="Bank icon" />
 
-      {/* Bank icon picker */}
-      <Text className="mb-2 text-sm text-gray-400">Bank icon</Text>
       <ScrollView
         horizontal={false}
         contentContainerStyle={{ flexDirection: "row", flexWrap: "wrap" }}
@@ -93,9 +97,7 @@ export default function AddEditWalletScreen() {
         <Pressable
           onPress={() => setIcon("")}
           className={`m-1 items-center justify-center rounded-xl p-2 ${
-            icon === ""
-              ? "border-2 border-fixo-400 bg-gray-800"
-              : "border border-gray-700 bg-gray-900"
+            icon === "" ? "bg-fixo-950" : "bg-gray-900"
           }`}
           style={{ width: 64, height: 64 }}
         >
@@ -112,9 +114,7 @@ export default function AddEditWalletScreen() {
               key={bank.key}
               onPress={() => setIcon(bank.key)}
               className={`m-1 items-center justify-center rounded-xl p-2 ${
-                isSelected
-                  ? "border-2 border-fixo-400 bg-gray-800"
-                  : "border border-gray-700 bg-gray-900"
+                isSelected ? "bg-fixo-950" : "bg-gray-900"
               }`}
               style={{ width: 64, height: 64 }}
             >
@@ -133,22 +133,19 @@ export default function AddEditWalletScreen() {
       <View className="mb-6" />
 
       <Button
-        label={
-          saving ? "Saving..." : isEditing ? "Save changes" : "Save wallet"
-        }
+        label={isEditing ? "Save changes" : "Save wallet"}
         onPress={handleSave}
-        disabled={saving}
+        loading={saving}
       />
 
       {isEditing && (
-        <>
-          <View className="mb-3" />
+        <View className="mt-3">
           <Button
             label="Delete wallet"
             variant="destructive"
             onPress={handleDelete}
           />
-        </>
+        </View>
       )}
     </ScreenWrapper>
   );
