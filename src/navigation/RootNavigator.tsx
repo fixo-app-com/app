@@ -4,6 +4,7 @@ import { useAuth } from "../contexts/AuthContext";
 import SignInScreen from "../screens/auth/SignInScreen/SignInScreen";
 import SignUpScreen from "../screens/auth/SignUpScreen/SignUpScreen";
 import ForgotPasswordScreen from "../screens/auth/ForgotPasswordScreen/ForgotPasswordScreen";
+import VerifyEmailScreen from "../screens/auth/VerifyEmailScreen/VerifyEmailScreen";
 import HomeScreen from "../screens/app/HomeScreen/HomeScreen";
 
 export type AuthStackParamList = {
@@ -62,5 +63,13 @@ export default function RootNavigator() {
     );
   }
 
-  return user ? <AppNavigator /> : <AuthNavigator />;
+  if (!user) {
+    return <AuthNavigator />;
+  }
+
+  if (!user.emailVerified) {
+    return <VerifyEmailScreen />;
+  }
+
+  return <AppNavigator />;
 }

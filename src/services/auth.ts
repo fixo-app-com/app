@@ -25,7 +25,20 @@ export async function signUpWithEmail(
   email: string,
   password: string,
 ): Promise<FirebaseAuthTypes.UserCredential> {
-  return auth().createUserWithEmailAndPassword(email, password);
+  const userCredential = await auth().createUserWithEmailAndPassword(
+    email,
+    password,
+  );
+  await userCredential.user.sendEmailVerification();
+  return userCredential;
+}
+
+export async function resendVerificationEmail(): Promise<void> {
+  const currentUser = auth().currentUser;
+  if (!currentUser) {
+    throw new Error("No user is currently signed in.");
+  }
+  return currentUser.sendEmailVerification();
 }
 
 export async function signInWithGoogle(): Promise<FirebaseAuthTypes.UserCredential> {
