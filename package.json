@@ -11,7 +11,9 @@
     "format": "prettier --write \"src/**/*.{ts,tsx}\" \"App.tsx\"",
     "test": "jest --forceExit",
     "test:watch": "jest --watch",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "build:ios": "eas build --platform ios --profile production",
+    "submit:ios": "eas submit --platform ios --profile production"
   },
   "jest": {
     "preset": "jest-expo",
