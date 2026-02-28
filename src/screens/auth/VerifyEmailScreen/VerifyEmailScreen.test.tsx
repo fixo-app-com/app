@@ -27,16 +27,12 @@ describe("VerifyEmailScreen", () => {
 
   it("renders verification button", () => {
     render(<VerifyEmailScreen />);
-    expect(
-      screen.getByText("I've verified my email"),
-    ).toBeOnTheScreen();
+    expect(screen.getByText("I've verified my email")).toBeOnTheScreen();
   });
 
   it("renders resend button", () => {
     render(<VerifyEmailScreen />);
-    expect(
-      screen.getByText("Resend verification email"),
-    ).toBeOnTheScreen();
+    expect(screen.getByText("Resend verification email")).toBeOnTheScreen();
   });
 
   it("renders sign out button", () => {

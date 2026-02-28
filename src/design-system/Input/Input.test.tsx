@@ -19,7 +19,9 @@ describe("Input", () => {
 
   it("calls onChangeText when typing", () => {
     const onChangeText = jest.fn();
-    render(<Input value="" onChangeText={onChangeText} placeholder="Type..." />);
+    render(
+      <Input value="" onChangeText={onChangeText} placeholder="Type..." />,
+    );
     fireEvent.changeText(screen.getByPlaceholderText("Type..."), "new");
     expect(onChangeText).toHaveBeenCalledWith("new");
   });

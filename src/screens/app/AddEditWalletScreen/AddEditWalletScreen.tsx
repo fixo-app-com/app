@@ -119,10 +119,7 @@ export default function AddEditWalletScreen() {
               style={{ width: 64, height: 64 }}
             >
               <BankIcon bankKey={bank.key} size={32} />
-              <Text
-                className="mt-1 text-[9px] text-gray-400"
-                numberOfLines={1}
-              >
+              <Text className="mt-1 text-[9px] text-gray-400" numberOfLines={1}>
                 {bank.name}
               </Text>
             </Pressable>

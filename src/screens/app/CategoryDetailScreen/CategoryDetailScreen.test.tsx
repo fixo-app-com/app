@@ -4,7 +4,12 @@ import CategoryDetailScreen from "./CategoryDetailScreen";
 // Stable mock references
 const mockUser = { uid: "test-uid" };
 const mockWallets = [
-  { id: "w1", name: "Intesa Sanpaolo", icon: "intesa-sanpaolo", createdAt: new Date() },
+  {
+    id: "w1",
+    name: "Intesa Sanpaolo",
+    icon: "intesa-sanpaolo",
+    createdAt: new Date(),
+  },
 ];
 
 const mockNavigate = jest.fn();
@@ -26,7 +31,9 @@ jest.mock("../../../contexts/AuthContext", () => ({
 
 jest.mock("../../../contexts/DataContext", () => ({
   useData: () => ({
-    categories: [{ id: "cat1", name: "Famiglia", icon: "👨‍👩‍👧‍👦", createdAt: new Date() }],
+    categories: [
+      { id: "cat1", name: "Famiglia", icon: "👨‍👩‍👧‍👦", createdAt: new Date() },
+    ],
     wallets: mockWallets,
     currency: "EUR",
     deleteCategory: jest.fn(),

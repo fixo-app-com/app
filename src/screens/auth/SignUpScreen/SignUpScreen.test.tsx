@@ -19,9 +19,7 @@ describe("SignUpScreen", () => {
     render(<SignUpScreen navigation={mockNavigation} route={mockRoute} />);
     expect(screen.getByPlaceholderText("Email")).toBeOnTheScreen();
     expect(screen.getByPlaceholderText("Password")).toBeOnTheScreen();
-    expect(
-      screen.getByPlaceholderText("Confirm password"),
-    ).toBeOnTheScreen();
+    expect(screen.getByPlaceholderText("Confirm password")).toBeOnTheScreen();
   });
 
   it("renders sign up button", () => {

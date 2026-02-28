@@ -63,12 +63,10 @@ jest.mock("@react-native-google-signin/google-signin", () => ({
 /* eslint-disable @typescript-eslint/no-explicit-any */
 jest.mock("@react-native-firebase/firestore", () => {
   const mockOrderBy = () => ({
-    onSnapshot: jest.fn(
-      (onResult: (snapshot: { docs: never[] }) => void) => {
-        onResult({ docs: [] });
-        return jest.fn(); // unsubscribe
-      },
-    ),
+    onSnapshot: jest.fn((onResult: (snapshot: { docs: never[] }) => void) => {
+      onResult({ docs: [] });
+      return jest.fn(); // unsubscribe
+    }),
     get: jest.fn(() => Promise.resolve({ docs: [] })),
   });
 

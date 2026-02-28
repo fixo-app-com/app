@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-  ActivityIndicator,
   Alert,
   Image,
   KeyboardAvoidingView,
@@ -19,6 +18,7 @@ import {
   getFirebaseAuthErrorMessage,
 } from "../../../services/auth";
 import { Button, Input } from "../../../design-system";
+import splashIcon from "../../../../assets/splash-icon.png";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "SignIn">;
 
@@ -57,7 +57,9 @@ export default function SignInScreen({ navigation, route }: Props) {
       await signInWithGoogle();
     } catch (error) {
       const firebaseError = error as { code?: string };
-      if (firebaseError.code === "auth/account-exists-with-different-credential") {
+      if (
+        firebaseError.code === "auth/account-exists-with-different-credential"
+      ) {
         Alert.alert(
           "Existing account",
           "An account with this email already exists. Sign in with your password to link Google.",
@@ -65,7 +67,10 @@ export default function SignInScreen({ navigation, route }: Props) {
         return;
       }
       if ((error as Error).message !== "Google Sign-In was cancelled") {
-        Alert.alert("Error", getFirebaseAuthErrorMessage(firebaseError.code ?? ""));
+        Alert.alert(
+          "Error",
+          getFirebaseAuthErrorMessage(firebaseError.code ?? ""),
+        );
       }
     } finally {
       setIsLoading(false);
@@ -80,7 +85,7 @@ export default function SignInScreen({ navigation, route }: Props) {
       <View className="flex-1 justify-center px-8">
         {/* Logo */}
         <Image
-          source={require("../../../../assets/splash-icon.png")}
+          source={splashIcon}
           className="mb-12 h-20 w-20 self-center"
           resizeMode="contain"
           testID="logo"
@@ -130,11 +135,7 @@ export default function SignInScreen({ navigation, route }: Props) {
 
         {/* Sign in button */}
         <View className="mb-4">
-          <Button
-            label="Sign In"
-            onPress={handleSignIn}
-            loading={isLoading}
-          />
+          <Button label="Sign In" onPress={handleSignIn} loading={isLoading} />
         </View>
 
         {/* Divider */}
@@ -152,7 +153,9 @@ export default function SignInScreen({ navigation, route }: Props) {
                 onPress={handleGoogleSignIn}
                 disabled={isLoading}
                 className="flex-row items-center justify-center rounded-xl border border-gray-300 bg-white py-3.5"
-                style={({ pressed }) => ({ opacity: pressed || isLoading ? 0.7 : 1 })}
+                style={({ pressed }) => ({
+                  opacity: pressed || isLoading ? 0.7 : 1,
+                })}
               >
                 <Ionicons name="logo-google" size={18} color="#4285F4" />
                 <Text className="ml-2 text-base font-semibold text-gray-700">
@@ -172,9 +175,7 @@ export default function SignInScreen({ navigation, route }: Props) {
             onPress={() => navigation.navigate("SignUp")}
             disabled={isLoading}
           >
-            <Text className="text-sm font-semibold text-fixo-500">
-              Sign Up
-            </Text>
+            <Text className="text-sm font-semibold text-fixo-500">Sign Up</Text>
           </Pressable>
         </View>
       </View>

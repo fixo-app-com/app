@@ -17,6 +17,7 @@ import {
   getFirebaseAuthErrorMessage,
 } from "../../../services/auth";
 import { Button, Input } from "../../../design-system";
+import splashIcon from "../../../../assets/splash-icon.png";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "SignUp">;
 
@@ -75,7 +76,7 @@ export default function SignUpScreen({ navigation }: Props) {
       <View className="flex-1 justify-center px-8">
         {/* Logo */}
         <Image
-          source={require("../../../../assets/splash-icon.png")}
+          source={splashIcon}
           className="mb-12 h-20 w-20 self-center"
           resizeMode="contain"
           testID="logo"
@@ -120,11 +121,7 @@ export default function SignUpScreen({ navigation }: Props) {
 
         {/* Sign up button */}
         <View className="mb-4">
-          <Button
-            label="Sign Up"
-            onPress={handleSignUp}
-            loading={isLoading}
-          />
+          <Button label="Sign Up" onPress={handleSignUp} loading={isLoading} />
         </View>
 
         {/* Divider */}
@@ -140,7 +137,9 @@ export default function SignUpScreen({ navigation }: Props) {
             onPress={handleGoogleSignUp}
             disabled={isLoading}
             className="flex-row items-center justify-center rounded-xl border border-gray-300 bg-white py-3.5"
-            style={({ pressed }) => ({ opacity: pressed || isLoading ? 0.7 : 1 })}
+            style={({ pressed }) => ({
+              opacity: pressed || isLoading ? 0.7 : 1,
+            })}
           >
             <Ionicons name="logo-google" size={18} color="#4285F4" />
             <Text className="ml-2 text-base font-semibold text-gray-700">
@@ -158,9 +157,7 @@ export default function SignUpScreen({ navigation }: Props) {
             onPress={() => navigation.navigate("SignIn")}
             disabled={isLoading}
           >
-            <Text className="text-sm font-semibold text-fixo-500">
-              Sign In
-            </Text>
+            <Text className="text-sm font-semibold text-fixo-500">Sign In</Text>
           </Pressable>
         </View>
       </View>

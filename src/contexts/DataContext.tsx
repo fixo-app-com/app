@@ -124,8 +124,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       firestoreService.updateCategory(userId, id, data),
     deleteCategory: (id) => firestoreService.deleteCategory(userId, id),
     addWallet: (data) => firestoreService.addWallet(userId, data),
-    updateWallet: (id, data) =>
-      firestoreService.updateWallet(userId, id, data),
+    updateWallet: (id, data) => firestoreService.updateWallet(userId, id, data),
     deleteWallet: (id) => firestoreService.deleteWallet(userId, id),
     setCurrency: async (curr) => {
       setCurrencyState(curr);

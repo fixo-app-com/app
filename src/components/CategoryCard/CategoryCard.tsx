@@ -24,7 +24,9 @@ export function CategoryCard({
         <View className="flex-1 flex-row items-center">
           <Text className="mr-3 text-2xl">{icon}</Text>
           <View className="flex-1">
-            <Text className="text-base font-semibold text-gray-900">{name}</Text>
+            <Text className="text-base font-semibold text-gray-900">
+              {name}
+            </Text>
             <Text className="text-sm text-gray-500">
               {expenseCount} {expenseCount === 1 ? "expense" : "expenses"}
             </Text>

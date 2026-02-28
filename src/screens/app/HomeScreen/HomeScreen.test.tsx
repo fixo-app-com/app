@@ -1,4 +1,9 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react-native";
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+} from "@testing-library/react-native";
 import HomeScreen from "./HomeScreen";
 
 // Stable mock references to prevent infinite re-render loops
@@ -8,11 +13,25 @@ const mockCategories = [
   { id: "cat2", name: "Food", icon: "🍔", createdAt: new Date() },
 ];
 const mockWallets = [
-  { id: "w1", name: "Intesa Sanpaolo", icon: "intesa-sanpaolo", createdAt: new Date() },
+  {
+    id: "w1",
+    name: "Intesa Sanpaolo",
+    icon: "intesa-sanpaolo",
+    createdAt: new Date(),
+  },
   { id: "w2", name: "Revolut", icon: "revolut", createdAt: new Date() },
 ];
 const mockExpenses = [
-  { id: "e1", categoryId: "cat1", name: "Netflix", amountCents: 1299, walletId: "w1", essential: false, notes: "", createdAt: new Date() },
+  {
+    id: "e1",
+    categoryId: "cat1",
+    name: "Netflix",
+    amountCents: 1299,
+    walletId: "w1",
+    essential: false,
+    notes: "",
+    createdAt: new Date(),
+  },
 ];
 
 const mockNavigate = jest.fn();

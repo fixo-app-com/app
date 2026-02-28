@@ -8,7 +8,7 @@ import type { HomeStackParamList } from "../../../navigation/RootNavigator";
 import { EmptyState, ScreenWrapper } from "../../../design-system";
 import { FloatingAction, WalletCard } from "../../../components";
 
-type Nav = NativeStackNavigationProp<HomeStackParamList, "Wallets">;
+type Nav = NativeStackNavigationProp<HomeStackParamList>;
 
 export default function WalletsScreen() {
   const navigation = useNavigation<Nav>();

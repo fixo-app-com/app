@@ -1,3 +1,4 @@
+import type { ComponentProps } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { ActivityIndicator, View } from "react-native";
@@ -26,10 +27,18 @@ export type AuthStackParamList = {
 export type HomeStackParamList = {
   Home: undefined;
   CategoryDetail: { categoryId: string; categoryName: string };
-  AddEditCategory: { categoryId?: string; categoryName?: string; categoryIcon?: string };
+  AddEditCategory: {
+    categoryId?: string;
+    categoryName?: string;
+    categoryIcon?: string;
+  };
   AddEditExpense: { categoryId: string; expenseId?: string };
   WalletDetail: { walletId: string; walletName: string; walletIcon: string };
-  AddEditWallet: { walletId?: string; walletName?: string; walletIcon?: string };
+  AddEditWallet: {
+    walletId?: string;
+    walletName?: string;
+    walletIcon?: string;
+  };
 };
 
 export type SettingsStackParamList = {
@@ -79,19 +88,16 @@ function HomeStackNavigator() {
         name="CategoryDetail"
         component={CategoryDetailScreen}
       />
-      <HomeStack.Screen name="AddEditCategory" component={AddEditCategoryScreen} />
+      <HomeStack.Screen
+        name="AddEditCategory"
+        component={AddEditCategoryScreen}
+      />
       <HomeStack.Screen
         name="AddEditExpense"
         component={AddEditExpenseScreen}
       />
-      <HomeStack.Screen
-        name="WalletDetail"
-        component={WalletDetailScreen}
-      />
-      <HomeStack.Screen
-        name="AddEditWallet"
-        component={AddEditWalletScreen}
-      />
+      <HomeStack.Screen name="WalletDetail" component={WalletDetailScreen} />
+      <HomeStack.Screen name="AddEditWallet" component={AddEditWalletScreen} />
     </HomeStack.Navigator>
   );
 }
@@ -121,7 +127,11 @@ function TabIcon({
   const entry = TAB_ICONS[label];
   const iconName = focused ? entry?.filled : entry?.outline;
   return (
-    <Ionicons name={(iconName ?? "ellipse") as any} size={24} color={color} />
+    <Ionicons
+      name={(iconName ?? "ellipse") as ComponentProps<typeof Ionicons>["name"]}
+      size={24}
+      color={color}
+    />
   );
 }
 

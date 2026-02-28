@@ -1,7 +1,12 @@
 import firestore, {
   FirebaseFirestoreTypes,
 } from "@react-native-firebase/firestore";
-import type { Category, Expense, UserSettings, Wallet } from "../types/firestore";
+import type {
+  Category,
+  Expense,
+  UserSettings,
+  Wallet,
+} from "../types/firestore";
 
 // --- Helpers ---
 

@@ -26,9 +26,7 @@ export default function SettingsScreen() {
         first
         last
         right={
-          <Text className="text-base text-gray-500">
-            {user?.email ?? "—"}
-          </Text>
+          <Text className="text-base text-gray-500">{user?.email ?? "—"}</Text>
         }
       />
 
@@ -46,11 +44,7 @@ export default function SettingsScreen() {
 
       <View className="mt-8" />
 
-      <Button
-        label="Sign out"
-        variant="secondary"
-        onPress={() => signOut()}
-      />
+      <Button label="Sign out" variant="secondary" onPress={() => signOut()} />
     </ScreenWrapper>
   );
 }

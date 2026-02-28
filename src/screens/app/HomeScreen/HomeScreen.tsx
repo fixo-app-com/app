@@ -14,7 +14,12 @@ import {
   FullScreenLoader,
   ScreenWrapper,
 } from "../../../design-system";
-import { CategoryCard, CurrencyText, FloatingAction, WalletCard } from "../../../components";
+import {
+  CategoryCard,
+  CurrencyText,
+  FloatingAction,
+  WalletCard,
+} from "../../../components";
 
 type Nav = NativeStackNavigationProp<HomeStackParamList, "Home">;
 type ViewMode = "categories" | "wallets";
@@ -68,10 +73,7 @@ export default function HomeScreen() {
       .reduce((sum, e) => sum + e.amountCents, 0);
   }
 
-  const monthlyTotalCents = expenses.reduce(
-    (sum, e) => sum + e.amountCents,
-    0,
-  );
+  const monthlyTotalCents = expenses.reduce((sum, e) => sum + e.amountCents, 0);
   const yearlyTotalCents = monthlyTotalCents * 12;
 
   if (dataLoading) {
@@ -92,7 +94,7 @@ export default function HomeScreen() {
             className="mt-1 text-4xl font-bold text-gray-900"
           />
           <View className="mt-3 flex-row items-center">
-            <Text className="text-xs text-gray-400">Yearly estimate  </Text>
+            <Text className="text-xs text-gray-400">Yearly estimate </Text>
             <CurrencyText
               cents={yearlyTotalCents}
               className="text-sm text-gray-500"

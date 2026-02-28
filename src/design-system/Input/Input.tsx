@@ -1,4 +1,10 @@
-import { Text, TextInput, View, type KeyboardTypeOptions } from "react-native";
+import {
+  Text,
+  TextInput,
+  View,
+  type KeyboardTypeOptions,
+  type TextInputProps,
+} from "react-native";
 
 interface InputProps {
   label?: string;
@@ -10,7 +16,7 @@ interface InputProps {
   keyboardType?: KeyboardTypeOptions;
   secureTextEntry?: boolean;
   autoCapitalize?: "none" | "sentences" | "words" | "characters";
-  autoComplete?: string;
+  autoComplete?: TextInputProps["autoComplete"];
   editable?: boolean;
   style?: object;
 }
@@ -44,7 +50,7 @@ export function Input({
         keyboardType={keyboardType}
         secureTextEntry={secureTextEntry}
         autoCapitalize={autoCapitalize}
-        autoComplete={autoComplete as any}
+        autoComplete={autoComplete}
         editable={editable}
         className="rounded-xl bg-white px-4 py-3.5 text-base text-gray-900"
         style={style}

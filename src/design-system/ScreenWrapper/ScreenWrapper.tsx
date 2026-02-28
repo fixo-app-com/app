@@ -8,7 +8,11 @@ interface ScreenWrapperProps {
   children: ReactNode;
 }
 
-export function ScreenWrapper({ scroll, bottomInset, children }: ScreenWrapperProps) {
+export function ScreenWrapper({
+  scroll,
+  bottomInset,
+  children,
+}: ScreenWrapperProps) {
   const insets = useSafeAreaInsets();
 
   const paddingStyle = {

@@ -6,9 +6,19 @@ export interface BankInfo {
 }
 
 export const BANKS: BankInfo[] = [
-  { key: "intesa-sanpaolo", name: "Intesa Sanpaolo", color: "#007A33", abbr: "IS" },
+  {
+    key: "intesa-sanpaolo",
+    name: "Intesa Sanpaolo",
+    color: "#007A33",
+    abbr: "IS",
+  },
   { key: "n26", name: "N26", color: "#36A18B", abbr: "N" },
-  { key: "trade-republic", name: "Trade Republic", color: "#1E1E2E", abbr: "TR" },
+  {
+    key: "trade-republic",
+    name: "Trade Republic",
+    color: "#1E1E2E",
+    abbr: "TR",
+  },
   { key: "revolut", name: "Revolut", color: "#0075EB", abbr: "R" },
   { key: "bpm", name: "BPM", color: "#CC0000", abbr: "BP" },
   { key: "unicredit", name: "UniCredit", color: "#E2001A", abbr: "UC" },
@@ -17,7 +27,12 @@ export const BANKS: BankInfo[] = [
   { key: "fineco", name: "Fineco", color: "#006DB6", abbr: "FN" },
   { key: "mediolanum", name: "Mediolanum", color: "#003087", abbr: "ML" },
   { key: "bnp-paribas", name: "BNP Paribas", color: "#00915A", abbr: "BN" },
-  { key: "credit-agricole", name: "Crédit Agricole", color: "#006837", abbr: "CA" },
+  {
+    key: "credit-agricole",
+    name: "Crédit Agricole",
+    color: "#006837",
+    abbr: "CA",
+  },
   { key: "santander", name: "Santander", color: "#EC0000", abbr: "SA" },
   { key: "bbva", name: "BBVA", color: "#004481", abbr: "BB" },
   { key: "hsbc", name: "HSBC", color: "#DB0011", abbr: "HS" },

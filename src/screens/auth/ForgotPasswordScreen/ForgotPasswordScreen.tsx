@@ -10,8 +10,12 @@ import {
 } from "react-native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { AuthStackParamList } from "../../../navigation/RootNavigator";
-import { resetPassword, getFirebaseAuthErrorMessage } from "../../../services/auth";
+import {
+  resetPassword,
+  getFirebaseAuthErrorMessage,
+} from "../../../services/auth";
 import { Button, Input } from "../../../design-system";
+import splashIcon from "../../../../assets/splash-icon.png";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "ForgotPassword">;
 
@@ -42,7 +46,7 @@ export default function ForgotPasswordScreen({ navigation }: Props) {
     return (
       <View className="flex-1 justify-center bg-gray-100 px-8">
         <Image
-          source={require("../../../../assets/splash-icon.png")}
+          source={splashIcon}
           className="mb-4 h-20 w-20 self-center"
           resizeMode="contain"
           testID="logo"
@@ -67,7 +71,7 @@ export default function ForgotPasswordScreen({ navigation }: Props) {
       <View className="flex-1 justify-center px-8">
         {/* Logo */}
         <Image
-          source={require("../../../../assets/splash-icon.png")}
+          source={splashIcon}
           className="mb-4 h-20 w-20 self-center"
           resizeMode="contain"
           testID="logo"

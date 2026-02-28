@@ -17,7 +17,12 @@ jest.mock("../../../contexts/AuthContext", () => ({
 jest.mock("../../../contexts/DataContext", () => ({
   useData: () => ({
     wallets: [
-      { id: "w1", name: "Intesa Sanpaolo", icon: "intesa-sanpaolo", createdAt: new Date() },
+      {
+        id: "w1",
+        name: "Intesa Sanpaolo",
+        icon: "intesa-sanpaolo",
+        createdAt: new Date(),
+      },
     ],
     currency: "EUR",
   }),
