@@ -24,10 +24,10 @@ export function ScreenHeader({ title, onBack, right }: ScreenHeaderProps) {
           })}
           hitSlop={8}
         >
-          <Ionicons name="chevron-back" size={24} color="#94a3b8" />
+          <Ionicons name="chevron-back" size={24} color="#6b7280" />
         </Pressable>
         <Text
-          className="flex-1 text-lg font-semibold text-white"
+          className="flex-1 text-lg font-semibold text-gray-900"
           numberOfLines={1}
         >
           {title}

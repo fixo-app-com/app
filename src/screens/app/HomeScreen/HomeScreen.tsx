@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -9,19 +9,22 @@ import type { HomeStackParamList } from "../../../navigation/RootNavigator";
 import type { Expense } from "../../../types/firestore";
 import {
   Card,
+  ChipGroup,
   EmptyState,
   FullScreenLoader,
   ScreenWrapper,
 } from "../../../design-system";
-import { CurrencyText, WalletCard } from "../../../components";
+import { CategoryCard, CurrencyText, FloatingAction, WalletCard } from "../../../components";
 
 type Nav = NativeStackNavigationProp<HomeStackParamList, "Home">;
+type ViewMode = "categories" | "wallets";
 
 export default function HomeScreen() {
   const navigation = useNavigation<Nav>();
   const { user } = useAuth();
-  const { wallets, isLoading: dataLoading } = useData();
+  const { categories, wallets, isLoading: dataLoading } = useData();
 
+  const [viewMode, setViewMode] = useState<ViewMode>("categories");
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loadingExpenses, setLoadingExpenses] = useState(true);
 
@@ -49,6 +52,16 @@ export default function HomeScreen() {
     return unsubscribe;
   }, [navigation, fetchExpenses]);
 
+  function getCategoryTotal(categoryId: string): number {
+    return expenses
+      .filter((e) => e.categoryId === categoryId)
+      .reduce((sum, e) => sum + e.amountCents, 0);
+  }
+
+  function getCategoryCount(categoryId: string): number {
+    return expenses.filter((e) => e.categoryId === categoryId).length;
+  }
+
   function getWalletTotal(walletId: string): number {
     return expenses
       .filter((e) => e.walletId === walletId)
@@ -61,65 +74,119 @@ export default function HomeScreen() {
   );
   const yearlyTotalCents = monthlyTotalCents * 12;
 
-  const walletsWithExpenses = useMemo(
-    () => wallets.filter((w) => getWalletTotal(w.id) > 0),
-    [wallets, expenses],
-  );
-
   if (dataLoading) {
     return <FullScreenLoader />;
   }
 
   return (
     <ScreenWrapper>
-      <Text className="mb-6 text-3xl font-bold text-white">Home</Text>
+      <Text className="mb-4 text-3xl font-bold text-gray-900">Home</Text>
 
-      {/* Monthly total card */}
       <Card>
         <View className="items-center py-2">
-          <Text className="text-sm font-medium text-gray-400">
+          <Text className="text-sm font-medium text-gray-500">
             Monthly total
           </Text>
           <CurrencyText
             cents={monthlyTotalCents}
-            className="mt-1 text-4xl font-bold text-white"
+            className="mt-1 text-4xl font-bold text-gray-900"
           />
           <View className="mt-3 flex-row items-center">
-            <Text className="text-xs text-gray-500">Yearly estimate  </Text>
+            <Text className="text-xs text-gray-400">Yearly estimate  </Text>
             <CurrencyText
               cents={yearlyTotalCents}
-              className="text-sm text-gray-400"
+              className="text-sm text-gray-500"
             />
           </View>
         </View>
       </Card>
 
-      <View className="mb-6" />
+      <View className="mb-4 mt-4">
+        <ChipGroup
+          options={[
+            { value: "categories" as ViewMode, label: "Categories" },
+            { value: "wallets" as ViewMode, label: "Wallets" },
+          ]}
+          selected={viewMode}
+          onSelect={setViewMode}
+          compact
+        />
+      </View>
 
-      {/* Wallet spending breakdown */}
       {loadingExpenses ? (
         <ActivityIndicator color="#818cf8" className="mt-8" />
-      ) : walletsWithExpenses.length > 0 ? (
+      ) : viewMode === "categories" ? (
         <FlatList
-          data={walletsWithExpenses}
+          data={categories}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={{ paddingBottom: 40 }}
+          contentContainerStyle={{ paddingBottom: 100 }}
+          renderItem={({ item }) => (
+            <CategoryCard
+              icon={item.icon}
+              name={item.name}
+              expenseCount={getCategoryCount(item.id)}
+              totalCents={getCategoryTotal(item.id)}
+              onPress={() =>
+                navigation.navigate("CategoryDetail", {
+                  categoryId: item.id,
+                  categoryName: item.name,
+                })
+              }
+            />
+          )}
+          ItemSeparatorComponent={() => <View className="h-3" />}
+          ListEmptyComponent={
+            <EmptyState
+              icon="grid-outline"
+              message="No categories yet."
+              actionLabel="Add category"
+              onAction={() => navigation.navigate("AddEditCategory", {})}
+            />
+          }
+        />
+      ) : (
+        <FlatList
+          data={[...wallets].sort(
+            (a, b) => getWalletTotal(b.id) - getWalletTotal(a.id),
+          )}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={{ paddingBottom: 100 }}
           renderItem={({ item }) => (
             <WalletCard
               name={item.name}
               icon={item.icon ?? ""}
               totalCents={getWalletTotal(item.id)}
-              onPress={() => {}}
+              onPress={() =>
+                navigation.navigate("WalletDetail", {
+                  walletId: item.id,
+                  walletName: item.name,
+                  walletIcon: item.icon,
+                })
+              }
             />
           )}
           ItemSeparatorComponent={() => <View className="h-3" />}
-        />
-      ) : (
-        <EmptyState
-          icon="receipt-outline"
-          message="No expenses yet."
+          ListEmptyComponent={
+            <EmptyState
+              icon="wallet-outline"
+              message="No wallets yet."
+              actionLabel="Add wallet"
+              onAction={() => navigation.navigate("AddEditWallet", {})}
+            />
+          }
         />
       )}
+
+      <FloatingAction
+        label={viewMode === "categories" ? "+ Add category" : "+ Add wallet"}
+        onPress={() => {
+          if (viewMode === "categories") {
+            navigation.navigate("AddEditCategory", {});
+          } else {
+            navigation.navigate("AddEditWallet", {});
+          }
+        }}
+      />
     </ScreenWrapper>
   );
 }

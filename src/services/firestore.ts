@@ -74,20 +74,33 @@ export async function deleteCategory(
 
 export async function getExpenses(
   userId: string,
-  categoryId?: string,
+  filter?: { categoryId?: string; walletId?: string },
 ): Promise<Expense[]> {
   let query: FirebaseFirestoreTypes.Query = expensesRef(userId);
 
-  if (categoryId) {
-    query = query.where("categoryId", "==", categoryId);
+  if (filter?.categoryId) {
+    query = query.where("categoryId", "==", filter.categoryId);
+  }
+  if (filter?.walletId) {
+    query = query.where("walletId", "==", filter.walletId);
   }
 
-  const snapshot = await query.orderBy("amountCents", "desc").get();
-  return snapshot.docs.map((doc) => ({
+  if (!filter?.walletId) {
+    query = query.orderBy("amountCents", "desc");
+  }
+
+  const snapshot = await query.get();
+  const expenses = snapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
     createdAt: doc.data().createdAt?.toDate() ?? new Date(),
   })) as Expense[];
+
+  if (filter?.walletId) {
+    expenses.sort((a, b) => b.amountCents - a.amountCents);
+  }
+
+  return expenses;
 }
 
 export async function addExpense(

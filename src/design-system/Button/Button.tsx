@@ -14,12 +14,12 @@ const variantStyles = {
     text: "text-base font-semibold text-white",
   },
   secondary: {
-    container: "items-center rounded-xl bg-gray-800 py-3.5",
-    text: "text-base font-semibold text-white",
+    container: "items-center rounded-xl bg-gray-200 py-3.5",
+    text: "text-base font-semibold text-gray-900",
   },
   destructive: {
     container: "items-center rounded-xl py-3.5",
-    text: "text-base font-semibold text-red-400",
+    text: "text-base font-semibold text-red-500",
   },
 };
 
@@ -42,7 +42,7 @@ export function Button({
     >
       {loading ? (
         <ActivityIndicator
-          color={variant === "destructive" ? "#f87171" : "#ffffff"}
+          color={variant === "destructive" ? "#ef4444" : "#ffffff"}
           size="small"
         />
       ) : (

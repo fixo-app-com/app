@@ -25,11 +25,12 @@ export function ChipGroup<T extends string>({
             key={option.value}
             onPress={() => onSelect(option.value)}
             className={`m-1 items-center justify-center rounded-xl ${chipPadding} ${
-              isSelected ? "bg-fixo-950" : "bg-gray-900"
+              isSelected ? "bg-fixo-100" : "bg-white"
             }`}
+            style={compact ? undefined : { width: 52, height: 52 }}
           >
             <Text
-              className={`${textSize} ${isSelected ? "text-fixo-400" : "text-gray-400"}`}
+              className={`${textSize} ${isSelected ? "text-fixo-600" : "text-gray-500"}`}
             >
               {option.label}
             </Text>

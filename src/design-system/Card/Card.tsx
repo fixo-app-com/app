@@ -14,7 +14,7 @@ export function Card({ onPress, onLongPress, children }: CardProps) {
     <Pressable
       onPress={onPress}
       onLongPress={onLongPress}
-      className="rounded-2xl bg-gray-900 p-4"
+      className="rounded-2xl bg-white p-4"
       style={({ pressed }) => ({
         opacity: pressed && isInteractive ? 0.7 : 1,
       })}

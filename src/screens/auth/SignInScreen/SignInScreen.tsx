@@ -72,17 +72,17 @@ export default function SignInScreen({ navigation, route }: Props) {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      className="flex-1 bg-gray-950"
+      className="flex-1 bg-gray-100"
     >
       <View className="flex-1 justify-center px-8">
         {/* Logo */}
-        <Text className="mb-12 text-center text-4xl font-extrabold text-fixo-400">
+        <Text className="mb-12 text-center text-4xl font-extrabold text-fixo-500">
           FIXO
         </Text>
 
         {pendingGoogleIdToken && (
-          <View className="mb-4 rounded-lg bg-fixo-950 p-3">
-            <Text className="text-center text-sm text-fixo-300">
+          <View className="mb-4 rounded-lg bg-fixo-100 p-3">
+            <Text className="text-center text-sm text-fixo-600">
               Sign in with your password to link your Google account.
             </Text>
           </View>
@@ -119,7 +119,7 @@ export default function SignInScreen({ navigation, route }: Props) {
           className="mb-6 self-end"
           disabled={isLoading}
         >
-          <Text className="text-sm text-fixo-400">Forgot password?</Text>
+          <Text className="text-sm text-fixo-500">Forgot password?</Text>
         </Pressable>
 
         {/* Sign in button */}
@@ -135,9 +135,9 @@ export default function SignInScreen({ navigation, route }: Props) {
         {!pendingGoogleIdToken && (
           <>
             <View className="mb-4 flex-row items-center">
-              <View className="h-px flex-1 bg-gray-700" />
-              <Text className="mx-4 text-sm text-gray-500">or</Text>
-              <View className="h-px flex-1 bg-gray-700" />
+              <View className="h-px flex-1 bg-gray-300" />
+              <Text className="mx-4 text-sm text-gray-400">or</Text>
+              <View className="h-px flex-1 bg-gray-300" />
             </View>
 
             {/* Google Sign-In button */}
@@ -161,7 +161,7 @@ export default function SignInScreen({ navigation, route }: Props) {
             onPress={() => navigation.navigate("SignUp")}
             disabled={isLoading}
           >
-            <Text className="text-sm font-semibold text-fixo-400">
+            <Text className="text-sm font-semibold text-fixo-500">
               Sign Up
             </Text>
           </Pressable>

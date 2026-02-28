@@ -24,8 +24,8 @@ export function CategoryCard({
         <View className="flex-1 flex-row items-center">
           <Text className="mr-3 text-2xl">{icon}</Text>
           <View className="flex-1">
-            <Text className="text-base font-semibold text-white">{name}</Text>
-            <Text className="text-sm text-gray-400">
+            <Text className="text-base font-semibold text-gray-900">{name}</Text>
+            <Text className="text-sm text-gray-500">
               {expenseCount} {expenseCount === 1 ? "expense" : "expenses"}
             </Text>
           </View>
@@ -33,9 +33,9 @@ export function CategoryCard({
         <View className="flex-row items-center">
           <CurrencyText
             cents={totalCents}
-            className="mr-2 text-base font-semibold text-white"
+            className="mr-2 text-base font-semibold text-gray-900"
           />
-          <Ionicons name="chevron-forward" size={20} color="#64748b" />
+          <Ionicons name="chevron-forward" size={20} color="#94a3b8" />
         </View>
       </View>
     </Card>

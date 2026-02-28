@@ -50,11 +50,11 @@ export default function SignUpScreen({ navigation }: Props) {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      className="flex-1 bg-gray-950"
+      className="flex-1 bg-gray-100"
     >
       <View className="flex-1 justify-center px-8">
         {/* Logo */}
-        <Text className="mb-12 text-center text-4xl font-extrabold text-fixo-400">
+        <Text className="mb-12 text-center text-4xl font-extrabold text-fixo-500">
           FIXO
         </Text>
 
@@ -113,7 +113,7 @@ export default function SignUpScreen({ navigation }: Props) {
             onPress={() => navigation.navigate("SignIn")}
             disabled={isLoading}
           >
-            <Text className="text-sm font-semibold text-fixo-400">
+            <Text className="text-sm font-semibold text-fixo-500">
               Sign In
             </Text>
           </Pressable>

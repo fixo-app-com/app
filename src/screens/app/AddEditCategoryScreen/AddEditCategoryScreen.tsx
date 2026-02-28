@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Alert, View } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useData } from "../../../contexts/DataContext";
-import type { CategoriesStackParamList } from "../../../navigation/RootNavigator";
+import type { HomeStackParamList } from "../../../navigation/RootNavigator";
 import {
   Button,
   ChipGroup,
@@ -13,7 +13,8 @@ import {
   SectionHeader,
 } from "../../../design-system";
 
-type Nav = NativeStackNavigationProp<CategoriesStackParamList, "AddCategory">;
+type Nav = NativeStackNavigationProp<HomeStackParamList, "AddEditCategory">;
+type Route = RouteProp<HomeStackParamList, "AddEditCategory">;
 
 const EMOJI_OPTIONS = [
   // People & family
@@ -80,12 +81,16 @@ const EMOJI_OPTIONS = [
   "⭐",
 ];
 
-export default function AddCategoryScreen() {
+export default function AddEditCategoryScreen() {
   const navigation = useNavigation<Nav>();
-  const { addCategory } = useData();
+  const route = useRoute<Route>();
+  const { categoryId, categoryName, categoryIcon } = route.params ?? {};
+  const { addCategory, updateCategory } = useData();
 
-  const [name, setName] = useState("");
-  const [icon, setIcon] = useState("📦");
+  const isEditing = !!categoryId;
+
+  const [name, setName] = useState(categoryName ?? "");
+  const [icon, setIcon] = useState(categoryIcon ?? "📦");
   const [saving, setSaving] = useState(false);
 
   async function handleSave() {
@@ -97,10 +102,14 @@ export default function AddCategoryScreen() {
 
     setSaving(true);
     try {
-      await addCategory({ name: trimmed, icon });
+      if (isEditing && categoryId) {
+        await updateCategory(categoryId, { name: trimmed, icon });
+      } else {
+        await addCategory({ name: trimmed, icon });
+      }
       navigation.goBack();
     } catch (error) {
-      console.error("Failed to add category:", error);
+      console.error("Failed to save category:", error);
       Alert.alert("Error", "Failed to save category.");
     } finally {
       setSaving(false);
@@ -110,7 +119,7 @@ export default function AddCategoryScreen() {
   return (
     <ScreenWrapper scroll>
       <ScreenHeader
-        title="New category"
+        title={isEditing ? "Edit category" : "New category"}
         onBack={() => navigation.goBack()}
       />
 
@@ -119,7 +128,7 @@ export default function AddCategoryScreen() {
         value={name}
         onChangeText={setName}
         placeholder="e.g. Family, Car, Home..."
-        autoFocus
+        autoFocus={!isEditing}
       />
 
       <SectionHeader title="Icon" />
@@ -133,7 +142,7 @@ export default function AddCategoryScreen() {
       <View className="mb-8" />
 
       <Button
-        label="Save category"
+        label={isEditing ? "Save changes" : "Save category"}
         onPress={handleSave}
         loading={saving}
       />

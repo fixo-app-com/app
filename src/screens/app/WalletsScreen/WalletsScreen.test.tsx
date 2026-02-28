@@ -7,6 +7,10 @@ jest.mock("@react-navigation/native", () => ({
   }),
 }));
 
+jest.mock("../../../contexts/AuthContext", () => ({
+  useAuth: () => ({ user: { uid: "test-uid" } }),
+}));
+
 jest.mock("../../../contexts/DataContext", () => ({
   useData: () => ({
     wallets: [
@@ -16,6 +20,10 @@ jest.mock("../../../contexts/DataContext", () => ({
     currency: "EUR",
     deleteWallet: jest.fn(),
   }),
+}));
+
+jest.mock("../../../services/firestore", () => ({
+  getExpenses: jest.fn(() => Promise.resolve([])),
 }));
 
 describe("WalletsScreen", () => {

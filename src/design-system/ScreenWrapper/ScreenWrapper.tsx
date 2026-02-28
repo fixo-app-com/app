@@ -19,7 +19,7 @@ export function ScreenWrapper({ scroll, bottomInset, children }: ScreenWrapperPr
   if (scroll) {
     return (
       <ScrollView
-        className="flex-1 bg-gray-950 px-4"
+        className="flex-1 bg-gray-100 px-4"
         style={paddingStyle}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
@@ -30,7 +30,7 @@ export function ScreenWrapper({ scroll, bottomInset, children }: ScreenWrapperPr
   }
 
   return (
-    <View className="flex-1 bg-gray-950 px-4" style={paddingStyle}>
+    <View className="flex-1 bg-gray-100 px-4" style={paddingStyle}>
       {children}
     </View>
   );

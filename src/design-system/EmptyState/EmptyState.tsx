@@ -16,11 +16,11 @@ export function EmptyState({ message, icon, actionLabel, onAction }: EmptyStateP
         <Ionicons
           name={icon as any}
           size={48}
-          color="#64748b"
+          color="#94a3b8"
           style={{ marginBottom: 12 }}
         />
       ) : null}
-      <Text className="text-center text-base text-gray-500">{message}</Text>
+      <Text className="text-center text-base text-gray-400">{message}</Text>
       {actionLabel && onAction ? (
         <View className="mt-4">
           <Button label={actionLabel} onPress={onAction} />

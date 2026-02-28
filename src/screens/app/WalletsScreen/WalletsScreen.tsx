@@ -1,18 +1,37 @@
 import { Alert, FlatList, Text, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useAuth } from "../../../contexts/AuthContext";
 import { useData } from "../../../contexts/DataContext";
-import type { WalletsStackParamList } from "../../../navigation/RootNavigator";
+import { getExpenses } from "../../../services/firestore";
+import type { HomeStackParamList } from "../../../navigation/RootNavigator";
 import { EmptyState, ScreenWrapper } from "../../../design-system";
 import { FloatingAction, WalletCard } from "../../../components";
 
-type Nav = NativeStackNavigationProp<WalletsStackParamList, "Wallets">;
+type Nav = NativeStackNavigationProp<HomeStackParamList, "Wallets">;
 
 export default function WalletsScreen() {
   const navigation = useNavigation<Nav>();
+  const { user } = useAuth();
   const { wallets, deleteWallet } = useData();
 
-  function handleDelete(walletId: string, walletName: string) {
+  async function handleDelete(walletId: string, walletName: string) {
+    if (!user) return;
+
+    try {
+      const expenses = await getExpenses(user.uid, { walletId });
+      if (expenses.length > 0) {
+        Alert.alert(
+          "Cannot delete",
+          "Remove all expenses from this wallet first.",
+        );
+        return;
+      }
+    } catch (error) {
+      console.error("Failed to check expenses:", error);
+      return;
+    }
+
     Alert.alert("Delete wallet", `Delete "${walletName}"?`, [
       { text: "Cancel", style: "cancel" },
       {
@@ -31,7 +50,7 @@ export default function WalletsScreen() {
 
   return (
     <ScreenWrapper>
-      <Text className="mb-6 text-3xl font-bold text-white">Wallets</Text>
+      <Text className="mb-6 text-3xl font-bold text-gray-900">Wallets</Text>
 
       <FlatList
         data={wallets}

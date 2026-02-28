@@ -3,7 +3,7 @@ import { Alert, Pressable, ScrollView, Text, View } from "react-native";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useData } from "../../../contexts/DataContext";
-import type { WalletsStackParamList } from "../../../navigation/RootNavigator";
+import type { HomeStackParamList } from "../../../navigation/RootNavigator";
 import { BANKS } from "../../../constants/banks";
 import { BankIcon } from "../../../components";
 import {
@@ -14,8 +14,8 @@ import {
   SectionHeader,
 } from "../../../design-system";
 
-type Nav = NativeStackNavigationProp<WalletsStackParamList, "AddEditWallet">;
-type Route = RouteProp<WalletsStackParamList, "AddEditWallet">;
+type Nav = NativeStackNavigationProp<HomeStackParamList, "AddEditWallet">;
+type Route = RouteProp<HomeStackParamList, "AddEditWallet">;
 
 export default function AddEditWalletScreen() {
   const navigation = useNavigation<Nav>();
@@ -97,7 +97,7 @@ export default function AddEditWalletScreen() {
         <Pressable
           onPress={() => setIcon("")}
           className={`m-1 items-center justify-center rounded-xl p-2 ${
-            icon === "" ? "bg-fixo-950" : "bg-gray-900"
+            icon === "" ? "bg-fixo-100" : "bg-white"
           }`}
           style={{ width: 64, height: 64 }}
         >
@@ -114,7 +114,7 @@ export default function AddEditWalletScreen() {
               key={bank.key}
               onPress={() => setIcon(bank.key)}
               className={`m-1 items-center justify-center rounded-xl p-2 ${
-                isSelected ? "bg-fixo-950" : "bg-gray-900"
+                isSelected ? "bg-fixo-100" : "bg-white"
               }`}
               style={{ width: 64, height: 64 }}
             >

@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, Alert, FlatList, Pressable, Text, View } from "react-native";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useData } from "../../../contexts/DataContext";
 import {
   getExpenses,
   deleteExpense,
-  deleteExpensesByCategory,
+  deleteWallet,
 } from "../../../services/firestore";
 import type { HomeStackParamList } from "../../../navigation/RootNavigator";
 import type { Expense } from "../../../types/firestore";
@@ -18,19 +18,17 @@ import {
   ScreenHeader,
   ScreenWrapper,
 } from "../../../design-system";
-import { CurrencyText, ExpenseCard, FloatingAction } from "../../../components";
+import { CurrencyText, ExpenseCard } from "../../../components";
 
-type Nav = NativeStackNavigationProp<HomeStackParamList, "CategoryDetail">;
-type Route = RouteProp<HomeStackParamList, "CategoryDetail">;
+type Nav = NativeStackNavigationProp<HomeStackParamList, "WalletDetail">;
+type Route = RouteProp<HomeStackParamList, "WalletDetail">;
 
-export default function CategoryDetailScreen() {
+export default function WalletDetailScreen() {
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
-  const { categoryId, categoryName } = route.params;
+  const { walletId, walletName, walletIcon } = route.params;
   const { user } = useAuth();
-  const { categories, wallets, deleteCategory } = useData();
-
-  const category = categories.find((c) => c.id === categoryId);
+  const { categories } = useData();
 
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,14 +37,14 @@ export default function CategoryDetailScreen() {
     if (!user) return;
     setLoading(true);
     try {
-      const data = await getExpenses(user.uid, { categoryId });
+      const data = await getExpenses(user.uid, { walletId });
       setExpenses(data);
     } catch (error) {
       console.error("Failed to load expenses:", error);
     } finally {
       setLoading(false);
     }
-  }, [user, categoryId]);
+  }, [user, walletId]);
 
   useEffect(() => {
     fetchExpenses();
@@ -59,8 +57,8 @@ export default function CategoryDetailScreen() {
     return unsubscribe;
   }, [navigation, fetchExpenses]);
 
-  function getWalletName(walletId: string): string {
-    return wallets.find((w) => w.id === walletId)?.name ?? "—";
+  function getCategoryName(categoryId: string): string {
+    return categories.find((c) => c.id === categoryId)?.name ?? "—";
   }
 
   function handleDeleteExpense(expenseId: string, expenseName: string) {
@@ -82,14 +80,8 @@ export default function CategoryDetailScreen() {
     ]);
   }
 
-  function handleDeleteCategory() {
-    const count = expenses.length;
-    const message =
-      count > 0
-        ? `This will permanently delete "${categoryName}" and all ${count} expense${count === 1 ? "" : "s"} inside it. This action cannot be undone.`
-        : `Delete "${categoryName}"? This action cannot be undone.`;
-
-    Alert.alert("Delete category", message, [
+  function handleDeleteWallet() {
+    Alert.alert("Delete wallet", `Delete "${walletName}"?`, [
       { text: "Cancel", style: "cancel" },
       {
         text: "Delete",
@@ -97,13 +89,10 @@ export default function CategoryDetailScreen() {
         onPress: async () => {
           if (!user) return;
           try {
-            if (count > 0) {
-              await deleteExpensesByCategory(user.uid, categoryId);
-            }
-            await deleteCategory(categoryId);
+            await deleteWallet(user.uid, walletId);
             navigation.goBack();
           } catch (error) {
-            console.error("Failed to delete category:", error);
+            console.error("Failed to delete wallet:", error);
           }
         },
       },
@@ -115,15 +104,15 @@ export default function CategoryDetailScreen() {
   return (
     <ScreenWrapper>
       <ScreenHeader
-        title={category?.name ?? categoryName}
+        title={walletName}
         onBack={() => navigation.goBack()}
         right={
           <Pressable
             onPress={() =>
-              navigation.navigate("AddEditCategory", {
-                categoryId,
-                categoryName: category?.name ?? categoryName,
-                categoryIcon: category?.icon,
+              navigation.navigate("AddEditWallet", {
+                walletId,
+                walletName,
+                walletIcon,
               })
             }
             className="items-center justify-center"
@@ -161,13 +150,13 @@ export default function CategoryDetailScreen() {
           renderItem={({ item }) => (
             <ExpenseCard
               name={item.name}
-              walletName={getWalletName(item.walletId)}
+              walletName={getCategoryName(item.categoryId)}
               essential={item.essential}
               notes={item.notes}
               amountCents={item.amountCents}
               onPress={() =>
                 navigation.navigate("AddEditExpense", {
-                  categoryId,
+                  categoryId: item.categoryId,
                   expenseId: item.id,
                 })
               }
@@ -178,29 +167,22 @@ export default function CategoryDetailScreen() {
           ListEmptyComponent={
             <EmptyState
               icon="receipt-outline"
-              message="No expenses in this category."
+              message="No expenses for this wallet."
             />
           }
           ListFooterComponent={
-            <View className="mt-8">
-              <Button
-                label="Delete category"
-                variant="destructive"
-                onPress={handleDeleteCategory}
-              />
-            </View>
+            expenses.length === 0 ? (
+              <View className="mt-8">
+                <Button
+                  label="Delete wallet"
+                  variant="destructive"
+                  onPress={handleDeleteWallet}
+                />
+              </View>
+            ) : null
           }
         />
       )}
-
-      <FloatingAction
-        label="+ Add expense"
-        onPress={() =>
-          navigation.navigate("AddEditExpense", {
-            categoryId,
-          })
-        }
-      />
     </ScreenWrapper>
   );
 }

@@ -13,7 +13,7 @@ export default function App() {
         <DataProvider>
           <NavigationContainer>
             <RootNavigator />
-            <StatusBar style="light" />
+            <StatusBar style="dark" />
           </NavigationContainer>
         </DataProvider>
       </AuthProvider>

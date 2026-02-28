@@ -10,7 +10,7 @@ import {
   deleteExpense,
   getExpenses,
 } from "../../../services/firestore";
-import type { CategoriesStackParamList } from "../../../navigation/RootNavigator";
+import type { HomeStackParamList } from "../../../navigation/RootNavigator";
 import type { Expense } from "../../../types/firestore";
 import { getCurrencySymbol } from "../../../constants/banks";
 import {
@@ -24,11 +24,8 @@ import {
   SectionHeader,
 } from "../../../design-system";
 
-type Nav = NativeStackNavigationProp<
-  CategoriesStackParamList,
-  "AddEditExpense"
->;
-type Route = RouteProp<CategoriesStackParamList, "AddEditExpense">;
+type Nav = NativeStackNavigationProp<HomeStackParamList, "AddEditExpense">;
+type Route = RouteProp<HomeStackParamList, "AddEditExpense">;
 
 export default function AddEditExpenseScreen() {
   const navigation = useNavigation<Nav>();
@@ -52,7 +49,7 @@ export default function AddEditExpenseScreen() {
 
     async function loadExpense() {
       try {
-        const allExpenses = await getExpenses(user!.uid, categoryId);
+        const allExpenses = await getExpenses(user!.uid, { categoryId });
         const expense = allExpenses.find((e: Expense) => e.id === expenseId);
         if (expense) {
           setName(expense.name);
@@ -173,7 +170,7 @@ export default function AddEditExpenseScreen() {
       <SectionHeader title="Wallet" />
 
       {wallets.length === 0 ? (
-        <Text className="text-sm text-gray-500">
+        <Text className="text-sm text-gray-400">
           No wallets yet. Add one from the Wallets tab.
         </Text>
       ) : (
@@ -195,7 +192,7 @@ export default function AddEditExpenseScreen() {
           <Switch
             value={essential}
             onValueChange={setEssential}
-            trackColor={{ false: "#374151", true: "#818cf8" }}
+            trackColor={{ false: "#d1d5db", true: "#818cf8" }}
             thumbColor="#fff"
           />
         }

@@ -32,13 +32,13 @@ export function Input({
   return (
     <View>
       {label ? (
-        <Text className="mb-2 text-sm text-gray-400">{label}</Text>
+        <Text className="mb-2 text-sm text-gray-500">{label}</Text>
       ) : null}
       <TextInput
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
-        placeholderTextColor="#475569"
+        placeholderTextColor="#94a3b8"
         multiline={multiline}
         autoFocus={autoFocus}
         keyboardType={keyboardType}
@@ -46,7 +46,7 @@ export function Input({
         autoCapitalize={autoCapitalize}
         autoComplete={autoComplete as any}
         editable={editable}
-        className="rounded-xl bg-gray-900 px-4 py-3.5 text-base text-white"
+        className="rounded-xl bg-white px-4 py-3.5 text-base text-gray-900"
         style={style}
       />
     </View>

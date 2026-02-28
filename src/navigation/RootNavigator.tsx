@@ -8,11 +8,10 @@ import SignUpScreen from "../screens/auth/SignUpScreen/SignUpScreen";
 import ForgotPasswordScreen from "../screens/auth/ForgotPasswordScreen/ForgotPasswordScreen";
 import VerifyEmailScreen from "../screens/auth/VerifyEmailScreen/VerifyEmailScreen";
 import HomeScreen from "../screens/app/HomeScreen/HomeScreen";
-import CategoriesScreen from "../screens/app/CategoriesScreen/CategoriesScreen";
 import CategoryDetailScreen from "../screens/app/CategoryDetailScreen/CategoryDetailScreen";
-import AddCategoryScreen from "../screens/app/AddCategoryScreen/AddCategoryScreen";
+import AddEditCategoryScreen from "../screens/app/AddEditCategoryScreen/AddEditCategoryScreen";
 import AddEditExpenseScreen from "../screens/app/AddEditExpenseScreen/AddEditExpenseScreen";
-import WalletsScreen from "../screens/app/WalletsScreen/WalletsScreen";
+import WalletDetailScreen from "../screens/app/WalletDetailScreen/WalletDetailScreen";
 import AddEditWalletScreen from "../screens/app/AddEditWalletScreen/AddEditWalletScreen";
 import SettingsScreen from "../screens/app/SettingsScreen/SettingsScreen";
 
@@ -26,20 +25,10 @@ export type AuthStackParamList = {
 
 export type HomeStackParamList = {
   Home: undefined;
-};
-
-export type CategoriesStackParamList = {
-  Categories: undefined;
   CategoryDetail: { categoryId: string; categoryName: string };
-  AddCategory: undefined;
-  AddEditExpense: {
-    categoryId: string;
-    expenseId?: string;
-  };
-};
-
-export type WalletsStackParamList = {
-  Wallets: undefined;
+  AddEditCategory: { categoryId?: string; categoryName?: string; categoryIcon?: string };
+  AddEditExpense: { categoryId: string; expenseId?: string };
+  WalletDetail: { walletId: string; walletName: string; walletIcon: string };
   AddEditWallet: { walletId?: string; walletName?: string; walletIcon?: string };
 };
 
@@ -49,8 +38,6 @@ export type SettingsStackParamList = {
 
 export type TabParamList = {
   HomeTab: undefined;
-  CategoriesTab: undefined;
-  WalletsTab: undefined;
   SettingsTab: undefined;
 };
 
@@ -58,21 +45,19 @@ export type TabParamList = {
 
 const AuthStack = createNativeStackNavigator<AuthStackParamList>();
 const HomeStack = createNativeStackNavigator<HomeStackParamList>();
-const CategoriesStack = createNativeStackNavigator<CategoriesStackParamList>();
-const WalletsStack = createNativeStackNavigator<WalletsStackParamList>();
 const SettingsStack = createNativeStackNavigator<SettingsStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
 
-const darkStackOptions = {
+const stackOptions = {
   headerShown: false,
-  contentStyle: { backgroundColor: "#030712" },
+  contentStyle: { backgroundColor: "#f9fafb" },
 } as const;
 
 function AuthNavigator() {
   return (
     <AuthStack.Navigator
       screenOptions={{
-        ...darkStackOptions,
+        ...stackOptions,
         animation: "slide_from_right",
       }}
     >
@@ -88,47 +73,32 @@ function AuthNavigator() {
 
 function HomeStackNavigator() {
   return (
-    <HomeStack.Navigator screenOptions={darkStackOptions}>
+    <HomeStack.Navigator screenOptions={stackOptions}>
       <HomeStack.Screen name="Home" component={HomeScreen} />
-    </HomeStack.Navigator>
-  );
-}
-
-function CategoriesStackNavigator() {
-  return (
-    <CategoriesStack.Navigator screenOptions={darkStackOptions}>
-      <CategoriesStack.Screen name="Categories" component={CategoriesScreen} />
-      <CategoriesStack.Screen
+      <HomeStack.Screen
         name="CategoryDetail"
         component={CategoryDetailScreen}
       />
-      <CategoriesStack.Screen
-        name="AddCategory"
-        component={AddCategoryScreen}
-      />
-      <CategoriesStack.Screen
+      <HomeStack.Screen name="AddEditCategory" component={AddEditCategoryScreen} />
+      <HomeStack.Screen
         name="AddEditExpense"
         component={AddEditExpenseScreen}
       />
-    </CategoriesStack.Navigator>
-  );
-}
-
-function WalletsStackNavigator() {
-  return (
-    <WalletsStack.Navigator screenOptions={darkStackOptions}>
-      <WalletsStack.Screen name="Wallets" component={WalletsScreen} />
-      <WalletsStack.Screen
+      <HomeStack.Screen
+        name="WalletDetail"
+        component={WalletDetailScreen}
+      />
+      <HomeStack.Screen
         name="AddEditWallet"
         component={AddEditWalletScreen}
       />
-    </WalletsStack.Navigator>
+    </HomeStack.Navigator>
   );
 }
 
 function SettingsStackNavigator() {
   return (
-    <SettingsStack.Navigator screenOptions={darkStackOptions}>
+    <SettingsStack.Navigator screenOptions={stackOptions}>
       <SettingsStack.Screen name="Settings" component={SettingsScreen} />
     </SettingsStack.Navigator>
   );
@@ -136,8 +106,6 @@ function SettingsStackNavigator() {
 
 const TAB_ICONS: Record<string, { outline: string; filled: string }> = {
   Home: { outline: "home-outline", filled: "home" },
-  Categories: { outline: "grid-outline", filled: "grid" },
-  Wallets: { outline: "wallet-outline", filled: "wallet" },
   Settings: { outline: "settings-outline", filled: "settings" },
 };
 
@@ -163,12 +131,12 @@ function AppNavigator() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: "#030712",
-          borderTopColor: "#1f2937",
+          backgroundColor: "#f9fafb",
+          borderTopColor: "#e5e7eb",
           borderTopWidth: 0.5,
         },
         tabBarActiveTintColor: "#818cf8",
-        tabBarInactiveTintColor: "#6b7280",
+        tabBarInactiveTintColor: "#94a3b8",
         tabBarShowLabel: true,
         tabBarLabelStyle: { fontSize: 10, fontWeight: "500" },
       }}
@@ -179,22 +147,6 @@ function AppNavigator() {
         options={{
           tabBarLabel: "Home",
           tabBarIcon: (props) => <TabIcon {...props} label="Home" />,
-        }}
-      />
-      <Tab.Screen
-        name="CategoriesTab"
-        component={CategoriesStackNavigator}
-        options={{
-          tabBarLabel: "Categories",
-          tabBarIcon: (props) => <TabIcon {...props} label="Categories" />,
-        }}
-      />
-      <Tab.Screen
-        name="WalletsTab"
-        component={WalletsStackNavigator}
-        options={{
-          tabBarLabel: "Wallets",
-          tabBarIcon: (props) => <TabIcon {...props} label="Wallets" />,
         }}
       />
       <Tab.Screen
@@ -214,7 +166,7 @@ export default function RootNavigator() {
 
   if (isLoading) {
     return (
-      <View className="flex-1 items-center justify-center bg-gray-950">
+      <View className="flex-1 items-center justify-center bg-gray-100">
         <ActivityIndicator size="large" color="#818cf8" />
       </View>
     );

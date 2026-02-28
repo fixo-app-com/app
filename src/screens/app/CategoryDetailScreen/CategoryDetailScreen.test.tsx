@@ -26,6 +26,7 @@ jest.mock("../../../contexts/AuthContext", () => ({
 
 jest.mock("../../../contexts/DataContext", () => ({
   useData: () => ({
+    categories: [{ id: "cat1", name: "Famiglia", icon: "👨‍👩‍👧‍👦", createdAt: new Date() }],
     wallets: mockWallets,
     currency: "EUR",
     deleteCategory: jest.fn(),

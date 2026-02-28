@@ -17,7 +17,7 @@ export default function SettingsScreen() {
 
   return (
     <ScreenWrapper scroll>
-      <Text className="mb-6 text-3xl font-bold text-white">Settings</Text>
+      <Text className="mb-6 text-3xl font-bold text-gray-900">Settings</Text>
 
       <SectionHeader title="Account" />
 
@@ -26,7 +26,7 @@ export default function SettingsScreen() {
         first
         last
         right={
-          <Text className="text-base text-gray-400">
+          <Text className="text-base text-gray-500">
             {user?.email ?? "—"}
           </Text>
         }

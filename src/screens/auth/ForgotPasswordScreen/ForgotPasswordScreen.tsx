@@ -39,11 +39,11 @@ export default function ForgotPasswordScreen({ navigation }: Props) {
 
   if (emailSent) {
     return (
-      <View className="flex-1 justify-center bg-gray-950 px-8">
-        <Text className="mb-4 text-center text-4xl font-extrabold text-fixo-400">
+      <View className="flex-1 justify-center bg-gray-100 px-8">
+        <Text className="mb-4 text-center text-4xl font-extrabold text-fixo-500">
           FIXO
         </Text>
-        <Text className="mb-8 text-center text-base text-gray-300">
+        <Text className="mb-8 text-center text-base text-gray-600">
           We sent you an email with a link to reset your password. Check your
           inbox.
         </Text>
@@ -58,11 +58,11 @@ export default function ForgotPasswordScreen({ navigation }: Props) {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      className="flex-1 bg-gray-950"
+      className="flex-1 bg-gray-100"
     >
       <View className="flex-1 justify-center px-8">
         {/* Logo */}
-        <Text className="mb-4 text-center text-4xl font-extrabold text-fixo-400">
+        <Text className="mb-4 text-center text-4xl font-extrabold text-fixo-500">
           FIXO
         </Text>
 
@@ -98,7 +98,7 @@ export default function ForgotPasswordScreen({ navigation }: Props) {
           className="items-center"
           disabled={isLoading}
         >
-          <Text className="text-sm text-fixo-400">Back to login</Text>
+          <Text className="text-sm text-fixo-500">Back to login</Text>
         </Pressable>
       </View>
     </KeyboardAvoidingView>

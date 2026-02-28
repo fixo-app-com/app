@@ -27,15 +27,15 @@ export function WalletCard({
           <View className="mr-3">
             <BankIcon bankKey={icon} size={36} />
           </View>
-          <Text className="text-base font-semibold text-white">{name}</Text>
+          <Text className="text-base font-semibold text-gray-900">{name}</Text>
         </View>
         {totalCents !== undefined ? (
           <CurrencyText
             cents={totalCents}
-            className="text-base font-semibold text-white"
+            className="text-base font-semibold text-gray-900"
           />
         ) : (
-          <Ionicons name="chevron-forward" size={20} color="#64748b" />
+          <Ionicons name="chevron-forward" size={20} color="#94a3b8" />
         )}
       </View>
     </Card>

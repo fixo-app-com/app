@@ -25,20 +25,20 @@ export function ExpenseCard({
     <Card onPress={onPress} onLongPress={onLongPress}>
       <View className="flex-row items-center justify-between">
         <View className="mr-4 flex-1">
-          <Text className="text-base font-semibold text-white">{name}</Text>
-          <Text className="mt-1 text-sm text-gray-400">
+          <Text className="text-base font-semibold text-gray-900">{name}</Text>
+          <Text className="mt-1 text-sm text-gray-500">
             {walletName}
             {essential ? " · Essential" : ""}
           </Text>
           {notes ? (
-            <Text className="mt-1 text-sm text-gray-500" numberOfLines={2}>
+            <Text className="mt-1 text-sm text-gray-400" numberOfLines={2}>
               {notes}
             </Text>
           ) : null}
         </View>
         <CurrencyText
           cents={amountCents}
-          className="text-base font-semibold text-white"
+          className="text-base font-semibold text-gray-900"
         />
       </View>
     </Card>

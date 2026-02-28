@@ -38,18 +38,18 @@ export default function VerifyEmailScreen() {
   }
 
   return (
-    <View className="flex-1 justify-center bg-gray-950 px-8">
-      <Text className="mb-4 text-center text-4xl font-extrabold text-fixo-400">
+    <View className="flex-1 justify-center bg-gray-100 px-8">
+      <Text className="mb-4 text-center text-4xl font-extrabold text-fixo-500">
         FIXO
       </Text>
 
-      <Text className="mb-2 text-center text-lg font-semibold text-white">
+      <Text className="mb-2 text-center text-lg font-semibold text-gray-900">
         Verify your email
       </Text>
 
       <Text className="mb-8 text-center text-base text-gray-400">
         We sent a verification link to{"\n"}
-        <Text className="text-white">{user?.email}</Text>
+        <Text className="text-gray-900">{user?.email}</Text>
         {"\n"}Check your inbox and tap the link to continue.
       </Text>
 

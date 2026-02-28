@@ -9,7 +9,7 @@ interface BankIconProps {
 export function BankIcon({ bankKey, size = 36 }: BankIconProps) {
   const bank = getBankByKey(bankKey);
 
-  const bgColor = bank?.color ?? "#4B5563";
+  const bgColor = bank?.color ?? "#d1d5db";
   const abbr = bank?.abbr ?? "?";
   const fontSize = size * 0.38;
 

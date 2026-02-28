@@ -1,10 +1,15 @@
-import { render, screen, waitFor } from "@testing-library/react-native";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react-native";
 import HomeScreen from "./HomeScreen";
 
 // Stable mock references to prevent infinite re-render loops
 const mockUser = { uid: "test-uid" };
+const mockCategories = [
+  { id: "cat1", name: "Subscriptions", icon: "📺", createdAt: new Date() },
+  { id: "cat2", name: "Food", icon: "🍔", createdAt: new Date() },
+];
 const mockWallets = [
   { id: "w1", name: "Intesa Sanpaolo", icon: "intesa-sanpaolo", createdAt: new Date() },
+  { id: "w2", name: "Revolut", icon: "revolut", createdAt: new Date() },
 ];
 const mockExpenses = [
   { id: "e1", categoryId: "cat1", name: "Netflix", amountCents: 1299, walletId: "w1", essential: false, notes: "", createdAt: new Date() },
@@ -24,6 +29,7 @@ jest.mock("../../../contexts/AuthContext", () => ({
 
 jest.mock("../../../contexts/DataContext", () => ({
   useData: () => ({
+    categories: mockCategories,
     wallets: mockWallets,
     currency: "EUR",
     isLoading: false,
@@ -39,20 +45,31 @@ describe("HomeScreen", () => {
     jest.clearAllMocks();
   });
 
-  it("renders monthly total header", () => {
+  it("renders Home title", () => {
     render(<HomeScreen />);
-    expect(screen.getByText("Monthly total")).toBeOnTheScreen();
+    expect(screen.getByText("Home")).toBeOnTheScreen();
   });
 
-  it("renders yearly estimate", () => {
+  it("renders toggle chips", () => {
     render(<HomeScreen />);
-    expect(screen.getByText("Yearly estimate")).toBeOnTheScreen();
+    expect(screen.getByText("Categories")).toBeOnTheScreen();
+    expect(screen.getByText("Wallets")).toBeOnTheScreen();
   });
 
-  it("renders wallet cards with expenses after loading", async () => {
+  it("renders categories by default", async () => {
     render(<HomeScreen />);
     await waitFor(() => {
+      expect(screen.getByText("Subscriptions")).toBeOnTheScreen();
+      expect(screen.getByText("Food")).toBeOnTheScreen();
+    });
+  });
+
+  it("renders wallet view when toggled", async () => {
+    render(<HomeScreen />);
+    fireEvent.press(screen.getByText("Wallets"));
+    await waitFor(() => {
       expect(screen.getByText("Intesa Sanpaolo")).toBeOnTheScreen();
+      expect(screen.getByText("Revolut")).toBeOnTheScreen();
     });
   });
 });
