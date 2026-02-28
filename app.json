@@ -5,15 +5,16 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "dark",
+    "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#030712"
+      "backgroundColor": "#f9fafb"
     },
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.memmof.fixo",
+      "buildNumber": "1",
       "googleServicesFile": "./GoogleService-Info.plist"
     },
     "platforms": [
