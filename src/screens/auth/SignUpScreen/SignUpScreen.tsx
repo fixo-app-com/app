@@ -1,15 +1,21 @@
 import { useState } from "react";
 import {
   Alert,
+  Image,
   KeyboardAvoidingView,
   Platform,
   Pressable,
   Text,
   View,
 } from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { AuthStackParamList } from "../../../navigation/RootNavigator";
-import { signUpWithEmail, getFirebaseAuthErrorMessage } from "../../../services/auth";
+import {
+  signUpWithEmail,
+  signInWithGoogle,
+  getFirebaseAuthErrorMessage,
+} from "../../../services/auth";
 import { Button, Input } from "../../../design-system";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "SignUp">;
@@ -47,6 +53,20 @@ export default function SignUpScreen({ navigation }: Props) {
     }
   }
 
+  async function handleGoogleSignUp() {
+    setIsLoading(true);
+    try {
+      await signInWithGoogle();
+    } catch (error) {
+      if ((error as Error).message !== "Google Sign-In was cancelled") {
+        const code = (error as { code?: string }).code ?? "";
+        Alert.alert("Error", getFirebaseAuthErrorMessage(code));
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -54,9 +74,12 @@ export default function SignUpScreen({ navigation }: Props) {
     >
       <View className="flex-1 justify-center px-8">
         {/* Logo */}
-        <Text className="mb-12 text-center text-4xl font-extrabold text-fixo-500">
-          FIXO
-        </Text>
+        <Image
+          source={require("../../../../assets/splash-icon.png")}
+          className="mb-12 h-20 w-20 self-center"
+          resizeMode="contain"
+          testID="logo"
+        />
 
         {/* Email input */}
         <View className="mb-4">
@@ -96,12 +119,34 @@ export default function SignUpScreen({ navigation }: Props) {
         </View>
 
         {/* Sign up button */}
-        <View className="mb-8">
+        <View className="mb-4">
           <Button
             label="Sign Up"
             onPress={handleSignUp}
             loading={isLoading}
           />
+        </View>
+
+        {/* Divider */}
+        <View className="mb-4 flex-row items-center">
+          <View className="h-px flex-1 bg-gray-300" />
+          <Text className="mx-4 text-sm text-gray-400">or</Text>
+          <View className="h-px flex-1 bg-gray-300" />
+        </View>
+
+        {/* Google Sign-Up button */}
+        <View className="mb-8">
+          <Pressable
+            onPress={handleGoogleSignUp}
+            disabled={isLoading}
+            className="flex-row items-center justify-center rounded-xl border border-gray-300 bg-white py-3.5"
+            style={({ pressed }) => ({ opacity: pressed || isLoading ? 0.7 : 1 })}
+          >
+            <Ionicons name="logo-google" size={18} color="#4285F4" />
+            <Text className="ml-2 text-base font-semibold text-gray-700">
+              Continue with Google
+            </Text>
+          </Pressable>
         </View>
 
         {/* Sign in link */}

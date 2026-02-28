@@ -1,12 +1,15 @@
 import { useState } from "react";
 import {
+  ActivityIndicator,
   Alert,
+  Image,
   KeyboardAvoidingView,
   Platform,
   Pressable,
   Text,
   View,
 } from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { AuthStackParamList } from "../../../navigation/RootNavigator";
 import {
@@ -76,9 +79,12 @@ export default function SignInScreen({ navigation, route }: Props) {
     >
       <View className="flex-1 justify-center px-8">
         {/* Logo */}
-        <Text className="mb-12 text-center text-4xl font-extrabold text-fixo-500">
-          FIXO
-        </Text>
+        <Image
+          source={require("../../../../assets/splash-icon.png")}
+          className="mb-12 h-20 w-20 self-center"
+          resizeMode="contain"
+          testID="logo"
+        />
 
         {pendingGoogleIdToken && (
           <View className="mb-4 rounded-lg bg-fixo-100 p-3">
@@ -142,12 +148,17 @@ export default function SignInScreen({ navigation, route }: Props) {
 
             {/* Google Sign-In button */}
             <View className="mb-8">
-              <Button
-                label="Sign in with Google"
-                variant="secondary"
+              <Pressable
                 onPress={handleGoogleSignIn}
                 disabled={isLoading}
-              />
+                className="flex-row items-center justify-center rounded-xl border border-gray-300 bg-white py-3.5"
+                style={({ pressed }) => ({ opacity: pressed || isLoading ? 0.7 : 1 })}
+              >
+                <Ionicons name="logo-google" size={18} color="#4285F4" />
+                <Text className="ml-2 text-base font-semibold text-gray-700">
+                  Continue with Google
+                </Text>
+              </Pressable>
             </View>
           </>
         )}

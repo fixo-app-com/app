@@ -10,9 +10,9 @@ describe("SignUpScreen", () => {
     jest.clearAllMocks();
   });
 
-  it("renders the brand name", () => {
+  it("renders the logo", () => {
     render(<SignUpScreen navigation={mockNavigation} route={mockRoute} />);
-    expect(screen.getByText("FIXO")).toBeOnTheScreen();
+    expect(screen.getByTestId("logo")).toBeOnTheScreen();
   });
 
   it("renders email, password, and confirm password inputs", () => {

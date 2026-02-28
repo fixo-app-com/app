@@ -14,14 +14,14 @@ describe("ForgotPasswordScreen", () => {
     jest.clearAllMocks();
   });
 
-  it("renders the brand name", () => {
+  it("renders the logo", () => {
     render(
       <ForgotPasswordScreen
         navigation={mockNavigation}
         route={mockRoute}
       />,
     );
-    expect(screen.getByText("FIXO")).toBeOnTheScreen();
+    expect(screen.getByTestId("logo")).toBeOnTheScreen();
   });
 
   it("renders email input", () => {

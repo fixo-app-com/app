@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
   Alert,
+  Image,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -40,9 +41,12 @@ export default function ForgotPasswordScreen({ navigation }: Props) {
   if (emailSent) {
     return (
       <View className="flex-1 justify-center bg-gray-100 px-8">
-        <Text className="mb-4 text-center text-4xl font-extrabold text-fixo-500">
-          FIXO
-        </Text>
+        <Image
+          source={require("../../../../assets/splash-icon.png")}
+          className="mb-4 h-20 w-20 self-center"
+          resizeMode="contain"
+          testID="logo"
+        />
         <Text className="mb-8 text-center text-base text-gray-600">
           We sent you an email with a link to reset your password. Check your
           inbox.
@@ -62,9 +66,12 @@ export default function ForgotPasswordScreen({ navigation }: Props) {
     >
       <View className="flex-1 justify-center px-8">
         {/* Logo */}
-        <Text className="mb-4 text-center text-4xl font-extrabold text-fixo-500">
-          FIXO
-        </Text>
+        <Image
+          source={require("../../../../assets/splash-icon.png")}
+          className="mb-4 h-20 w-20 self-center"
+          resizeMode="contain"
+          testID="logo"
+        />
 
         <Text className="mb-8 text-center text-base text-gray-400">
           Enter your email to receive a password reset link.

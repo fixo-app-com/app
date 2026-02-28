@@ -11,9 +11,9 @@ describe("SignInScreen", () => {
     jest.clearAllMocks();
   });
 
-  it("renders the brand name", () => {
+  it("renders the logo", () => {
     render(<SignInScreen navigation={mockNavigation} route={mockRoute} />);
-    expect(screen.getByText("FIXO")).toBeOnTheScreen();
+    expect(screen.getByTestId("logo")).toBeOnTheScreen();
   });
 
   it("renders email and password inputs", () => {
@@ -29,7 +29,7 @@ describe("SignInScreen", () => {
 
   it("renders Google sign in button", () => {
     render(<SignInScreen navigation={mockNavigation} route={mockRoute} />);
-    expect(screen.getByText("Sign in with Google")).toBeOnTheScreen();
+    expect(screen.getByText("Continue with Google")).toBeOnTheScreen();
   });
 
   it("renders forgot password link", () => {
