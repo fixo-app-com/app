@@ -23,6 +23,7 @@
     "production": {
       "ios": {
         "appleId": "memmof.dev@gmail.com",
+        "ascAppId": "6759840216",
         "appleTeamId": "5X4QR3P8AA"
       }
     }
