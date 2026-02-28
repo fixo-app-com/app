@@ -29,8 +29,12 @@ jest.mock("../../../contexts/DataContext", () => ({
   }),
 }));
 
-jest.mock("../../../services/firestore", () => ({
-  getExpenses: jest.fn(() => Promise.resolve([])),
+jest.mock("../../../hooks/useFetchExpenses", () => ({
+  useFetchExpenses: () => ({
+    expenses: [],
+    loading: false,
+    setExpenses: jest.fn(),
+  }),
 }));
 
 describe("WalletsScreen", () => {
