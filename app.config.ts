@@ -1,3 +1,4 @@
+import fs from "fs";
 import { ExpoConfig, ConfigContext } from "expo/config";
 import { version } from "./package.json";
 
@@ -18,7 +19,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     supportsTablet: false,
     bundleIdentifier: "com.memmof.fixo",
     googleServicesFile:
-      process.env.GOOGLE_SERVICES_PLIST ?? "./GoogleService-Info.plist",
+      process.env.GOOGLE_SERVICES_PLIST ??
+      (fs.existsSync("./GoogleService-Info.plist")
+        ? "./GoogleService-Info.plist"
+        : undefined),
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
     },
