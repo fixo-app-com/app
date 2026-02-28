@@ -5,10 +5,15 @@ const mockGoBack = jest.fn();
 jest.mock("@react-navigation/native", () => ({
   useNavigation: () => ({
     goBack: mockGoBack,
+    addListener: jest.fn(() => jest.fn()),
   }),
   useRoute: () => ({
     params: {},
   }),
+}));
+
+jest.mock("../../../contexts/AuthContext", () => ({
+  useAuth: () => ({ user: { uid: "test-uid" } }),
 }));
 
 const mockAddWallet = jest.fn(() => Promise.resolve("new-id"));
@@ -18,6 +23,10 @@ jest.mock("../../../contexts/DataContext", () => ({
     updateWallet: jest.fn(),
     deleteWallet: jest.fn(),
   }),
+}));
+
+jest.mock("../../../services/firestore", () => ({
+  getExpenses: jest.fn(() => Promise.resolve([])),
 }));
 
 describe("AddEditWalletScreen", () => {
