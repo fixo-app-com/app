@@ -1,10 +1,11 @@
 import { ExpoConfig, ConfigContext } from "expo/config";
+import { version } from "./package.json";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default ({ config }: ConfigContext): ExpoConfig => ({
   name: "Fixo",
   slug: "fixo-app",
-  version: "1.0.0",
+  version,
   orientation: "portrait",
   icon: "./assets/icon.png",
   userInterfaceStyle: "light",
