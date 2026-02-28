@@ -5,16 +5,17 @@ import { getCurrencySymbol } from "../../constants/banks";
 interface CurrencyTextProps {
   cents: number;
   className?: string;
+  hideDecimals?: boolean;
 }
 
-export function CurrencyText({ cents, className }: CurrencyTextProps) {
+export function CurrencyText({ cents, className, hideDecimals }: CurrencyTextProps) {
   const { currency } = useData();
   const symbol = getCurrencySymbol(currency);
 
   return (
     <Text className={className}>
       {symbol}
-      {(cents / 100).toFixed(2)}
+      {hideDecimals ? Math.floor(cents / 100) : (cents / 100).toFixed(2)}
     </Text>
   );
 }

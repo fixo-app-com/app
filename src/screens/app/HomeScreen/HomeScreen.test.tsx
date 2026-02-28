@@ -1,7 +1,6 @@
 import {
   render,
   screen,
-  fireEvent,
   waitFor,
 } from "@testing-library/react-native";
 import HomeScreen from "./HomeScreen";
@@ -11,15 +10,6 @@ const mockUser = { uid: "test-uid" };
 const mockCategories = [
   { id: "cat1", name: "Subscriptions", icon: "📺", createdAt: new Date() },
   { id: "cat2", name: "Food", icon: "🍔", createdAt: new Date() },
-];
-const mockWallets = [
-  {
-    id: "w1",
-    name: "Intesa Sanpaolo",
-    icon: "intesa-sanpaolo",
-    createdAt: new Date(),
-  },
-  { id: "w2", name: "Revolut", icon: "revolut", createdAt: new Date() },
 ];
 const mockExpenses = [
   {
@@ -49,8 +39,11 @@ jest.mock("../../../contexts/AuthContext", () => ({
 jest.mock("../../../contexts/DataContext", () => ({
   useData: () => ({
     categories: mockCategories,
-    wallets: mockWallets,
     currency: "EUR",
+    monthlyBudgetCents: 0,
+    setMonthlyBudget: jest.fn(),
+    viewMode: "monthly",
+    setViewMode: jest.fn(),
     isLoading: false,
   }),
 }));
@@ -69,26 +62,17 @@ describe("HomeScreen", () => {
     expect(screen.getByText("Home")).toBeOnTheScreen();
   });
 
-  it("renders toggle chips", () => {
+  it("renders monthly/yearly toggle chips", () => {
     render(<HomeScreen />);
-    expect(screen.getByText("Categories")).toBeOnTheScreen();
-    expect(screen.getByText("Wallets")).toBeOnTheScreen();
+    expect(screen.getByText("Monthly")).toBeOnTheScreen();
+    expect(screen.getByText("Yearly")).toBeOnTheScreen();
   });
 
-  it("renders categories by default", async () => {
+  it("renders categories", async () => {
     render(<HomeScreen />);
     await waitFor(() => {
       expect(screen.getByText("Subscriptions")).toBeOnTheScreen();
       expect(screen.getByText("Food")).toBeOnTheScreen();
-    });
-  });
-
-  it("renders wallet view when toggled", async () => {
-    render(<HomeScreen />);
-    fireEvent.press(screen.getByText("Wallets"));
-    await waitFor(() => {
-      expect(screen.getByText("Intesa Sanpaolo")).toBeOnTheScreen();
-      expect(screen.getByText("Revolut")).toBeOnTheScreen();
     });
   });
 });

@@ -198,7 +198,7 @@ export async function deleteWallet(
 
 // --- User Settings ---
 
-const DEFAULT_SETTINGS: UserSettings = { currency: "EUR" };
+const DEFAULT_SETTINGS: UserSettings = { currency: "EUR", monthlyBudgetCents: 0 };
 
 export function subscribeUserSettings(
   userId: string,
@@ -212,6 +212,8 @@ export function subscribeUserSettings(
         const data = snapshot.data();
         onResult({
           currency: data?.currency ?? DEFAULT_SETTINGS.currency,
+          monthlyBudgetCents:
+            data?.monthlyBudgetCents ?? DEFAULT_SETTINGS.monthlyBudgetCents,
         });
       },
       (error) => onError(error),

@@ -1,9 +1,10 @@
-import { render, screen } from "@testing-library/react-native";
+import { render, screen, waitFor } from "@testing-library/react-native";
 import WalletsScreen from "./WalletsScreen";
 
 jest.mock("@react-navigation/native", () => ({
   useNavigation: () => ({
     navigate: jest.fn(),
+    addListener: jest.fn(() => jest.fn()),
   }),
 }));
 
@@ -23,6 +24,7 @@ jest.mock("../../../contexts/DataContext", () => ({
       { id: "w2", name: "Revolut", icon: "revolut", createdAt: new Date() },
     ],
     currency: "EUR",
+    viewMode: "monthly",
     deleteWallet: jest.fn(),
   }),
 }));
@@ -32,10 +34,12 @@ jest.mock("../../../services/firestore", () => ({
 }));
 
 describe("WalletsScreen", () => {
-  it("renders wallet list", () => {
+  it("renders wallet list", async () => {
     render(<WalletsScreen />);
-    expect(screen.getByText("Intesa Sanpaolo")).toBeOnTheScreen();
-    expect(screen.getByText("Revolut")).toBeOnTheScreen();
+    await waitFor(() => {
+      expect(screen.getByText("Intesa Sanpaolo")).toBeOnTheScreen();
+      expect(screen.getByText("Revolut")).toBeOnTheScreen();
+    });
   });
 
   it("renders add wallet button", () => {

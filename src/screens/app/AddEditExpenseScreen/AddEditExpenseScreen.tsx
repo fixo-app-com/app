@@ -11,7 +11,7 @@ import {
   getExpenses,
 } from "../../../services/firestore";
 import type { HomeStackParamList } from "../../../navigation/RootNavigator";
-import type { Expense } from "../../../types/firestore";
+import type { BillingFrequency, Expense } from "../../../types/firestore";
 import { getCurrencySymbol } from "../../../constants/banks";
 import {
   Button,
@@ -38,6 +38,7 @@ export default function AddEditExpenseScreen() {
 
   const [name, setName] = useState("");
   const [amountText, setAmountText] = useState("");
+  const [billingFrequency, setBillingFrequency] = useState<BillingFrequency>("monthly");
   const [walletId, setWalletId] = useState("");
   const [essential, setEssential] = useState(false);
   const [notes, setNotes] = useState("");
@@ -54,6 +55,7 @@ export default function AddEditExpenseScreen() {
         if (expense) {
           setName(expense.name);
           setAmountText((expense.amountCents / 100).toFixed(2));
+          setBillingFrequency(expense.billingFrequency ?? "monthly");
           setWalletId(expense.walletId);
           setEssential(expense.essential);
           setNotes(expense.notes);
@@ -96,6 +98,7 @@ export default function AddEditExpenseScreen() {
         categoryId,
         name: trimmedName,
         amountCents,
+        billingFrequency,
         walletId,
         essential,
         notes: notes.trim(),
@@ -164,6 +167,16 @@ export default function AddEditExpenseScreen() {
           onChangeText={setAmountText}
           placeholder="12.99"
           keyboardType="decimal-pad"
+        />
+
+        <ChipGroup
+          options={[
+            { value: "monthly" as BillingFrequency, label: "Monthly" },
+            { value: "yearly" as BillingFrequency, label: "Yearly" },
+          ]}
+          selected={billingFrequency}
+          onSelect={setBillingFrequency}
+          compact
         />
       </View>
 

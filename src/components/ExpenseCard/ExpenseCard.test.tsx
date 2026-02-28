@@ -1,18 +1,18 @@
 import { fireEvent, render, screen } from "@testing-library/react-native";
 import { ExpenseCard } from "./ExpenseCard";
 
-// Mock DataContext for CurrencyText
+// Mock DataContext for CurrencyText and viewMode
 jest.mock("../../contexts/DataContext", () => ({
-  useData: () => ({ currency: "EUR" }),
+  useData: () => ({ currency: "EUR", viewMode: "monthly" }),
 }));
 
 describe("ExpenseCard", () => {
   const props = {
     name: "Netflix",
     walletName: "Revolut",
-    essential: false,
     notes: "",
     amountCents: 1299,
+    billingFrequency: "monthly" as const,
     onPress: jest.fn(),
     onLongPress: jest.fn(),
   };
@@ -24,14 +24,11 @@ describe("ExpenseCard", () => {
     expect(screen.getByText("\u20AC12.99")).toBeOnTheScreen();
   });
 
-  it("shows Essential label when essential", () => {
-    render(<ExpenseCard {...props} essential />);
-    expect(screen.getByText(/Essential/)).toBeOnTheScreen();
-  });
-
-  it("does not show Essential label when not essential", () => {
-    render(<ExpenseCard {...props} essential={false} />);
-    expect(screen.queryByText(/Essential/)).not.toBeOnTheScreen();
+  it("shows only the monthly amount (no yearly line)", () => {
+    render(<ExpenseCard {...props} />);
+    expect(screen.getByText("\u20AC12.99")).toBeOnTheScreen();
+    // Yearly line is no longer rendered — only one amount shown
+    expect(screen.queryByText("\u20AC155")).toBeNull();
   });
 
   it("renders notes when provided", () => {

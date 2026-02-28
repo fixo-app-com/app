@@ -3,7 +3,7 @@ import { Alert, Pressable, ScrollView, Text, View } from "react-native";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useData } from "../../../contexts/DataContext";
-import type { HomeStackParamList } from "../../../navigation/RootNavigator";
+import type { WalletsStackParamList } from "../../../navigation/RootNavigator";
 import { BANKS } from "../../../constants/banks";
 import { BankIcon } from "../../../components";
 import {
@@ -14,8 +14,8 @@ import {
   SectionHeader,
 } from "../../../design-system";
 
-type Nav = NativeStackNavigationProp<HomeStackParamList, "AddEditWallet">;
-type Route = RouteProp<HomeStackParamList, "AddEditWallet">;
+type Nav = NativeStackNavigationProp<WalletsStackParamList, "AddEditWallet">;
+type Route = RouteProp<WalletsStackParamList, "AddEditWallet">;
 
 export default function AddEditWalletScreen() {
   const navigation = useNavigation<Nav>();

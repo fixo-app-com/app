@@ -3,10 +3,15 @@ import { useAuth } from "./AuthContext";
 import type { Category, Wallet } from "../types/firestore";
 import * as firestoreService from "../services/firestore";
 
+export type ViewMode = "monthly" | "yearly";
+
 interface DataContextValue {
   categories: Category[];
   wallets: Wallet[];
   currency: string;
+  monthlyBudgetCents: number;
+  viewMode: ViewMode;
+  setViewMode: (mode: ViewMode) => void;
   isLoading: boolean;
   addCategory: (data: Pick<Category, "name" | "icon">) => Promise<string>;
   updateCategory: (
@@ -21,12 +26,16 @@ interface DataContextValue {
   ) => Promise<void>;
   deleteWallet: (walletId: string) => Promise<void>;
   setCurrency: (currency: string) => Promise<void>;
+  setMonthlyBudget: (cents: number) => Promise<void>;
 }
 
 const DataContext = createContext<DataContextValue>({
   categories: [],
   wallets: [],
   currency: "EUR",
+  monthlyBudgetCents: 0,
+  viewMode: "monthly",
+  setViewMode: () => {},
   isLoading: true,
   addCategory: async () => "",
   updateCategory: async () => {},
@@ -35,6 +44,7 @@ const DataContext = createContext<DataContextValue>({
   updateWallet: async () => {},
   deleteWallet: async () => {},
   setCurrency: async () => {},
+  setMonthlyBudget: async () => {},
 });
 
 export function DataProvider({ children }: { children: React.ReactNode }) {
@@ -42,6 +52,8 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [wallets, setWallets] = useState<Wallet[]>([]);
   const [currency, setCurrencyState] = useState("EUR");
+  const [monthlyBudgetCents, setMonthlyBudgetCentsState] = useState(0);
+  const [viewMode, setViewMode] = useState<ViewMode>("monthly");
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -95,6 +107,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       user.uid,
       (settings) => {
         setCurrencyState(settings.currency);
+        setMonthlyBudgetCentsState(settings.monthlyBudgetCents ?? 0);
         settingsReady = true;
         checkReady();
       },
@@ -118,6 +131,9 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     categories,
     wallets,
     currency,
+    monthlyBudgetCents,
+    viewMode,
+    setViewMode,
     isLoading,
     addCategory: (data) => firestoreService.addCategory(userId, data),
     updateCategory: (id, data) =>
@@ -129,6 +145,12 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     setCurrency: async (curr) => {
       setCurrencyState(curr);
       await firestoreService.updateUserSettings(userId, { currency: curr });
+    },
+    setMonthlyBudget: async (cents) => {
+      setMonthlyBudgetCentsState(cents);
+      await firestoreService.updateUserSettings(userId, {
+        monthlyBudgetCents: cents,
+      });
     },
   };
 

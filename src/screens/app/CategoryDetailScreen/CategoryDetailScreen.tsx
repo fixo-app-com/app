@@ -18,7 +18,7 @@ import {
   deleteExpensesByCategory,
 } from "../../../services/firestore";
 import type { HomeStackParamList } from "../../../navigation/RootNavigator";
-import type { Expense } from "../../../types/firestore";
+import { roundToUnit, getDisplayAmountCents, type Expense } from "../../../types/firestore";
 import {
   Button,
   EmptyState,
@@ -35,7 +35,7 @@ export default function CategoryDetailScreen() {
   const route = useRoute<Route>();
   const { categoryId, categoryName } = route.params;
   const { user } = useAuth();
-  const { categories, wallets, deleteCategory } = useData();
+  const { categories, wallets, deleteCategory, viewMode } = useData();
 
   const category = categories.find((c) => c.id === categoryId);
 
@@ -117,7 +117,9 @@ export default function CategoryDetailScreen() {
     ]);
   }
 
-  const totalCents = expenses.reduce((sum, e) => sum + e.amountCents, 0);
+  const totalCents = roundToUnit(
+    expenses.reduce((sum, e) => sum + getDisplayAmountCents(e, viewMode), 0),
+  );
 
   return (
     <ScreenWrapper>
@@ -149,7 +151,7 @@ export default function CategoryDetailScreen() {
       {/* Summary */}
       <View className="mb-4">
         <Text className="text-sm text-gray-500">
-          Total:{" "}
+          {viewMode === "yearly" ? "Yearly:" : "Monthly:"}{" "}
           <CurrencyText
             cents={totalCents}
             className="text-sm font-semibold text-fixo-400"
@@ -169,9 +171,9 @@ export default function CategoryDetailScreen() {
             <ExpenseCard
               name={item.name}
               walletName={getWalletName(item.walletId)}
-              essential={item.essential}
               notes={item.notes}
               amountCents={item.amountCents}
+              billingFrequency={item.billingFrequency ?? "monthly"}
               onPress={() =>
                 navigation.navigate("AddEditExpense", {
                   categoryId,

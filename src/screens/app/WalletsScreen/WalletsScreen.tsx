@@ -1,85 +1,95 @@
-import { Alert, FlatList, Text, View } from "react-native";
+import { useCallback, useEffect, useState } from "react";
+import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useData } from "../../../contexts/DataContext";
 import { getExpenses } from "../../../services/firestore";
-import type { HomeStackParamList } from "../../../navigation/RootNavigator";
+import type { WalletsStackParamList } from "../../../navigation/RootNavigator";
+import { roundToUnit, getDisplayAmountCents, type Expense } from "../../../types/firestore";
 import { EmptyState, ScreenWrapper } from "../../../design-system";
 import { FloatingAction, WalletCard } from "../../../components";
 
-type Nav = NativeStackNavigationProp<HomeStackParamList>;
+type Nav = NativeStackNavigationProp<WalletsStackParamList>;
 
 export default function WalletsScreen() {
   const navigation = useNavigation<Nav>();
   const { user } = useAuth();
-  const { wallets, deleteWallet } = useData();
+  const { wallets, viewMode } = useData();
 
-  async function handleDelete(walletId: string, walletName: string) {
+  const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [loadingExpenses, setLoadingExpenses] = useState(true);
+
+  const fetchExpenses = useCallback(async () => {
     if (!user) return;
-
+    setLoadingExpenses(true);
     try {
-      const expenses = await getExpenses(user.uid, { walletId });
-      if (expenses.length > 0) {
-        Alert.alert(
-          "Cannot delete",
-          "Remove all expenses from this wallet first.",
-        );
-        return;
-      }
+      const data = await getExpenses(user.uid);
+      setExpenses(data);
     } catch (error) {
-      console.error("Failed to check expenses:", error);
-      return;
+      console.error("Failed to load expenses:", error);
+    } finally {
+      setLoadingExpenses(false);
     }
+  }, [user]);
 
-    Alert.alert("Delete wallet", `Delete "${walletName}"?`, [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Delete",
-        style: "destructive",
-        onPress: async () => {
-          try {
-            await deleteWallet(walletId);
-          } catch (error) {
-            console.error("Failed to delete wallet:", error);
-          }
-        },
-      },
-    ]);
+  useEffect(() => {
+    fetchExpenses();
+  }, [fetchExpenses]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      fetchExpenses();
+    });
+    return unsubscribe;
+  }, [navigation, fetchExpenses]);
+
+  function getWalletTotal(walletId: string): number {
+    return roundToUnit(
+      expenses
+        .filter((e) => e.walletId === walletId)
+        .reduce((sum, e) => sum + getDisplayAmountCents(e, viewMode), 0),
+    );
   }
 
   return (
     <ScreenWrapper>
       <Text className="mb-6 text-3xl font-bold text-gray-900">Wallets</Text>
 
-      <FlatList
-        data={wallets}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={{ paddingBottom: 100 }}
-        renderItem={({ item }) => (
-          <WalletCard
-            name={item.name}
-            icon={item.icon ?? ""}
-            onPress={() =>
-              navigation.navigate("AddEditWallet", {
-                walletId: item.id,
-                walletName: item.name,
-                walletIcon: item.icon,
-              })
-            }
-            onLongPress={() => handleDelete(item.id, item.name)}
-          />
-        )}
-        ItemSeparatorComponent={() => <View className="h-3" />}
-        ListEmptyComponent={
-          <EmptyState
-            icon="wallet-outline"
-            message="No wallets yet."
-            actionLabel="Add wallet"
-            onAction={() => navigation.navigate("AddEditWallet", {})}
-          />
-        }
-      />
+      {loadingExpenses ? (
+        <ActivityIndicator color="#818cf8" className="mt-8" />
+      ) : (
+        <FlatList
+          data={[...wallets].sort(
+            (a, b) => getWalletTotal(b.id) - getWalletTotal(a.id),
+          )}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={{ paddingBottom: 100 }}
+          renderItem={({ item }) => (
+            <WalletCard
+              name={item.name}
+              icon={item.icon ?? ""}
+              totalCents={getWalletTotal(item.id)}
+              onPress={() =>
+                navigation.navigate("WalletDetail", {
+                  walletId: item.id,
+                  walletName: item.name,
+                  walletIcon: item.icon,
+                })
+              }
+            />
+          )}
+          ItemSeparatorComponent={() => <View className="h-3" />}
+          ListEmptyComponent={
+            <EmptyState
+              icon="wallet-outline"
+              message="No wallets yet."
+              actionLabel="Add wallet"
+              onAction={() => navigation.navigate("AddEditWallet", {})}
+            />
+          }
+        />
+      )}
 
       <FloatingAction
         label="+ Add wallet"

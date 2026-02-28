@@ -1,12 +1,21 @@
 import { useCallback, useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  Pressable,
+  Text,
+  View,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useData } from "../../../contexts/DataContext";
 import { getExpenses } from "../../../services/firestore";
 import type { HomeStackParamList } from "../../../navigation/RootNavigator";
-import type { Expense } from "../../../types/firestore";
+import { roundToUnit, getDisplayAmountCents, type Expense } from "../../../types/firestore";
+import type { ViewMode } from "../../../contexts/DataContext";
 import {
   Card,
   ChipGroup,
@@ -18,18 +27,22 @@ import {
   CategoryCard,
   CurrencyText,
   FloatingAction,
-  WalletCard,
 } from "../../../components";
 
 type Nav = NativeStackNavigationProp<HomeStackParamList, "Home">;
-type ViewMode = "categories" | "wallets";
 
 export default function HomeScreen() {
   const navigation = useNavigation<Nav>();
   const { user } = useAuth();
-  const { categories, wallets, isLoading: dataLoading } = useData();
+  const {
+    categories,
+    monthlyBudgetCents,
+    setMonthlyBudget,
+    viewMode,
+    setViewMode,
+    isLoading: dataLoading,
+  } = useData();
 
-  const [viewMode, setViewMode] = useState<ViewMode>("categories");
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loadingExpenses, setLoadingExpenses] = useState(true);
 
@@ -57,24 +70,51 @@ export default function HomeScreen() {
     return unsubscribe;
   }, [navigation, fetchExpenses]);
 
+  const isYearly = viewMode === "yearly";
+
   function getCategoryTotal(categoryId: string): number {
-    return expenses
-      .filter((e) => e.categoryId === categoryId)
-      .reduce((sum, e) => sum + e.amountCents, 0);
+    return roundToUnit(
+      expenses
+        .filter((e) => e.categoryId === categoryId)
+        .reduce((sum, e) => sum + getDisplayAmountCents(e, viewMode), 0),
+    );
   }
 
   function getCategoryCount(categoryId: string): number {
     return expenses.filter((e) => e.categoryId === categoryId).length;
   }
 
-  function getWalletTotal(walletId: string): number {
-    return expenses
-      .filter((e) => e.walletId === walletId)
-      .reduce((sum, e) => sum + e.amountCents, 0);
-  }
+  const rawTotalCents = expenses.reduce((sum, e) => sum + getDisplayAmountCents(e, viewMode), 0);
+  const totalCents = roundToUnit(rawTotalCents);
+  const budgetDisplayCents = isYearly ? monthlyBudgetCents * 12 : monthlyBudgetCents;
+  const availableCents = budgetDisplayCents - rawTotalCents;
+  const hasBudget = monthlyBudgetCents > 0;
 
-  const monthlyTotalCents = expenses.reduce((sum, e) => sum + e.amountCents, 0);
-  const yearlyTotalCents = monthlyTotalCents * 12;
+  function handleBudgetEdit() {
+    const displayCents = isYearly ? monthlyBudgetCents * 12 : monthlyBudgetCents;
+    const current = hasBudget ? String(Math.floor(displayCents / 100)) : "";
+    const label = isYearly ? "Yearly budget" : "Monthly budget";
+    Alert.prompt(
+      label,
+      `Enter your total ${isYearly ? "yearly" : "monthly"} budget`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Save",
+          onPress: (value?: string) => {
+            const parsed = parseFloat((value ?? "").replace(",", "."));
+            if (!isNaN(parsed) && parsed >= 0) {
+              const cents = Math.round(parsed * 100);
+              setMonthlyBudget(isYearly ? Math.ceil(cents / 12) : cents);
+            }
+          },
+        },
+      ],
+      "plain-text",
+      current,
+      "number-pad",
+    );
+  }
 
   if (dataLoading) {
     return <FullScreenLoader />;
@@ -85,29 +125,71 @@ export default function HomeScreen() {
       <Text className="mb-4 text-3xl font-bold text-gray-900">Home</Text>
 
       <Card>
-        <View className="items-center py-2">
-          <Text className="text-sm font-medium text-gray-500">
-            Monthly total
-          </Text>
-          <CurrencyText
-            cents={monthlyTotalCents}
-            className="mt-1 text-4xl font-bold text-gray-900"
-          />
-          <View className="mt-3 flex-row items-center">
-            <Text className="text-xs text-gray-400">Yearly estimate </Text>
-            <CurrencyText
-              cents={yearlyTotalCents}
-              className="text-sm text-gray-500"
+        <View className="py-2">
+          {/* Budget header */}
+          <Pressable
+            onPress={handleBudgetEdit}
+            className="flex-row items-center justify-center"
+          >
+            <Text className="text-sm font-medium text-gray-500">
+              {hasBudget
+                ? isYearly ? "Yearly budget" : "Monthly budget"
+                : isYearly ? "Set yearly budget" : "Set monthly budget"}
+            </Text>
+            <Ionicons
+              name="pencil-outline"
+              size={14}
+              color="#9ca3af"
+              style={{ marginLeft: 6 }}
             />
-          </View>
+          </Pressable>
+
+          {hasBudget ? (
+            <>
+              {/* Budget amount */}
+              <Pressable onPress={handleBudgetEdit}>
+                <CurrencyText
+                  cents={budgetDisplayCents}
+                  className="mt-1 text-center text-4xl font-bold text-gray-900"
+                  hideDecimals
+                />
+              </Pressable>
+
+              {/* Breakdown */}
+              <View className="mt-4 border-t border-gray-100 pt-3">
+                <View className="flex-row items-center justify-between">
+                  <Text className="text-sm text-gray-500">Ordinary costs</Text>
+                  <CurrencyText
+                    cents={totalCents}
+                    className="text-sm font-semibold text-gray-700"
+                    hideDecimals
+                  />
+                </View>
+                <View className="mt-2 flex-row items-center justify-between">
+                  <Text className="text-sm text-gray-500">Available</Text>
+                  <CurrencyText
+                    cents={availableCents}
+                    className={`text-sm font-semibold ${availableCents >= 0 ? "text-emerald-600" : "text-red-500"}`}
+                    hideDecimals
+                  />
+                </View>
+              </View>
+            </>
+          ) : (
+            <CurrencyText
+              cents={totalCents}
+              className="mt-1 text-center text-4xl font-bold text-gray-900"
+            />
+          )}
         </View>
       </Card>
 
-      <View className="mb-4 mt-4">
+      {/* Monthly / Yearly toggle */}
+      <View className="mb-2 mt-4">
         <ChipGroup
           options={[
-            { value: "categories" as ViewMode, label: "Categories" },
-            { value: "wallets" as ViewMode, label: "Wallets" },
+            { value: "monthly" as ViewMode, label: "Monthly" },
+            { value: "yearly" as ViewMode, label: "Yearly" },
           ]}
           selected={viewMode}
           onSelect={setViewMode}
@@ -117,7 +199,7 @@ export default function HomeScreen() {
 
       {loadingExpenses ? (
         <ActivityIndicator color="#818cf8" className="mt-8" />
-      ) : viewMode === "categories" ? (
+      ) : (
         <FlatList
           data={categories}
           keyExtractor={(item) => item.id}
@@ -146,48 +228,11 @@ export default function HomeScreen() {
             />
           }
         />
-      ) : (
-        <FlatList
-          data={[...wallets].sort(
-            (a, b) => getWalletTotal(b.id) - getWalletTotal(a.id),
-          )}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={{ paddingBottom: 100 }}
-          renderItem={({ item }) => (
-            <WalletCard
-              name={item.name}
-              icon={item.icon ?? ""}
-              totalCents={getWalletTotal(item.id)}
-              onPress={() =>
-                navigation.navigate("WalletDetail", {
-                  walletId: item.id,
-                  walletName: item.name,
-                  walletIcon: item.icon,
-                })
-              }
-            />
-          )}
-          ItemSeparatorComponent={() => <View className="h-3" />}
-          ListEmptyComponent={
-            <EmptyState
-              icon="wallet-outline"
-              message="No wallets yet."
-              actionLabel="Add wallet"
-              onAction={() => navigation.navigate("AddEditWallet", {})}
-            />
-          }
-        />
       )}
 
       <FloatingAction
-        label={viewMode === "categories" ? "+ Add category" : "+ Add wallet"}
-        onPress={() => {
-          if (viewMode === "categories") {
-            navigation.navigate("AddEditCategory", {});
-          } else {
-            navigation.navigate("AddEditWallet", {});
-          }
-        }}
+        label="+ Add category"
+        onPress={() => navigation.navigate("AddEditCategory", {})}
       />
     </ScreenWrapper>
   );

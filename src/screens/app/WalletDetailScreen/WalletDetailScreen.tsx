@@ -17,8 +17,8 @@ import {
   deleteExpense,
   deleteWallet,
 } from "../../../services/firestore";
-import type { HomeStackParamList } from "../../../navigation/RootNavigator";
-import type { Expense } from "../../../types/firestore";
+import type { WalletsStackParamList } from "../../../navigation/RootNavigator";
+import { roundToUnit, getDisplayAmountCents, type Expense } from "../../../types/firestore";
 import {
   Button,
   EmptyState,
@@ -27,15 +27,15 @@ import {
 } from "../../../design-system";
 import { CurrencyText, ExpenseCard } from "../../../components";
 
-type Nav = NativeStackNavigationProp<HomeStackParamList, "WalletDetail">;
-type Route = RouteProp<HomeStackParamList, "WalletDetail">;
+type Nav = NativeStackNavigationProp<WalletsStackParamList, "WalletDetail">;
+type Route = RouteProp<WalletsStackParamList, "WalletDetail">;
 
 export default function WalletDetailScreen() {
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
   const { walletId, walletName, walletIcon } = route.params;
   const { user } = useAuth();
-  const { categories } = useData();
+  const { categories, viewMode } = useData();
 
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(true);
@@ -106,7 +106,9 @@ export default function WalletDetailScreen() {
     ]);
   }
 
-  const totalCents = expenses.reduce((sum, e) => sum + e.amountCents, 0);
+  const totalCents = roundToUnit(
+    expenses.reduce((sum, e) => sum + getDisplayAmountCents(e, viewMode), 0),
+  );
 
   return (
     <ScreenWrapper>
@@ -138,7 +140,7 @@ export default function WalletDetailScreen() {
       {/* Summary */}
       <View className="mb-4">
         <Text className="text-sm text-gray-500">
-          Total:{" "}
+          {viewMode === "yearly" ? "Yearly:" : "Monthly:"}{" "}
           <CurrencyText
             cents={totalCents}
             className="text-sm font-semibold text-fixo-400"
@@ -151,16 +153,18 @@ export default function WalletDetailScreen() {
         <ActivityIndicator color="#818cf8" className="mt-8" />
       ) : (
         <FlatList
-          data={expenses}
+          data={[...expenses].sort(
+            (a, b) => getDisplayAmountCents(b, viewMode) - getDisplayAmountCents(a, viewMode),
+          )}
           keyExtractor={(item) => item.id}
           contentContainerStyle={{ paddingBottom: 160 }}
           renderItem={({ item }) => (
             <ExpenseCard
               name={item.name}
               walletName={getCategoryName(item.categoryId)}
-              essential={item.essential}
               notes={item.notes}
               amountCents={item.amountCents}
+              billingFrequency={item.billingFrequency ?? "monthly"}
               onPress={() =>
                 navigation.navigate("AddEditExpense", {
                   categoryId: item.categoryId,

@@ -14,6 +14,7 @@ import AddEditCategoryScreen from "../screens/app/AddEditCategoryScreen/AddEditC
 import AddEditExpenseScreen from "../screens/app/AddEditExpenseScreen/AddEditExpenseScreen";
 import WalletDetailScreen from "../screens/app/WalletDetailScreen/WalletDetailScreen";
 import AddEditWalletScreen from "../screens/app/AddEditWalletScreen/AddEditWalletScreen";
+import WalletsScreen from "../screens/app/WalletsScreen/WalletsScreen";
 import SettingsScreen from "../screens/app/SettingsScreen/SettingsScreen";
 
 // --- Param lists ---
@@ -33,12 +34,17 @@ export type HomeStackParamList = {
     categoryIcon?: string;
   };
   AddEditExpense: { categoryId: string; expenseId?: string };
+};
+
+export type WalletsStackParamList = {
+  Wallets: undefined;
   WalletDetail: { walletId: string; walletName: string; walletIcon: string };
   AddEditWallet: {
     walletId?: string;
     walletName?: string;
     walletIcon?: string;
   };
+  AddEditExpense: { categoryId: string; expenseId?: string };
 };
 
 export type SettingsStackParamList = {
@@ -47,6 +53,7 @@ export type SettingsStackParamList = {
 
 export type TabParamList = {
   HomeTab: undefined;
+  WalletsTab: undefined;
   SettingsTab: undefined;
 };
 
@@ -54,6 +61,7 @@ export type TabParamList = {
 
 const AuthStack = createNativeStackNavigator<AuthStackParamList>();
 const HomeStack = createNativeStackNavigator<HomeStackParamList>();
+const WalletsStack = createNativeStackNavigator<WalletsStackParamList>();
 const SettingsStack = createNativeStackNavigator<SettingsStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
 
@@ -96,9 +104,18 @@ function HomeStackNavigator() {
         name="AddEditExpense"
         component={AddEditExpenseScreen}
       />
-      <HomeStack.Screen name="WalletDetail" component={WalletDetailScreen} />
-      <HomeStack.Screen name="AddEditWallet" component={AddEditWalletScreen} />
     </HomeStack.Navigator>
+  );
+}
+
+function WalletsStackNavigator() {
+  return (
+    <WalletsStack.Navigator screenOptions={stackOptions}>
+      <WalletsStack.Screen name="Wallets" component={WalletsScreen} />
+      <WalletsStack.Screen name="WalletDetail" component={WalletDetailScreen} />
+      <WalletsStack.Screen name="AddEditWallet" component={AddEditWalletScreen} />
+      <WalletsStack.Screen name="AddEditExpense" component={AddEditExpenseScreen} />
+    </WalletsStack.Navigator>
   );
 }
 
@@ -112,6 +129,7 @@ function SettingsStackNavigator() {
 
 const TAB_ICONS: Record<string, { outline: string; filled: string }> = {
   Home: { outline: "home-outline", filled: "home" },
+  Wallets: { outline: "wallet-outline", filled: "wallet" },
   Settings: { outline: "settings-outline", filled: "settings" },
 };
 
@@ -157,6 +175,14 @@ function AppNavigator() {
         options={{
           tabBarLabel: "Home",
           tabBarIcon: (props) => <TabIcon {...props} label="Home" />,
+        }}
+      />
+      <Tab.Screen
+        name="WalletsTab"
+        component={WalletsStackNavigator}
+        options={{
+          tabBarLabel: "Wallets",
+          tabBarIcon: (props) => <TabIcon {...props} label="Wallets" />,
         }}
       />
       <Tab.Screen
