@@ -15,6 +15,7 @@ import AddEditExpenseScreen from "../screens/app/AddEditExpenseScreen/AddEditExp
 import WalletDetailScreen from "../screens/app/WalletDetailScreen/WalletDetailScreen";
 import AddEditWalletScreen from "../screens/app/AddEditWalletScreen/AddEditWalletScreen";
 import WalletsScreen from "../screens/app/WalletsScreen/WalletsScreen";
+import EmergencyFundScreen from "../screens/app/EmergencyFundScreen/EmergencyFundScreen";
 import SettingsScreen from "../screens/app/SettingsScreen/SettingsScreen";
 
 // --- Param lists ---
@@ -47,6 +48,10 @@ export type WalletsStackParamList = {
   AddEditExpense: { categoryId: string; expenseId?: string };
 };
 
+export type EmergencyStackParamList = {
+  EmergencyFund: undefined;
+};
+
 export type SettingsStackParamList = {
   Settings: undefined;
 };
@@ -54,6 +59,7 @@ export type SettingsStackParamList = {
 export type TabParamList = {
   HomeTab: undefined;
   WalletsTab: undefined;
+  EmergencyTab: undefined;
   SettingsTab: undefined;
 };
 
@@ -62,6 +68,7 @@ export type TabParamList = {
 const AuthStack = createNativeStackNavigator<AuthStackParamList>();
 const HomeStack = createNativeStackNavigator<HomeStackParamList>();
 const WalletsStack = createNativeStackNavigator<WalletsStackParamList>();
+const EmergencyStack = createNativeStackNavigator<EmergencyStackParamList>();
 const SettingsStack = createNativeStackNavigator<SettingsStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
 
@@ -119,6 +126,14 @@ function WalletsStackNavigator() {
   );
 }
 
+function EmergencyStackNavigator() {
+  return (
+    <EmergencyStack.Navigator screenOptions={stackOptions}>
+      <EmergencyStack.Screen name="EmergencyFund" component={EmergencyFundScreen} />
+    </EmergencyStack.Navigator>
+  );
+}
+
 function SettingsStackNavigator() {
   return (
     <SettingsStack.Navigator screenOptions={stackOptions}>
@@ -130,6 +145,7 @@ function SettingsStackNavigator() {
 const TAB_ICONS: Record<string, { outline: string; filled: string }> = {
   Home: { outline: "home-outline", filled: "home" },
   Wallets: { outline: "wallet-outline", filled: "wallet" },
+  Emergency: { outline: "shield-checkmark-outline", filled: "shield-checkmark" },
   Settings: { outline: "settings-outline", filled: "settings" },
 };
 
@@ -183,6 +199,14 @@ function AppNavigator() {
         options={{
           tabBarLabel: "Wallets",
           tabBarIcon: (props) => <TabIcon {...props} label="Wallets" />,
+        }}
+      />
+      <Tab.Screen
+        name="EmergencyTab"
+        component={EmergencyStackNavigator}
+        options={{
+          tabBarLabel: "Emergency",
+          tabBarIcon: (props) => <TabIcon {...props} label="Emergency" />,
         }}
       />
       <Tab.Screen

@@ -28,6 +28,7 @@ import {
   CurrencyText,
   FloatingAction,
 } from "../../../components";
+import { getCurrencySymbol } from "../../../constants/banks";
 
 type Nav = NativeStackNavigationProp<HomeStackParamList, "Home">;
 
@@ -36,6 +37,7 @@ export default function HomeScreen() {
   const { user } = useAuth();
   const {
     categories,
+    currency,
     monthlyBudgetCents,
     setMonthlyBudget,
     viewMode,
@@ -148,11 +150,10 @@ export default function HomeScreen() {
             <>
               {/* Budget amount */}
               <Pressable onPress={handleBudgetEdit}>
-                <CurrencyText
-                  cents={budgetDisplayCents}
-                  className="mt-1 text-center text-4xl font-bold text-gray-900"
-                  hideDecimals
-                />
+                <Text className="mt-1 text-center text-4xl font-bold text-gray-900">
+                  {Math.floor(budgetDisplayCents / 100).toLocaleString("de-DE")}{" "}
+                  {getCurrencySymbol(currency)}
+                </Text>
               </Pressable>
 
               {/* Breakdown */}
