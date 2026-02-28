@@ -15,7 +15,6 @@ import {
   signInWithEmail,
   signInWithGoogle,
   linkGoogleToEmailAccount,
-  checkEmailExists,
   resetPassword,
   getFirebaseAuthErrorMessage,
 } from "../../../services/auth";
@@ -50,42 +49,23 @@ export default function SignInScreen({ navigation, route }: Props) {
       const code = (error as { code?: string }).code ?? "";
 
       if (code === "auth/invalid-credential") {
-        try {
-          const exists = await checkEmailExists(email.trim());
-          if (!exists) {
-            Alert.alert(
-              "Account not found",
-              "No account is registered with this email. Would you like to create one?",
-              [
-                { text: "Cancel", style: "cancel" },
-                {
-                  text: "Sign Up",
-                  onPress: () => navigation.navigate("SignUp"),
-                },
-              ],
-            );
-          } else {
-            Alert.alert(
-              "Incorrect password",
-              "The password you entered is incorrect.",
-              [
-                { text: "Try again", style: "cancel" },
-                {
-                  text: "Reset password",
-                  onPress: () => {
-                    resetPassword(email.trim());
-                    Alert.alert(
-                      "Email sent",
-                      "Check your inbox for a password reset link.",
-                    );
-                  },
-                },
-              ],
-            );
-          }
-        } catch {
-          Alert.alert("Error", getFirebaseAuthErrorMessage(code));
-        }
+        Alert.alert(
+          "Invalid email or password",
+          "Please check your credentials and try again.",
+          [
+            { text: "Try again", style: "cancel" },
+            {
+              text: "Reset password",
+              onPress: () => {
+                resetPassword(email.trim());
+                Alert.alert(
+                  "Email sent",
+                  "Check your inbox for a password reset link.",
+                );
+              },
+            },
+          ],
+        );
       } else {
         Alert.alert("Error", getFirebaseAuthErrorMessage(code));
       }
