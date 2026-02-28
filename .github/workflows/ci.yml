@@ -61,5 +61,8 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
+      - name: Create GoogleService-Info.plist placeholder
+        run: echo '<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"><plist version="1.0"><dict></dict></plist>' > GoogleService-Info.plist
+
       - name: Build iOS
         run: npm run build:ios -- --non-interactive
