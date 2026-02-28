@@ -25,7 +25,10 @@ export function ExpenseCard({
   onLongPress,
 }: ExpenseCardProps) {
   const { viewMode } = useData();
-  const displayCents = getDisplayAmountCents({ amountCents, billingFrequency }, viewMode);
+  const displayCents = getDisplayAmountCents(
+    { amountCents, billingFrequency },
+    viewMode,
+  );
 
   return (
     <Card onPress={onPress} onLongPress={onLongPress}>

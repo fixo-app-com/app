@@ -3,7 +3,6 @@ import {
   GoogleSignin,
   isSuccessResponse,
 } from "@react-native-google-signin/google-signin";
-import { Alert } from "react-native";
 
 const WEB_CLIENT_ID =
   "903158549460-8o3b9bgcc72voq0mr3cu208g2a0f9pdp.apps.googleusercontent.com";
@@ -112,17 +111,4 @@ export function getFirebaseAuthErrorMessage(code: string): string {
     default:
       return "An error occurred. Please try again.";
   }
-}
-
-export function handleAccountLinkingError(
-  error: FirebaseAuthTypes.NativeFirebaseAuthError,
-): void {
-  if (error.code === "auth/account-exists-with-different-credential") {
-    Alert.alert(
-      "Existing account",
-      "An account with this email already exists with a password. Sign in with your password to link your Google account.",
-    );
-    return;
-  }
-  throw error;
 }

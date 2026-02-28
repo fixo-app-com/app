@@ -1,48 +1,20 @@
-import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useAuth } from "../../../contexts/AuthContext";
 import { useData } from "../../../contexts/DataContext";
-import { getExpenses } from "../../../services/firestore";
 import type { WalletsStackParamList } from "../../../navigation/RootNavigator";
-import { roundToUnit, getDisplayAmountCents, type Expense } from "../../../types/firestore";
+import { roundToUnit, getDisplayAmountCents } from "../../../types/firestore";
 import { EmptyState, ScreenWrapper } from "../../../design-system";
 import { FloatingAction, WalletCard } from "../../../components";
+import { useFetchExpenses } from "../../../hooks/useFetchExpenses";
 
 type Nav = NativeStackNavigationProp<WalletsStackParamList>;
 
 export default function WalletsScreen() {
   const navigation = useNavigation<Nav>();
-  const { user } = useAuth();
   const { wallets, viewMode } = useData();
 
-  const [expenses, setExpenses] = useState<Expense[]>([]);
-  const [loadingExpenses, setLoadingExpenses] = useState(true);
-
-  const fetchExpenses = useCallback(async () => {
-    if (!user) return;
-    setLoadingExpenses(true);
-    try {
-      const data = await getExpenses(user.uid);
-      setExpenses(data);
-    } catch (error) {
-      console.error("Failed to load expenses:", error);
-    } finally {
-      setLoadingExpenses(false);
-    }
-  }, [user]);
-
-  useEffect(() => {
-    fetchExpenses();
-  }, [fetchExpenses]);
-
-  useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
-      fetchExpenses();
-    });
-    return unsubscribe;
-  }, [navigation, fetchExpenses]);
+  const { expenses, loading: loadingExpenses } = useFetchExpenses();
 
   function getWalletTotal(walletId: string): number {
     return roundToUnit(

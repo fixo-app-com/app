@@ -1,32 +1,12 @@
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
 import Slider from "@react-native-community/slider";
-import { useNavigation } from "@react-navigation/native";
-import { useAuth } from "../../../contexts/AuthContext";
-import { useData } from "../../../contexts/DataContext";
-import { getExpenses } from "../../../services/firestore";
-import {
-  getDisplayAmountCents,
-  roundToUnit,
-  type Expense,
-} from "../../../types/firestore";
+import { getDisplayAmountCents, roundToUnit } from "../../../types/firestore";
 import { ScreenWrapper } from "../../../design-system";
-import { getCurrencySymbol } from "../../../constants/banks";
+import { CurrencyText } from "../../../components";
+import { useFetchExpenses } from "../../../hooks/useFetchExpenses";
 
 const SNAP_POINTS: number[] = [3, 6, 12, 18, 24, 36, 48, 60];
-
-function snapToNearest(value: number): number {
-  let closest = SNAP_POINTS[0];
-  let minDist = Math.abs(value - closest);
-  for (let i = 1; i < SNAP_POINTS.length; i++) {
-    const dist = Math.abs(value - SNAP_POINTS[i]);
-    if (dist < minDist) {
-      minDist = dist;
-      closest = SNAP_POINTS[i];
-    }
-  }
-  return closest;
-}
 
 function formatPeriod(months: number): string {
   if (months < 12) return `${months} months`;
@@ -36,37 +16,8 @@ function formatPeriod(months: number): string {
 }
 
 export default function EmergencyFundScreen() {
-  const navigation = useNavigation();
-  const { user } = useAuth();
-  const { currency } = useData();
-
-  const [expenses, setExpenses] = useState<Expense[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { expenses, loading } = useFetchExpenses();
   const [selectedMonths, setSelectedMonths] = useState(6);
-
-  const fetchExpenses = useCallback(async () => {
-    if (!user) return;
-    setLoading(true);
-    try {
-      const data = await getExpenses(user.uid);
-      setExpenses(data);
-    } catch (error) {
-      console.error("Failed to load expenses:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [user]);
-
-  useEffect(() => {
-    fetchExpenses();
-  }, [fetchExpenses]);
-
-  useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
-      fetchExpenses();
-    });
-    return unsubscribe;
-  }, [navigation, fetchExpenses]);
 
   const essentialExpenses = expenses.filter((e) => e.essential);
   // Use yearly total as source of truth (no precision loss from /12 rounding)
@@ -88,10 +39,11 @@ export default function EmergencyFundScreen() {
           <Text className="mb-1 text-sm font-medium text-gray-500">
             Monthly essential expenses
           </Text>
-          <Text className="mb-6 text-2xl font-bold text-gray-900">
-            {Math.floor(monthlyEssentialCents / 100).toLocaleString("de-DE")}{" "}
-            {getCurrencySymbol(currency)}
-          </Text>
+          <CurrencyText
+            cents={monthlyEssentialCents}
+            className="mb-6 text-2xl font-bold text-gray-900"
+            suffixFormat
+          />
 
           <Text className="mb-2 text-sm font-medium text-gray-500">
             Time period
@@ -115,10 +67,11 @@ export default function EmergencyFundScreen() {
             <Text className="mb-1 text-sm font-medium text-gray-500">
               Emergency fund target
             </Text>
-            <Text className="text-3xl font-bold text-fixo-500">
-              {Math.floor(targetCents / 100).toLocaleString("de-DE")}{" "}
-              {getCurrencySymbol(currency)}
-            </Text>
+            <CurrencyText
+              cents={targetCents}
+              className="text-3xl font-bold text-fixo-500"
+              suffixFormat
+            />
           </View>
         </View>
       )}

@@ -1,8 +1,4 @@
-import {
-  render,
-  screen,
-  waitFor,
-} from "@testing-library/react-native";
+import { render, screen, waitFor } from "@testing-library/react-native";
 import HomeScreen from "./HomeScreen";
 
 // Stable mock references to prevent infinite re-render loops

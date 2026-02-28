@@ -38,7 +38,8 @@ export default function AddEditExpenseScreen() {
 
   const [name, setName] = useState("");
   const [amountText, setAmountText] = useState("");
-  const [billingFrequency, setBillingFrequency] = useState<BillingFrequency>("monthly");
+  const [billingFrequency, setBillingFrequency] =
+    useState<BillingFrequency>("monthly");
   const [walletId, setWalletId] = useState("");
   const [essential, setEssential] = useState(false);
   const [notes, setNotes] = useState("");

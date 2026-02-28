@@ -120,8 +120,14 @@ function WalletsStackNavigator() {
     <WalletsStack.Navigator screenOptions={stackOptions}>
       <WalletsStack.Screen name="Wallets" component={WalletsScreen} />
       <WalletsStack.Screen name="WalletDetail" component={WalletDetailScreen} />
-      <WalletsStack.Screen name="AddEditWallet" component={AddEditWalletScreen} />
-      <WalletsStack.Screen name="AddEditExpense" component={AddEditExpenseScreen} />
+      <WalletsStack.Screen
+        name="AddEditWallet"
+        component={AddEditWalletScreen}
+      />
+      <WalletsStack.Screen
+        name="AddEditExpense"
+        component={AddEditExpenseScreen}
+      />
     </WalletsStack.Navigator>
   );
 }
@@ -129,7 +135,10 @@ function WalletsStackNavigator() {
 function EmergencyStackNavigator() {
   return (
     <EmergencyStack.Navigator screenOptions={stackOptions}>
-      <EmergencyStack.Screen name="EmergencyFund" component={EmergencyFundScreen} />
+      <EmergencyStack.Screen
+        name="EmergencyFund"
+        component={EmergencyFundScreen}
+      />
     </EmergencyStack.Navigator>
   );
 }
@@ -145,7 +154,10 @@ function SettingsStackNavigator() {
 const TAB_ICONS: Record<string, { outline: string; filled: string }> = {
   Home: { outline: "home-outline", filled: "home" },
   Wallets: { outline: "wallet-outline", filled: "wallet" },
-  Emergency: { outline: "shield-checkmark-outline", filled: "shield-checkmark" },
+  Emergency: {
+    outline: "shield-checkmark-outline",
+    filled: "shield-checkmark",
+  },
   Settings: { outline: "settings-outline", filled: "settings" },
 };
 

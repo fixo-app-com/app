@@ -1,4 +1,3 @@
-import { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -10,11 +9,9 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useAuth } from "../../../contexts/AuthContext";
 import { useData } from "../../../contexts/DataContext";
-import { getExpenses } from "../../../services/firestore";
 import type { HomeStackParamList } from "../../../navigation/RootNavigator";
-import { roundToUnit, getDisplayAmountCents, type Expense } from "../../../types/firestore";
+import { roundToUnit, getDisplayAmountCents } from "../../../types/firestore";
 import type { ViewMode } from "../../../contexts/DataContext";
 import {
   Card,
@@ -28,16 +25,14 @@ import {
   CurrencyText,
   FloatingAction,
 } from "../../../components";
-import { getCurrencySymbol } from "../../../constants/banks";
+import { useFetchExpenses } from "../../../hooks/useFetchExpenses";
 
 type Nav = NativeStackNavigationProp<HomeStackParamList, "Home">;
 
 export default function HomeScreen() {
   const navigation = useNavigation<Nav>();
-  const { user } = useAuth();
   const {
     categories,
-    currency,
     monthlyBudgetCents,
     setMonthlyBudget,
     viewMode,
@@ -45,32 +40,7 @@ export default function HomeScreen() {
     isLoading: dataLoading,
   } = useData();
 
-  const [expenses, setExpenses] = useState<Expense[]>([]);
-  const [loadingExpenses, setLoadingExpenses] = useState(true);
-
-  const fetchExpenses = useCallback(async () => {
-    if (!user) return;
-    setLoadingExpenses(true);
-    try {
-      const data = await getExpenses(user.uid);
-      setExpenses(data);
-    } catch (error) {
-      console.error("Failed to load expenses:", error);
-    } finally {
-      setLoadingExpenses(false);
-    }
-  }, [user]);
-
-  useEffect(() => {
-    fetchExpenses();
-  }, [fetchExpenses]);
-
-  useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
-      fetchExpenses();
-    });
-    return unsubscribe;
-  }, [navigation, fetchExpenses]);
+  const { expenses, loading: loadingExpenses } = useFetchExpenses();
 
   const isYearly = viewMode === "yearly";
 
@@ -86,14 +56,21 @@ export default function HomeScreen() {
     return expenses.filter((e) => e.categoryId === categoryId).length;
   }
 
-  const rawTotalCents = expenses.reduce((sum, e) => sum + getDisplayAmountCents(e, viewMode), 0);
+  const rawTotalCents = expenses.reduce(
+    (sum, e) => sum + getDisplayAmountCents(e, viewMode),
+    0,
+  );
   const totalCents = roundToUnit(rawTotalCents);
-  const budgetDisplayCents = isYearly ? monthlyBudgetCents * 12 : monthlyBudgetCents;
+  const budgetDisplayCents = isYearly
+    ? monthlyBudgetCents * 12
+    : monthlyBudgetCents;
   const availableCents = budgetDisplayCents - rawTotalCents;
   const hasBudget = monthlyBudgetCents > 0;
 
   function handleBudgetEdit() {
-    const displayCents = isYearly ? monthlyBudgetCents * 12 : monthlyBudgetCents;
+    const displayCents = isYearly
+      ? monthlyBudgetCents * 12
+      : monthlyBudgetCents;
     const current = hasBudget ? String(Math.floor(displayCents / 100)) : "";
     const label = isYearly ? "Yearly budget" : "Monthly budget";
     Alert.prompt(
@@ -135,8 +112,12 @@ export default function HomeScreen() {
           >
             <Text className="text-sm font-medium text-gray-500">
               {hasBudget
-                ? isYearly ? "Yearly budget" : "Monthly budget"
-                : isYearly ? "Set yearly budget" : "Set monthly budget"}
+                ? isYearly
+                  ? "Yearly budget"
+                  : "Monthly budget"
+                : isYearly
+                  ? "Set yearly budget"
+                  : "Set monthly budget"}
             </Text>
             <Ionicons
               name="pencil-outline"
@@ -150,10 +131,11 @@ export default function HomeScreen() {
             <>
               {/* Budget amount */}
               <Pressable onPress={handleBudgetEdit}>
-                <Text className="mt-1 text-center text-4xl font-bold text-gray-900">
-                  {Math.floor(budgetDisplayCents / 100).toLocaleString("de-DE")}{" "}
-                  {getCurrencySymbol(currency)}
-                </Text>
+                <CurrencyText
+                  cents={budgetDisplayCents}
+                  className="mt-1 text-center text-4xl font-bold text-gray-900"
+                  suffixFormat
+                />
               </Pressable>
 
               {/* Breakdown */}

@@ -45,8 +45,6 @@ export const BANKS: BankInfo[] = [
   { key: "widiba", name: "Widiba", color: "#FFC000", abbr: "WI" },
 ];
 
-export const DEFAULT_BANK_KEY = "";
-
 export function getBankByKey(key: string): BankInfo | undefined {
   return BANKS.find((b) => b.key === key);
 }

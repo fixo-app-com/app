@@ -1,4 +1,3 @@
-import { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -12,13 +11,9 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useData } from "../../../contexts/DataContext";
-import {
-  getExpenses,
-  deleteExpense,
-  deleteWallet,
-} from "../../../services/firestore";
+import { deleteExpense, deleteWallet } from "../../../services/firestore";
 import type { WalletsStackParamList } from "../../../navigation/RootNavigator";
-import { roundToUnit, getDisplayAmountCents, type Expense } from "../../../types/firestore";
+import { roundToUnit, getDisplayAmountCents } from "../../../types/firestore";
 import {
   Button,
   EmptyState,
@@ -26,6 +21,7 @@ import {
   ScreenWrapper,
 } from "../../../design-system";
 import { CurrencyText, ExpenseCard } from "../../../components";
+import { useFetchExpenses } from "../../../hooks/useFetchExpenses";
 
 type Nav = NativeStackNavigationProp<WalletsStackParamList, "WalletDetail">;
 type Route = RouteProp<WalletsStackParamList, "WalletDetail">;
@@ -37,32 +33,7 @@ export default function WalletDetailScreen() {
   const { user } = useAuth();
   const { categories, viewMode } = useData();
 
-  const [expenses, setExpenses] = useState<Expense[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchExpenses = useCallback(async () => {
-    if (!user) return;
-    setLoading(true);
-    try {
-      const data = await getExpenses(user.uid, { walletId });
-      setExpenses(data);
-    } catch (error) {
-      console.error("Failed to load expenses:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [user, walletId]);
-
-  useEffect(() => {
-    fetchExpenses();
-  }, [fetchExpenses]);
-
-  useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
-      fetchExpenses();
-    });
-    return unsubscribe;
-  }, [navigation, fetchExpenses]);
+  const { expenses, loading, setExpenses } = useFetchExpenses({ walletId });
 
   function getCategoryName(categoryId: string): string {
     return categories.find((c) => c.id === categoryId)?.name ?? "—";
@@ -154,7 +125,9 @@ export default function WalletDetailScreen() {
       ) : (
         <FlatList
           data={[...expenses].sort(
-            (a, b) => getDisplayAmountCents(b, viewMode) - getDisplayAmountCents(a, viewMode),
+            (a, b) =>
+              getDisplayAmountCents(b, viewMode) -
+              getDisplayAmountCents(a, viewMode),
           )}
           keyExtractor={(item) => item.id}
           contentContainerStyle={{ paddingBottom: 160 }}

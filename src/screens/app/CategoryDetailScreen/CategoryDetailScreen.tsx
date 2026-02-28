@@ -1,4 +1,3 @@
-import { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -13,12 +12,11 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useData } from "../../../contexts/DataContext";
 import {
-  getExpenses,
   deleteExpense,
   deleteExpensesByCategory,
 } from "../../../services/firestore";
 import type { HomeStackParamList } from "../../../navigation/RootNavigator";
-import { roundToUnit, getDisplayAmountCents, type Expense } from "../../../types/firestore";
+import { roundToUnit, getDisplayAmountCents } from "../../../types/firestore";
 import {
   Button,
   EmptyState,
@@ -26,6 +24,7 @@ import {
   ScreenWrapper,
 } from "../../../design-system";
 import { CurrencyText, ExpenseCard, FloatingAction } from "../../../components";
+import { useFetchExpenses } from "../../../hooks/useFetchExpenses";
 
 type Nav = NativeStackNavigationProp<HomeStackParamList, "CategoryDetail">;
 type Route = RouteProp<HomeStackParamList, "CategoryDetail">;
@@ -39,32 +38,7 @@ export default function CategoryDetailScreen() {
 
   const category = categories.find((c) => c.id === categoryId);
 
-  const [expenses, setExpenses] = useState<Expense[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchExpenses = useCallback(async () => {
-    if (!user) return;
-    setLoading(true);
-    try {
-      const data = await getExpenses(user.uid, { categoryId });
-      setExpenses(data);
-    } catch (error) {
-      console.error("Failed to load expenses:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [user, categoryId]);
-
-  useEffect(() => {
-    fetchExpenses();
-  }, [fetchExpenses]);
-
-  useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
-      fetchExpenses();
-    });
-    return unsubscribe;
-  }, [navigation, fetchExpenses]);
+  const { expenses, loading, setExpenses } = useFetchExpenses({ categoryId });
 
   function getWalletName(walletId: string): string {
     return wallets.find((w) => w.id === walletId)?.name ?? "—";

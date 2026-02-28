@@ -55,6 +55,7 @@ const mockExpenses = [
 ];
 
 jest.mock("@react-native-community/slider", () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { View } = require("react-native");
   return {
     __esModule: true,

@@ -20,7 +20,9 @@ export interface Expense {
 }
 
 /** Returns the monthly equivalent in cents (precise to the cent). */
-export function getMonthlyAmountCents(expense: Pick<Expense, "amountCents" | "billingFrequency">): number {
+function getMonthlyAmountCents(
+  expense: Pick<Expense, "amountCents" | "billingFrequency">,
+): number {
   if (expense.billingFrequency === "yearly") {
     return Math.round(expense.amountCents / 12);
   }
