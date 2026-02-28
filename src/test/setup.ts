@@ -109,6 +109,15 @@ jest.mock("@react-native-firebase/firestore", () => {
 });
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
+// Mock @react-native-firebase/crashlytics
+jest.mock("@react-native-firebase/crashlytics", () => ({
+  __esModule: true,
+  default: jest.fn(() => ({
+    recordError: jest.fn(),
+    log: jest.fn(),
+  })),
+}));
+
 // Mock react-native-screens
 jest.mock("react-native-screens", () => {
   const actual = jest.requireActual("react-native-screens");

@@ -15,7 +15,10 @@
       "supportsTablet": false,
       "bundleIdentifier": "com.memmof.fixo",
       "buildNumber": "1",
-      "googleServicesFile": "./GoogleService-Info.plist"
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "platforms": [
       "ios"
@@ -23,6 +26,7 @@
     "plugins": [
       "@react-native-firebase/app",
       "@react-native-firebase/auth",
+      "@react-native-firebase/crashlytics",
       "@react-native-google-signin/google-signin",
       "./plugins/withFirebaseIOS",
       [
