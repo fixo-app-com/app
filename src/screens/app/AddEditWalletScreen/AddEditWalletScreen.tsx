@@ -13,6 +13,7 @@ import {
   ScreenWrapper,
   SectionHeader,
 } from "../../../design-system";
+import { useFetchExpenses } from "../../../hooks/useFetchExpenses";
 
 type Nav = NativeStackNavigationProp<WalletsStackParamList, "AddEditWallet">;
 type Route = RouteProp<WalletsStackParamList, "AddEditWallet">;
@@ -24,6 +25,10 @@ export default function AddEditWalletScreen() {
   const { addWallet, updateWallet, deleteWallet } = useData();
 
   const isEditing = !!walletId;
+  const { expenses } = useFetchExpenses(
+    isEditing ? { walletId } : undefined,
+  );
+  const hasExpenses = expenses.length > 0;
 
   const [name, setName] = useState(walletName ?? "");
   const [icon, setIcon] = useState(walletIcon ?? "");
@@ -136,7 +141,7 @@ export default function AddEditWalletScreen() {
         loading={saving}
       />
 
-      {isEditing && (
+      {isEditing && !hasExpenses && (
         <View className="mt-3">
           <Button
             label="Delete wallet"

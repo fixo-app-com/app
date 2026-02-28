@@ -11,15 +11,10 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useData } from "../../../contexts/DataContext";
-import { deleteExpense, deleteWallet } from "../../../services/firestore";
+import { deleteExpense } from "../../../services/firestore";
 import type { WalletsStackParamList } from "../../../navigation/RootNavigator";
 import { roundToUnit, getDisplayAmountCents } from "../../../types/firestore";
-import {
-  Button,
-  EmptyState,
-  ScreenHeader,
-  ScreenWrapper,
-} from "../../../design-system";
+import { EmptyState, ScreenHeader, ScreenWrapper } from "../../../design-system";
 import { CurrencyText, ExpenseCard } from "../../../components";
 import { useFetchExpenses } from "../../../hooks/useFetchExpenses";
 
@@ -52,25 +47,6 @@ export default function WalletDetailScreen() {
             setExpenses((prev) => prev.filter((e) => e.id !== expenseId));
           } catch (error) {
             if (__DEV__) console.error("Failed to delete expense:", error);
-          }
-        },
-      },
-    ]);
-  }
-
-  function handleDeleteWallet() {
-    Alert.alert("Delete wallet", `Delete "${walletName}"?`, [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Delete",
-        style: "destructive",
-        onPress: async () => {
-          if (!user) return;
-          try {
-            await deleteWallet(user.uid, walletId);
-            navigation.goBack();
-          } catch (error) {
-            if (__DEV__) console.error("Failed to delete wallet:", error);
           }
         },
       },
@@ -151,20 +127,10 @@ export default function WalletDetailScreen() {
           ListEmptyComponent={
             <EmptyState
               icon="receipt-outline"
-              message="No expenses for this wallet."
+              message={"No expenses for this wallet.\nAdd expenses from a category."}
             />
           }
-          ListFooterComponent={
-            expenses.length === 0 ? (
-              <View className="mt-8">
-                <Button
-                  label="Delete wallet"
-                  variant="destructive"
-                  onPress={handleDeleteWallet}
-                />
-              </View>
-            ) : null
-          }
+          ListFooterComponent={<View className="h-8" />}
         />
       )}
     </ScreenWrapper>

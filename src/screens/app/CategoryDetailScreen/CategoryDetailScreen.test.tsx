@@ -54,6 +54,6 @@ describe("CategoryDetailScreen", () => {
 
   it("renders add expense button", () => {
     render(<CategoryDetailScreen />);
-    expect(screen.getByText("+ Add expense")).toBeOnTheScreen();
+    expect(screen.getByText("Add expense")).toBeOnTheScreen();
   });
 });

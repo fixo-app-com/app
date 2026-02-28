@@ -59,7 +59,7 @@ export default function WalletsScreen() {
       )}
 
       <FloatingAction
-        label="+ Add wallet"
+        label="Add wallet"
         onPress={() => navigation.navigate("AddEditWallet", {})}
       />
     </ScreenWrapper>

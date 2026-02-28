@@ -2,7 +2,9 @@ import { useState } from "react";
 import { Alert, View } from "react-native";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useAuth } from "../../../contexts/AuthContext";
 import { useData } from "../../../contexts/DataContext";
+import { deleteExpensesByCategory } from "../../../services/firestore";
 import type { HomeStackParamList } from "../../../navigation/RootNavigator";
 import {
   Button,
@@ -85,13 +87,39 @@ export default function AddEditCategoryScreen() {
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
   const { categoryId, categoryName, categoryIcon } = route.params ?? {};
-  const { addCategory, updateCategory } = useData();
+  const { user } = useAuth();
+  const { addCategory, updateCategory, deleteCategory } = useData();
 
   const isEditing = !!categoryId;
 
   const [name, setName] = useState(categoryName ?? "");
   const [icon, setIcon] = useState(categoryIcon ?? "📦");
   const [saving, setSaving] = useState(false);
+
+  async function handleDelete() {
+    if (!categoryId || !user) return;
+
+    Alert.alert(
+      "Delete category",
+      `Delete "${name}"? All expenses in this category will also be deleted. This action cannot be undone.`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await deleteExpensesByCategory(user.uid, categoryId);
+              await deleteCategory(categoryId);
+              navigation.goBack();
+            } catch (error) {
+              if (__DEV__) console.error("Failed to delete category:", error);
+            }
+          },
+        },
+      ],
+    );
+  }
 
   async function handleSave() {
     const trimmed = name.trim();
@@ -147,6 +175,16 @@ export default function AddEditCategoryScreen() {
         onPress={handleSave}
         loading={saving}
       />
+
+      {isEditing && (
+        <View className="mt-3">
+          <Button
+            label="Delete category"
+            variant="destructive"
+            onPress={handleDelete}
+          />
+        </View>
+      )}
     </ScreenWrapper>
   );
 }

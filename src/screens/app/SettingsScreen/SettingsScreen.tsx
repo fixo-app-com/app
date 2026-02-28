@@ -109,7 +109,9 @@ export default function SettingsScreen() {
         loading={isDeleting}
       />
 
-      <Text className="mt-6 text-center text-xs text-gray-400">
+      <View className="flex-1" />
+
+      <Text className="mb-4 mt-12 text-center text-xs text-gray-400">
         Fixo v{Constants.expoConfig?.version}
       </Text>
     </ScreenWrapper>

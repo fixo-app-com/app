@@ -209,7 +209,7 @@ export default function HomeScreen() {
       )}
 
       <FloatingAction
-        label="+ Add category"
+        label="Add category"
         onPress={() => navigation.navigate("AddEditCategory", {})}
       />
     </ScreenWrapper>
