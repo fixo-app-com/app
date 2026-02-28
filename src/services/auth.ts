@@ -3,6 +3,7 @@ import {
   GoogleSignin,
   isSuccessResponse,
 } from "@react-native-google-signin/google-signin";
+import { deleteAllUserData } from "./firestore";
 
 const WEB_CLIENT_ID =
   "903158549460-8o3b9bgcc72voq0mr3cu208g2a0f9pdp.apps.googleusercontent.com";
@@ -57,6 +58,28 @@ export async function signInWithGoogle(): Promise<FirebaseAuthTypes.UserCredenti
   return auth().signInWithCredential(credential);
 }
 
+export async function deleteAccount(): Promise<void> {
+  const currentUser = auth().currentUser;
+  if (!currentUser) {
+    throw new Error("No user is currently signed in.");
+  }
+
+  await deleteAllUserData(currentUser.uid);
+
+  const isGoogleUser = currentUser.providerData.some(
+    (p) => p.providerId === "google.com",
+  );
+  if (isGoogleUser) {
+    try {
+      await GoogleSignin.signOut();
+    } catch {
+      // ignore
+    }
+  }
+
+  await currentUser.delete();
+}
+
 export async function signOut(): Promise<void> {
   const currentUser = auth().currentUser;
   if (currentUser?.providerData.some((p) => p.providerId === "google.com")) {
@@ -67,6 +90,11 @@ export async function signOut(): Promise<void> {
     }
   }
   return auth().signOut();
+}
+
+export async function checkEmailExists(email: string): Promise<boolean> {
+  const methods = await auth().fetchSignInMethodsForEmail(email);
+  return methods.length > 0;
 }
 
 export async function resetPassword(email: string): Promise<void> {
@@ -101,13 +129,15 @@ export function getFirebaseAuthErrorMessage(code: string): string {
     case "auth/email-already-in-use":
       return "An account with this email already exists.";
     case "auth/weak-password":
-      return "Password must be at least 6 characters.";
+      return "Password is too weak. Use at least 8 characters with uppercase, number, and special character.";
     case "auth/too-many-requests":
       return "Too many attempts. Please try again later.";
     case "auth/network-request-failed":
       return "Network error. Check your connection.";
     case "auth/account-exists-with-different-credential":
       return "An account with this email already exists. Sign in with your password to link Google.";
+    case "auth/requires-recent-login":
+      return "For security, please sign out and sign back in before deleting your account.";
     default:
       return "An error occurred. Please try again.";
   }

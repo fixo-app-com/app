@@ -89,6 +89,10 @@ jest.mock("@react-native-firebase/firestore", () => {
   const mockFirestore = Object.assign(
     jest.fn(() => ({
       collection: mockCollection,
+      batch: jest.fn(() => ({
+        delete: jest.fn(),
+        commit: jest.fn(() => Promise.resolve()),
+      })),
     })),
     {
       FieldValue: {

@@ -15,8 +15,11 @@ import {
   signInWithEmail,
   signInWithGoogle,
   linkGoogleToEmailAccount,
+  checkEmailExists,
+  resetPassword,
   getFirebaseAuthErrorMessage,
 } from "../../../services/auth";
+import { ENABLE_SOCIAL_LOGIN } from "../../../constants/features";
 import { Button, Input } from "../../../design-system";
 import splashIcon from "../../../../assets/splash-icon.png";
 
@@ -38,14 +41,54 @@ export default function SignInScreen({ navigation, route }: Props) {
     setIsLoading(true);
     try {
       if (pendingGoogleIdToken) {
-        await linkGoogleToEmailAccount(email, password, pendingGoogleIdToken);
+        await linkGoogleToEmailAccount(email.trim(), password, pendingGoogleIdToken);
         Alert.alert("Success", "Google account linked successfully!");
       } else {
-        await signInWithEmail(email, password);
+        await signInWithEmail(email.trim(), password);
       }
     } catch (error) {
       const code = (error as { code?: string }).code ?? "";
-      Alert.alert("Error", getFirebaseAuthErrorMessage(code));
+
+      if (code === "auth/invalid-credential") {
+        try {
+          const exists = await checkEmailExists(email.trim());
+          if (!exists) {
+            Alert.alert(
+              "Account not found",
+              "No account is registered with this email. Would you like to create one?",
+              [
+                { text: "Cancel", style: "cancel" },
+                {
+                  text: "Sign Up",
+                  onPress: () => navigation.navigate("SignUp"),
+                },
+              ],
+            );
+          } else {
+            Alert.alert(
+              "Incorrect password",
+              "The password you entered is incorrect.",
+              [
+                { text: "Try again", style: "cancel" },
+                {
+                  text: "Reset password",
+                  onPress: () => {
+                    resetPassword(email.trim());
+                    Alert.alert(
+                      "Email sent",
+                      "Check your inbox for a password reset link.",
+                    );
+                  },
+                },
+              ],
+            );
+          }
+        } catch {
+          Alert.alert("Error", getFirebaseAuthErrorMessage(code));
+        }
+      } else {
+        Alert.alert("Error", getFirebaseAuthErrorMessage(code));
+      }
     } finally {
       setIsLoading(false);
     }
@@ -91,7 +134,7 @@ export default function SignInScreen({ navigation, route }: Props) {
           testID="logo"
         />
 
-        {pendingGoogleIdToken && (
+        {ENABLE_SOCIAL_LOGIN && pendingGoogleIdToken && (
           <View className="mb-4 rounded-lg bg-fixo-100 p-3">
             <Text className="text-center text-sm text-fixo-600">
               Sign in with your password to link your Google account.
@@ -134,12 +177,12 @@ export default function SignInScreen({ navigation, route }: Props) {
         </Pressable>
 
         {/* Sign in button */}
-        <View className="mb-4">
+        <View className={ENABLE_SOCIAL_LOGIN ? "mb-4" : "mb-8"}>
           <Button label="Sign In" onPress={handleSignIn} loading={isLoading} />
         </View>
 
-        {/* Divider */}
-        {!pendingGoogleIdToken && (
+        {/* Social login */}
+        {ENABLE_SOCIAL_LOGIN && !pendingGoogleIdToken && (
           <>
             <View className="mb-4 flex-row items-center">
               <View className="h-px flex-1 bg-gray-300" />

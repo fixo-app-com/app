@@ -1,7 +1,10 @@
-import { Text, View } from "react-native";
+import { useState } from "react";
+import { Alert, Linking, Text, View } from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import Constants from "expo-constants";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useData } from "../../../contexts/DataContext";
-import { signOut } from "../../../services/auth";
+import { signOut, deleteAccount } from "../../../services/auth";
 import { CURRENCIES } from "../../../constants/banks";
 import {
   Button,
@@ -14,6 +17,37 @@ import {
 export default function SettingsScreen() {
   const { user } = useAuth();
   const { currency, setCurrency } = useData();
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  function handleDeleteAccount() {
+    Alert.alert(
+      "Delete Account",
+      "This will permanently delete your account and all your data. This action cannot be undone.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            setIsDeleting(true);
+            try {
+              await deleteAccount();
+            } catch (error) {
+              const code = (error as { code?: string }).code ?? "";
+              Alert.alert(
+                "Error",
+                code === "auth/requires-recent-login"
+                  ? "For security, please sign out and sign back in before deleting your account."
+                  : "Failed to delete account. Please try again.",
+              );
+            } finally {
+              setIsDeleting(false);
+            }
+          },
+        },
+      ],
+    );
+  }
 
   return (
     <ScreenWrapper scroll>
@@ -42,9 +76,42 @@ export default function SettingsScreen() {
         compact
       />
 
+      <SectionHeader title="Legal" />
+
+      <FormRow
+        label="Privacy Policy"
+        first
+        onPress={() => Linking.openURL("https://www.fixo-app.com/privacy")}
+        right={<Ionicons name="chevron-forward" size={16} color="#9ca3af" />}
+      />
+      <FormRow
+        label="Terms of Service"
+        onPress={() => Linking.openURL("https://www.fixo-app.com/terms")}
+        right={<Ionicons name="chevron-forward" size={16} color="#9ca3af" />}
+      />
+      <FormRow
+        label="Support"
+        last
+        onPress={() => Linking.openURL("https://www.fixo-app.com/support")}
+        right={<Ionicons name="chevron-forward" size={16} color="#9ca3af" />}
+      />
+
       <View className="mt-8" />
 
       <Button label="Sign out" variant="secondary" onPress={() => signOut()} />
+
+      <View className="mt-3" />
+
+      <Button
+        label="Delete Account"
+        variant="destructive"
+        onPress={handleDeleteAccount}
+        loading={isDeleting}
+      />
+
+      <Text className="mt-6 text-center text-xs text-gray-400">
+        Fixo v{Constants.expoConfig?.version}
+      </Text>
     </ScreenWrapper>
   );
 }

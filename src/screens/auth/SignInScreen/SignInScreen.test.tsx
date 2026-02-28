@@ -27,9 +27,9 @@ describe("SignInScreen", () => {
     expect(screen.getByText("Sign In")).toBeOnTheScreen();
   });
 
-  it("renders Google sign in button", () => {
+  it("hides social login buttons when ENABLE_SOCIAL_LOGIN is false", () => {
     render(<SignInScreen navigation={mockNavigation} route={mockRoute} />);
-    expect(screen.getByText("Continue with Google")).toBeOnTheScreen();
+    expect(screen.queryByText("Continue with Google")).toBeNull();
   });
 
   it("renders forgot password link", () => {

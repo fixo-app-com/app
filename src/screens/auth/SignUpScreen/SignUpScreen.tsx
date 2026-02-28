@@ -16,6 +16,7 @@ import {
   signInWithGoogle,
   getFirebaseAuthErrorMessage,
 } from "../../../services/auth";
+import { ENABLE_SOCIAL_LOGIN } from "../../../constants/features";
 import { Button, Input } from "../../../design-system";
 import splashIcon from "../../../../assets/splash-icon.png";
 
@@ -27,9 +28,22 @@ export default function SignUpScreen({ navigation }: Props) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const passwordRules = [
+    { label: "At least 8 characters", met: password.length >= 8 },
+    { label: "One uppercase letter", met: /[A-Z]/.test(password) },
+    { label: "One number", met: /[0-9]/.test(password) },
+    { label: "One special character", met: /[^A-Za-z0-9]/.test(password) },
+  ];
+  const allRulesMet = passwordRules.every((r) => r.met);
+
   async function handleSignUp() {
     if (!email.trim() || !password.trim() || !confirmPassword.trim()) {
       Alert.alert("Error", "Please fill in all fields.");
+      return;
+    }
+
+    if (!allRulesMet) {
+      Alert.alert("Error", "Please meet all password requirements.");
       return;
     }
 
@@ -38,14 +52,9 @@ export default function SignUpScreen({ navigation }: Props) {
       return;
     }
 
-    if (password.length < 6) {
-      Alert.alert("Error", "Password must be at least 6 characters.");
-      return;
-    }
-
     setIsLoading(true);
     try {
-      await signUpWithEmail(email, password);
+      await signUpWithEmail(email.trim(), password);
     } catch (error) {
       const code = (error as { code?: string }).code ?? "";
       Alert.alert("Error", getFirebaseAuthErrorMessage(code));
@@ -124,29 +133,55 @@ export default function SignUpScreen({ navigation }: Props) {
           <Button label="Sign Up" onPress={handleSignUp} loading={isLoading} />
         </View>
 
-        {/* Divider */}
-        <View className="mb-4 flex-row items-center">
-          <View className="h-px flex-1 bg-gray-300" />
-          <Text className="mx-4 text-sm text-gray-400">or</Text>
-          <View className="h-px flex-1 bg-gray-300" />
-        </View>
+        {/* Password rules checklist */}
+        {password.length > 0 && (
+          <View className="mb-6">
+            {passwordRules.map((rule) => (
+              <View key={rule.label} className="flex-row items-center py-0.5">
+                <Ionicons
+                  name={rule.met ? "checkmark-circle" : "ellipse-outline"}
+                  size={14}
+                  color={rule.met ? "#10b981" : "#9ca3af"}
+                />
+                <Text
+                  className={`ml-2 text-xs ${rule.met ? "text-gray-400" : "text-gray-500"}`}
+                  style={rule.met ? { textDecorationLine: "line-through" } : undefined}
+                >
+                  {rule.label}
+                </Text>
+              </View>
+            ))}
+          </View>
+        )}
 
-        {/* Google Sign-Up button */}
-        <View className="mb-8">
-          <Pressable
-            onPress={handleGoogleSignUp}
-            disabled={isLoading}
-            className="flex-row items-center justify-center rounded-xl border border-gray-300 bg-white py-3.5"
-            style={({ pressed }) => ({
-              opacity: pressed || isLoading ? 0.7 : 1,
-            })}
-          >
-            <Ionicons name="logo-google" size={18} color="#4285F4" />
-            <Text className="ml-2 text-base font-semibold text-gray-700">
-              Continue with Google
-            </Text>
-          </Pressable>
-        </View>
+        {/* Social login */}
+        {ENABLE_SOCIAL_LOGIN && (
+          <>
+            {/* Divider */}
+            <View className="mb-4 flex-row items-center">
+              <View className="h-px flex-1 bg-gray-300" />
+              <Text className="mx-4 text-sm text-gray-400">or</Text>
+              <View className="h-px flex-1 bg-gray-300" />
+            </View>
+
+            {/* Google Sign-Up button */}
+            <View className="mb-8">
+              <Pressable
+                onPress={handleGoogleSignUp}
+                disabled={isLoading}
+                className="flex-row items-center justify-center rounded-xl border border-gray-300 bg-white py-3.5"
+                style={({ pressed }) => ({
+                  opacity: pressed || isLoading ? 0.7 : 1,
+                })}
+              >
+                <Ionicons name="logo-google" size={18} color="#4285F4" />
+                <Text className="ml-2 text-base font-semibold text-gray-700">
+                  Continue with Google
+                </Text>
+              </Pressable>
+            </View>
+          </>
+        )}
 
         {/* Sign in link */}
         <View className="flex-row justify-center">

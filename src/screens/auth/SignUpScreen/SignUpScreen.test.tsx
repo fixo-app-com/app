@@ -27,6 +27,11 @@ describe("SignUpScreen", () => {
     expect(screen.getByText("Sign Up")).toBeOnTheScreen();
   });
 
+  it("hides social login buttons when ENABLE_SOCIAL_LOGIN is false", () => {
+    render(<SignUpScreen navigation={mockNavigation} route={mockRoute} />);
+    expect(screen.queryByText("Continue with Google")).toBeNull();
+  });
+
   it("renders sign in link", () => {
     render(<SignUpScreen navigation={mockNavigation} route={mockRoute} />);
     expect(screen.getByText("Sign In")).toBeOnTheScreen();

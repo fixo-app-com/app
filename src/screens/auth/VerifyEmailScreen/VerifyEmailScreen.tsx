@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Alert, Text, View } from "react-native";
+import auth from "@react-native-firebase/auth";
 import { useAuth } from "../../../contexts/AuthContext";
 import {
   resendVerificationEmail,
@@ -30,6 +31,13 @@ export default function VerifyEmailScreen() {
     setIsChecking(true);
     try {
       await reloadUser();
+      const refreshed = auth().currentUser;
+      if (refreshed && !refreshed.emailVerified) {
+        Alert.alert(
+          "Not verified yet",
+          "Your email is not verified yet. Please check your inbox or spam folder and tap the verification link.",
+        );
+      }
     } catch {
       Alert.alert("Error", "Could not check verification status. Try again.");
     } finally {
@@ -50,7 +58,7 @@ export default function VerifyEmailScreen() {
       <Text className="mb-8 text-center text-base text-gray-400">
         We sent a verification link to{"\n"}
         <Text className="text-gray-900">{user?.email}</Text>
-        {"\n"}Check your inbox and tap the link to continue.
+        {"\n"}Check your inbox or spam folder and tap the link to continue.
       </Text>
 
       {/* Check verification button */}

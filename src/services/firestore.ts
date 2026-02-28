@@ -196,6 +196,25 @@ export async function deleteWallet(
   await walletsRef(userId).doc(walletId).delete();
 }
 
+// --- Account Deletion ---
+
+async function deleteCollection(
+  ref: FirebaseFirestoreTypes.CollectionReference,
+): Promise<void> {
+  const snapshot = await ref.get();
+  if (snapshot.empty) return;
+  const batch = firestore().batch();
+  snapshot.docs.forEach((doc) => batch.delete(doc.ref));
+  await batch.commit();
+}
+
+export async function deleteAllUserData(userId: string): Promise<void> {
+  await deleteCollection(categoriesRef(userId));
+  await deleteCollection(expensesRef(userId));
+  await deleteCollection(walletsRef(userId));
+  await usersRef().doc(userId).delete();
+}
+
 // --- User Settings ---
 
 const DEFAULT_SETTINGS: UserSettings = {

@@ -1,10 +1,13 @@
+import { useState } from "react";
 import {
+  Pressable,
   Text,
   TextInput,
   View,
   type KeyboardTypeOptions,
   type TextInputProps,
 } from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 interface InputProps {
   label?: string;
@@ -35,26 +38,53 @@ export function Input({
   editable,
   style,
 }: InputProps) {
+  const [hidden, setHidden] = useState(true);
+  const isPassword = secureTextEntry === true;
+
   return (
     <View>
       {label ? (
         <Text className="mb-2 text-sm text-gray-500">{label}</Text>
       ) : null}
-      <TextInput
-        value={value}
-        onChangeText={onChangeText}
-        placeholder={placeholder}
-        placeholderTextColor="#94a3b8"
-        multiline={multiline}
-        autoFocus={autoFocus}
-        keyboardType={keyboardType}
-        secureTextEntry={secureTextEntry}
-        autoCapitalize={autoCapitalize}
-        autoComplete={autoComplete}
-        editable={editable}
-        className="rounded-xl bg-white px-4 py-3.5 text-base text-gray-900"
-        style={style}
-      />
+      <View className="flex-row items-center rounded-xl bg-white">
+        <TextInput
+          value={value}
+          onChangeText={onChangeText}
+          placeholder={placeholder}
+          placeholderTextColor="#94a3b8"
+          multiline={multiline}
+          autoFocus={autoFocus}
+          keyboardType={keyboardType}
+          secureTextEntry={isPassword && hidden}
+          autoCapitalize={autoCapitalize}
+          autoComplete={autoComplete}
+          editable={editable}
+          style={[
+            {
+              flex: 1,
+              paddingHorizontal: 16,
+              paddingVertical: 16,
+              fontSize: 16,
+              color: "#111827",
+            },
+            style,
+          ]}
+        />
+        {isPassword && (
+          <Pressable
+            onPress={() => setHidden((h) => !h)}
+            className="pr-4"
+            hitSlop={8}
+            testID="toggle-password"
+          >
+            <Ionicons
+              name={hidden ? "eye-off-outline" : "eye-outline"}
+              size={20}
+              color="#9ca3af"
+            />
+          </Pressable>
+        )}
+      </View>
     </View>
   );
 }

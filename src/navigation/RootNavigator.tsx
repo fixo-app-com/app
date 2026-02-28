@@ -248,7 +248,10 @@ export default function RootNavigator() {
     return <AuthNavigator />;
   }
 
-  if (!user.emailVerified) {
+  const isOAuthUser = user.providerData.some(
+    (p) => p.providerId === "google.com",
+  );
+  if (!user.emailVerified && !isOAuthUser) {
     return <VerifyEmailScreen />;
   }
 

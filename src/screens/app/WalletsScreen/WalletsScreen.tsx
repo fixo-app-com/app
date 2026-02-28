@@ -53,12 +53,7 @@ export default function WalletsScreen() {
           )}
           ItemSeparatorComponent={() => <View className="h-3" />}
           ListEmptyComponent={
-            <EmptyState
-              icon="wallet-outline"
-              message="No wallets yet."
-              actionLabel="Add wallet"
-              onAction={() => navigation.navigate("AddEditWallet", {})}
-            />
+            <EmptyState icon="wallet-outline" message="No wallets yet." />
           }
         />
       )}

@@ -203,12 +203,7 @@ export default function HomeScreen() {
           )}
           ItemSeparatorComponent={() => <View className="h-3" />}
           ListEmptyComponent={
-            <EmptyState
-              icon="grid-outline"
-              message="No categories yet."
-              actionLabel="Add category"
-              onAction={() => navigation.navigate("AddEditCategory", {})}
-            />
+            <EmptyState icon="grid-outline" message="No categories yet." />
           }
         />
       )}
