@@ -45,7 +45,7 @@ export default function AddEditWalletScreen() {
       }
       navigation.goBack();
     } catch (error) {
-      console.error("Failed to save wallet:", error);
+      if (__DEV__) console.error("Failed to save wallet:", error);
       Alert.alert("Error", "Failed to save wallet.");
     } finally {
       setSaving(false);
@@ -65,7 +65,7 @@ export default function AddEditWalletScreen() {
             await deleteWallet(walletId);
             navigation.goBack();
           } catch (error) {
-            console.error("Failed to delete wallet:", error);
+            if (__DEV__) console.error("Failed to delete wallet:", error);
           }
         },
       },
@@ -85,6 +85,7 @@ export default function AddEditWalletScreen() {
         onChangeText={setName}
         placeholder="e.g. Revolut, N26..."
         autoFocus
+        maxLength={50}
       />
 
       <SectionHeader title="Bank icon" />

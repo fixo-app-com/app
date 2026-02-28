@@ -83,7 +83,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         checkReady();
       },
       (error) => {
-        console.error("Categories subscription error:", error);
+        if (__DEV__) console.error("Categories subscription error:", error);
         categoriesReady = true;
         checkReady();
       },
@@ -97,7 +97,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         checkReady();
       },
       (error) => {
-        console.error("Wallets subscription error:", error);
+        if (__DEV__) console.error("Wallets subscription error:", error);
         walletsReady = true;
         checkReady();
       },
@@ -112,7 +112,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         checkReady();
       },
       (error) => {
-        console.error("Settings subscription error:", error);
+        if (__DEV__) console.error("Settings subscription error:", error);
         settingsReady = true;
         checkReady();
       },

@@ -109,7 +109,7 @@ export default function AddEditCategoryScreen() {
       }
       navigation.goBack();
     } catch (error) {
-      console.error("Failed to save category:", error);
+      if (__DEV__) console.error("Failed to save category:", error);
       Alert.alert("Error", "Failed to save category.");
     } finally {
       setSaving(false);
@@ -129,6 +129,7 @@ export default function AddEditCategoryScreen() {
         onChangeText={setName}
         placeholder="e.g. Family, Car, Home..."
         autoFocus={!isEditing}
+        maxLength={50}
       />
 
       <SectionHeader title="Icon" />

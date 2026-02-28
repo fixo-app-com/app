@@ -141,9 +141,7 @@ export async function deleteExpensesByCategory(
   const snapshot = await expensesRef(userId)
     .where("categoryId", "==", categoryId)
     .get();
-  const batch = firestore().batch();
-  snapshot.docs.forEach((doc) => batch.delete(doc.ref));
-  await batch.commit();
+  await batchDeleteDocs(snapshot.docs);
   return snapshot.size;
 }
 
@@ -196,6 +194,18 @@ export async function deleteWallet(
   await walletsRef(userId).doc(walletId).delete();
 }
 
+// --- Batch Helpers ---
+
+async function batchDeleteDocs(
+  docs: FirebaseFirestoreTypes.QueryDocumentSnapshot[],
+): Promise<void> {
+  for (let i = 0; i < docs.length; i += 500) {
+    const batch = firestore().batch();
+    docs.slice(i, i + 500).forEach((doc) => batch.delete(doc.ref));
+    await batch.commit();
+  }
+}
+
 // --- Account Deletion ---
 
 async function deleteCollection(
@@ -203,9 +213,7 @@ async function deleteCollection(
 ): Promise<void> {
   const snapshot = await ref.get();
   if (snapshot.empty) return;
-  const batch = firestore().batch();
-  snapshot.docs.forEach((doc) => batch.delete(doc.ref));
-  await batch.commit();
+  await batchDeleteDocs(snapshot.docs);
 }
 
 export async function deleteAllUserData(userId: string): Promise<void> {

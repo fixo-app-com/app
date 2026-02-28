@@ -62,7 +62,7 @@ export default function AddEditExpenseScreen() {
           setNotes(expense.notes);
         }
       } catch (error) {
-        console.error("Failed to load expense:", error);
+        if (__DEV__) console.error("Failed to load expense:", error);
       } finally {
         setLoadingExpense(false);
       }
@@ -74,7 +74,7 @@ export default function AddEditExpenseScreen() {
   function parseAmount(text: string): number | null {
     const cleaned = text.replace(",", ".");
     const num = parseFloat(cleaned);
-    if (isNaN(num) || num < 0) return null;
+    if (isNaN(num) || num < 0 || num > 99_999_999) return null;
     return Math.round(num * 100);
   }
 
@@ -112,7 +112,7 @@ export default function AddEditExpenseScreen() {
       }
       navigation.goBack();
     } catch (error) {
-      console.error("Failed to save expense:", error);
+      if (__DEV__) console.error("Failed to save expense:", error);
       Alert.alert("Error", "Failed to save expense.");
     } finally {
       setSaving(false);
@@ -132,7 +132,7 @@ export default function AddEditExpenseScreen() {
             await deleteExpense(user.uid, expenseId);
             navigation.goBack();
           } catch (error) {
-            console.error("Failed to delete expense:", error);
+            if (__DEV__) console.error("Failed to delete expense:", error);
           }
         },
       },
@@ -160,6 +160,7 @@ export default function AddEditExpenseScreen() {
           value={name}
           onChangeText={setName}
           placeholder="e.g. Netflix, Insurance..."
+          maxLength={100}
         />
 
         <Input
@@ -219,6 +220,7 @@ export default function AddEditExpenseScreen() {
         onChangeText={setNotes}
         placeholder="Optional notes..."
         multiline
+        maxLength={500}
         style={{ minHeight: 80 }}
       />
 

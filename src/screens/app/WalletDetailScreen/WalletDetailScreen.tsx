@@ -51,7 +51,7 @@ export default function WalletDetailScreen() {
             await deleteExpense(user.uid, expenseId);
             setExpenses((prev) => prev.filter((e) => e.id !== expenseId));
           } catch (error) {
-            console.error("Failed to delete expense:", error);
+            if (__DEV__) console.error("Failed to delete expense:", error);
           }
         },
       },
@@ -70,7 +70,7 @@ export default function WalletDetailScreen() {
             await deleteWallet(user.uid, walletId);
             navigation.goBack();
           } catch (error) {
-            console.error("Failed to delete wallet:", error);
+            if (__DEV__) console.error("Failed to delete wallet:", error);
           }
         },
       },

@@ -21,6 +21,7 @@ interface InputProps {
   autoCapitalize?: "none" | "sentences" | "words" | "characters";
   autoComplete?: TextInputProps["autoComplete"];
   editable?: boolean;
+  maxLength?: number;
   style?: object;
 }
 
@@ -36,6 +37,7 @@ export function Input({
   autoCapitalize,
   autoComplete,
   editable,
+  maxLength,
   style,
 }: InputProps) {
   const [hidden, setHidden] = useState(true);
@@ -59,6 +61,7 @@ export function Input({
           autoCapitalize={autoCapitalize}
           autoComplete={autoComplete}
           editable={editable}
+          maxLength={maxLength}
           style={[
             {
               flex: 1,

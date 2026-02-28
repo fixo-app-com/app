@@ -31,7 +31,7 @@ export function useFetchExpenses(filter?: {
       const data = await getExpenses(user.uid, filter);
       setExpenses(data);
     } catch (error) {
-      console.error("Failed to load expenses:", error);
+      if (__DEV__) console.error("Failed to load expenses:", error);
     } finally {
       setLoading(false);
     }
