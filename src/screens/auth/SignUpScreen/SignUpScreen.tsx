@@ -1,5 +1,6 @@
 import { useState } from "react";
 import {
+  ActivityIndicator,
   Alert,
   Image,
   KeyboardAvoidingView,
@@ -14,6 +15,7 @@ import type { AuthStackParamList } from "../../../navigation/RootNavigator";
 import {
   signUpWithEmail,
   signInWithGoogle,
+  signInWithApple,
   getFirebaseAuthErrorMessage,
 } from "../../../services/auth";
 import { ENABLE_SOCIAL_LOGIN } from "../../../constants/features";
@@ -26,7 +28,11 @@ export default function SignUpScreen({ navigation }: Props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [loadingAction, setLoadingAction] = useState<
+    "email" | "apple" | "google" | null
+  >(null);
+
+  const isLoading = loadingAction !== null;
 
   const passwordRules = [
     { label: "At least 8 characters", met: password.length >= 8 },
@@ -52,19 +58,19 @@ export default function SignUpScreen({ navigation }: Props) {
       return;
     }
 
-    setIsLoading(true);
+    setLoadingAction("email");
     try {
       await signUpWithEmail(email.trim(), password);
     } catch (error) {
       const code = (error as { code?: string }).code ?? "";
       Alert.alert("Error", getFirebaseAuthErrorMessage(code));
     } finally {
-      setIsLoading(false);
+      setLoadingAction(null);
     }
   }
 
   async function handleGoogleSignUp() {
-    setIsLoading(true);
+    setLoadingAction("google");
     try {
       await signInWithGoogle();
     } catch (error) {
@@ -73,7 +79,20 @@ export default function SignUpScreen({ navigation }: Props) {
         Alert.alert("Error", getFirebaseAuthErrorMessage(code));
       }
     } finally {
-      setIsLoading(false);
+      setLoadingAction(null);
+    }
+  }
+
+  async function handleAppleSignUp() {
+    setLoadingAction("apple");
+    try {
+      await signInWithApple();
+    } catch (error) {
+      const errorCode = (error as { code?: string }).code ?? "";
+      if (!errorCode.startsWith("auth/")) return;
+      Alert.alert("Error", getFirebaseAuthErrorMessage(errorCode));
+    } finally {
+      setLoadingAction(null);
     }
   }
 
@@ -130,7 +149,7 @@ export default function SignUpScreen({ navigation }: Props) {
 
         {/* Sign up button */}
         <View className="mb-4">
-          <Button label="Sign Up" onPress={handleSignUp} loading={isLoading} />
+          <Button label="Sign Up" onPress={handleSignUp} loading={loadingAction === "email"} />
         </View>
 
         {/* Password rules checklist */}
@@ -164,6 +183,29 @@ export default function SignUpScreen({ navigation }: Props) {
               <View className="h-px flex-1 bg-gray-300" />
             </View>
 
+            {/* Apple Sign-Up button */}
+            <View className="mb-3">
+              <Pressable
+                onPress={handleAppleSignUp}
+                disabled={isLoading}
+                className="flex-row items-center justify-center rounded-xl bg-black py-3.5"
+                style={({ pressed }) => ({
+                  opacity: pressed || isLoading ? 0.7 : 1,
+                })}
+              >
+                {loadingAction === "apple" ? (
+                  <ActivityIndicator size="small" color="#FFFFFF" />
+                ) : (
+                  <>
+                    <Ionicons name="logo-apple" size={18} color="#FFFFFF" />
+                    <Text className="ml-2 text-base font-semibold text-white">
+                      Continue with Apple
+                    </Text>
+                  </>
+                )}
+              </Pressable>
+            </View>
+
             {/* Google Sign-Up button */}
             <View className="mb-8">
               <Pressable
@@ -174,10 +216,16 @@ export default function SignUpScreen({ navigation }: Props) {
                   opacity: pressed || isLoading ? 0.7 : 1,
                 })}
               >
-                <Ionicons name="logo-google" size={18} color="#4285F4" />
-                <Text className="ml-2 text-base font-semibold text-gray-700">
-                  Continue with Google
-                </Text>
+                {loadingAction === "google" ? (
+                  <ActivityIndicator size="small" color="#4285F4" />
+                ) : (
+                  <>
+                    <Ionicons name="logo-google" size={18} color="#4285F4" />
+                    <Text className="ml-2 text-base font-semibold text-gray-700">
+                      Continue with Google
+                    </Text>
+                  </>
+                )}
               </Pressable>
             </View>
           </>

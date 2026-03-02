@@ -16,6 +16,22 @@ jest.mock("@expo/vector-icons/Ionicons", () => ({
   default: "Ionicons",
 }));
 
+// Mock expo-crypto
+jest.mock("expo-crypto", () => ({
+  getRandomValues: jest.fn((arr: Uint8Array) => arr),
+  digestStringAsync: jest.fn(() => Promise.resolve("mocked-hashed-nonce")),
+  CryptoDigestAlgorithm: { SHA256: "SHA-256" },
+}));
+
+// Mock expo-apple-authentication
+jest.mock("expo-apple-authentication", () => ({
+  signInAsync: jest.fn(),
+  AppleAuthenticationScope: {
+    FULL_NAME: 0,
+    EMAIL: 1,
+  },
+}));
+
 // Mock @react-native-firebase/auth
 jest.mock("@react-native-firebase/auth", () => {
   const mockOnAuthStateChanged = jest.fn((callback) => {
@@ -32,12 +48,16 @@ jest.mock("@react-native-firebase/auth", () => {
       signOut: jest.fn(),
       sendPasswordResetEmail: jest.fn(),
       signInWithCredential: jest.fn(),
+      revokeToken: jest.fn(),
       currentUser: null,
     })),
     {
       GoogleAuthProvider: {
         credential: jest.fn(),
       },
+      OAuthProvider: jest.fn(() => ({
+        credential: jest.fn(),
+      })),
     },
   );
 

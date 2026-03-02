@@ -1,3 +1,5 @@
+import * as Crypto from "expo-crypto";
+import * as AppleAuthentication from "expo-apple-authentication";
 import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import {
   GoogleSignin,
@@ -58,6 +60,45 @@ export async function signInWithGoogle(): Promise<FirebaseAuthTypes.UserCredenti
   return auth().signInWithCredential(credential);
 }
 
+export async function signInWithApple(): Promise<FirebaseAuthTypes.UserCredential> {
+  const rawNonce = Array.from(Crypto.getRandomValues(new Uint8Array(32)), (b) =>
+    b.toString(16).padStart(2, "0"),
+  ).join("");
+  const hashedNonce = await Crypto.digestStringAsync(
+    Crypto.CryptoDigestAlgorithm.SHA256,
+    rawNonce,
+  );
+
+  const appleCredential = await AppleAuthentication.signInAsync({
+    requestedScopes: [
+      AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+      AppleAuthentication.AppleAuthenticationScope.EMAIL,
+    ],
+    nonce: hashedNonce,
+  });
+
+  const { identityToken } = appleCredential;
+  if (!identityToken) {
+    throw new Error("No identity token returned from Apple Sign-In");
+  }
+
+  const oauthCredential = new auth.OAuthProvider("apple.com").credential(
+    identityToken,
+    rawNonce,
+  );
+  const userCredential = await auth().signInWithCredential(oauthCredential);
+
+  if (appleCredential.fullName) {
+    const { givenName, familyName } = appleCredential.fullName;
+    const displayName = [givenName, familyName].filter(Boolean).join(" ");
+    if (displayName && !userCredential.user.displayName) {
+      await userCredential.user.updateProfile({ displayName });
+    }
+  }
+
+  return userCredential;
+}
+
 export async function deleteAccount(): Promise<void> {
   const currentUser = auth().currentUser;
   if (!currentUser) {
@@ -74,6 +115,22 @@ export async function deleteAccount(): Promise<void> {
       await GoogleSignin.signOut();
     } catch {
       // ignore
+    }
+  }
+
+  const isAppleUser = currentUser.providerData.some(
+    (p) => p.providerId === "apple.com",
+  );
+  if (isAppleUser) {
+    try {
+      const { authorizationCode } = await AppleAuthentication.signInAsync({
+        requestedScopes: [],
+      });
+      if (authorizationCode) {
+        await auth().revokeToken(authorizationCode);
+      }
+    } catch {
+      // Apple token revocation may fail — continue with deletion
     }
   }
 
@@ -135,7 +192,7 @@ export function getFirebaseAuthErrorMessage(code: string): string {
     case "auth/network-request-failed":
       return "Network error. Check your connection.";
     case "auth/account-exists-with-different-credential":
-      return "An account with this email already exists. Sign in with your password to link Google.";
+      return "An account with this email already exists. Sign in with your existing method to link this account.";
     case "auth/requires-recent-login":
       return "For security, please sign out and sign back in before deleting your account.";
     default:

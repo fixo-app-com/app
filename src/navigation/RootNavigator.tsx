@@ -249,7 +249,7 @@ export default function RootNavigator() {
   }
 
   const isOAuthUser = user.providerData.some(
-    (p) => p.providerId === "google.com",
+    (p) => p.providerId === "google.com" || p.providerId === "apple.com",
   );
   if (!user.emailVerified && !isOAuthUser) {
     return <VerifyEmailScreen />;

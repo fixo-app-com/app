@@ -1,5 +1,6 @@
 import { useState } from "react";
 import {
+  ActivityIndicator,
   Alert,
   Image,
   KeyboardAvoidingView,
@@ -14,6 +15,7 @@ import type { AuthStackParamList } from "../../../navigation/RootNavigator";
 import {
   signInWithEmail,
   signInWithGoogle,
+  signInWithApple,
   linkGoogleToEmailAccount,
   resetPassword,
   getFirebaseAuthErrorMessage,
@@ -27,7 +29,11 @@ type Props = NativeStackScreenProps<AuthStackParamList, "SignIn">;
 export default function SignInScreen({ navigation, route }: Props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [loadingAction, setLoadingAction] = useState<
+    "email" | "apple" | "google" | null
+  >(null);
+
+  const isLoading = loadingAction !== null;
 
   const pendingGoogleIdToken = route.params?.pendingGoogleIdToken;
 
@@ -37,7 +43,7 @@ export default function SignInScreen({ navigation, route }: Props) {
       return;
     }
 
-    setIsLoading(true);
+    setLoadingAction("email");
     try {
       if (pendingGoogleIdToken) {
         await linkGoogleToEmailAccount(email.trim(), password, pendingGoogleIdToken);
@@ -70,12 +76,12 @@ export default function SignInScreen({ navigation, route }: Props) {
         Alert.alert("Error", getFirebaseAuthErrorMessage(code));
       }
     } finally {
-      setIsLoading(false);
+      setLoadingAction(null);
     }
   }
 
   async function handleGoogleSignIn() {
-    setIsLoading(true);
+    setLoadingAction("google");
     try {
       await signInWithGoogle();
     } catch (error) {
@@ -96,7 +102,27 @@ export default function SignInScreen({ navigation, route }: Props) {
         );
       }
     } finally {
-      setIsLoading(false);
+      setLoadingAction(null);
+    }
+  }
+
+  async function handleAppleSignIn() {
+    setLoadingAction("apple");
+    try {
+      await signInWithApple();
+    } catch (error) {
+      const errorCode = (error as { code?: string }).code ?? "";
+      if (!errorCode.startsWith("auth/")) return;
+      if (errorCode === "auth/account-exists-with-different-credential") {
+        Alert.alert(
+          "Existing account",
+          "An account with this email already exists. Sign in with your existing method to link this account.",
+        );
+        return;
+      }
+      Alert.alert("Error", getFirebaseAuthErrorMessage(errorCode));
+    } finally {
+      setLoadingAction(null);
     }
   }
 
@@ -158,7 +184,7 @@ export default function SignInScreen({ navigation, route }: Props) {
 
         {/* Sign in button */}
         <View className={ENABLE_SOCIAL_LOGIN ? "mb-4" : "mb-8"}>
-          <Button label="Sign In" onPress={handleSignIn} loading={isLoading} />
+          <Button label="Sign In" onPress={handleSignIn} loading={loadingAction === "email"} />
         </View>
 
         {/* Social login */}
@@ -168,6 +194,29 @@ export default function SignInScreen({ navigation, route }: Props) {
               <View className="h-px flex-1 bg-gray-300" />
               <Text className="mx-4 text-sm text-gray-400">or</Text>
               <View className="h-px flex-1 bg-gray-300" />
+            </View>
+
+            {/* Apple Sign-In button */}
+            <View className="mb-3">
+              <Pressable
+                onPress={handleAppleSignIn}
+                disabled={isLoading}
+                className="flex-row items-center justify-center rounded-xl bg-black py-3.5"
+                style={({ pressed }) => ({
+                  opacity: pressed || isLoading ? 0.7 : 1,
+                })}
+              >
+                {loadingAction === "apple" ? (
+                  <ActivityIndicator size="small" color="#FFFFFF" />
+                ) : (
+                  <>
+                    <Ionicons name="logo-apple" size={18} color="#FFFFFF" />
+                    <Text className="ml-2 text-base font-semibold text-white">
+                      Continue with Apple
+                    </Text>
+                  </>
+                )}
+              </Pressable>
             </View>
 
             {/* Google Sign-In button */}
@@ -180,10 +229,16 @@ export default function SignInScreen({ navigation, route }: Props) {
                   opacity: pressed || isLoading ? 0.7 : 1,
                 })}
               >
-                <Ionicons name="logo-google" size={18} color="#4285F4" />
-                <Text className="ml-2 text-base font-semibold text-gray-700">
-                  Continue with Google
-                </Text>
+                {loadingAction === "google" ? (
+                  <ActivityIndicator size="small" color="#4285F4" />
+                ) : (
+                  <>
+                    <Ionicons name="logo-google" size={18} color="#4285F4" />
+                    <Text className="ml-2 text-base font-semibold text-gray-700">
+                      Continue with Google
+                    </Text>
+                  </>
+                )}
               </Pressable>
             </View>
           </>

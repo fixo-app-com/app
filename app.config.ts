@@ -26,6 +26,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   platforms: ["ios"],
   plugins: [
     "expo-font",
+    "expo-apple-authentication",
     "@react-native-firebase/app",
     "@react-native-firebase/auth",
     "@react-native-firebase/crashlytics",
