@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-  ActivityIndicator,
   Alert,
   Image,
   KeyboardAvoidingView,
@@ -9,19 +8,18 @@ import {
   Text,
   View,
 } from "react-native";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { AuthStackParamList } from "../../../navigation/RootNavigator";
 import {
   signInWithEmail,
-  signInWithGoogle,
-  signInWithApple,
   linkGoogleToEmailAccount,
   resetPassword,
   getFirebaseAuthErrorMessage,
 } from "../../../services/auth";
 import { ENABLE_SOCIAL_LOGIN } from "../../../constants/features";
 import { Button, Input } from "../../../design-system";
+import { AuthFooterLink, SocialLoginButtons } from "../../../components";
+import { useSocialAuth } from "../../../hooks/useSocialAuth";
 import splashIcon from "../../../../assets/splash-icon.png";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "SignIn">;
@@ -29,13 +27,16 @@ type Props = NativeStackScreenProps<AuthStackParamList, "SignIn">;
 export default function SignInScreen({ navigation, route }: Props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loadingAction, setLoadingAction] = useState<
-    "email" | "apple" | "google" | null
-  >(null);
-
-  const isLoading = loadingAction !== null;
 
   const pendingGoogleIdToken = route.params?.pendingGoogleIdToken;
+
+  const {
+    handleGoogleAuth,
+    handleAppleAuth,
+    loadingAction,
+    setLoadingAction,
+    isLoading,
+  } = useSocialAuth();
 
   async function handleSignIn() {
     if (!email.trim() || !password.trim()) {
@@ -75,52 +76,6 @@ export default function SignInScreen({ navigation, route }: Props) {
       } else {
         Alert.alert("Error", getFirebaseAuthErrorMessage(code));
       }
-    } finally {
-      setLoadingAction(null);
-    }
-  }
-
-  async function handleGoogleSignIn() {
-    setLoadingAction("google");
-    try {
-      await signInWithGoogle();
-    } catch (error) {
-      const firebaseError = error as { code?: string };
-      if (
-        firebaseError.code === "auth/account-exists-with-different-credential"
-      ) {
-        Alert.alert(
-          "Existing account",
-          "An account with this email already exists. Sign in with your password to link Google.",
-        );
-        return;
-      }
-      if ((error as Error).message !== "Google Sign-In was cancelled") {
-        Alert.alert(
-          "Error",
-          getFirebaseAuthErrorMessage(firebaseError.code ?? ""),
-        );
-      }
-    } finally {
-      setLoadingAction(null);
-    }
-  }
-
-  async function handleAppleSignIn() {
-    setLoadingAction("apple");
-    try {
-      await signInWithApple();
-    } catch (error) {
-      const errorCode = (error as { code?: string }).code ?? "";
-      if (!errorCode.startsWith("auth/")) return;
-      if (errorCode === "auth/account-exists-with-different-credential") {
-        Alert.alert(
-          "Existing account",
-          "An account with this email already exists. Sign in with your existing method to link this account.",
-        );
-        return;
-      }
-      Alert.alert("Error", getFirebaseAuthErrorMessage(errorCode));
     } finally {
       setLoadingAction(null);
     }
@@ -189,73 +144,21 @@ export default function SignInScreen({ navigation, route }: Props) {
 
         {/* Social login */}
         {ENABLE_SOCIAL_LOGIN && !pendingGoogleIdToken && (
-          <>
-            <View className="mb-4 flex-row items-center">
-              <View className="h-px flex-1 bg-gray-300" />
-              <Text className="mx-4 text-sm text-gray-400">or</Text>
-              <View className="h-px flex-1 bg-gray-300" />
-            </View>
-
-            {/* Apple Sign-In button */}
-            <View className="mb-3">
-              <Pressable
-                onPress={handleAppleSignIn}
-                disabled={isLoading}
-                className="flex-row items-center justify-center rounded-xl bg-black py-3.5"
-                style={({ pressed }) => ({
-                  opacity: pressed || isLoading ? 0.7 : 1,
-                })}
-              >
-                {loadingAction === "apple" ? (
-                  <ActivityIndicator size="small" color="#FFFFFF" />
-                ) : (
-                  <>
-                    <Ionicons name="logo-apple" size={18} color="#FFFFFF" />
-                    <Text className="ml-2 text-base font-semibold text-white">
-                      Continue with Apple
-                    </Text>
-                  </>
-                )}
-              </Pressable>
-            </View>
-
-            {/* Google Sign-In button */}
-            <View className="mb-8">
-              <Pressable
-                onPress={handleGoogleSignIn}
-                disabled={isLoading}
-                className="flex-row items-center justify-center rounded-xl border border-gray-300 bg-white py-3.5"
-                style={({ pressed }) => ({
-                  opacity: pressed || isLoading ? 0.7 : 1,
-                })}
-              >
-                {loadingAction === "google" ? (
-                  <ActivityIndicator size="small" color="#4285F4" />
-                ) : (
-                  <>
-                    <Ionicons name="logo-google" size={18} color="#4285F4" />
-                    <Text className="ml-2 text-base font-semibold text-gray-700">
-                      Continue with Google
-                    </Text>
-                  </>
-                )}
-              </Pressable>
-            </View>
-          </>
+          <SocialLoginButtons
+            onApplePress={handleAppleAuth}
+            onGooglePress={handleGoogleAuth}
+            loadingAction={loadingAction}
+            isLoading={isLoading}
+          />
         )}
 
         {/* Sign up link */}
-        <View className="flex-row justify-center">
-          <Text className="text-sm text-gray-400">
-            {"Don't have an account? "}
-          </Text>
-          <Pressable
-            onPress={() => navigation.navigate("SignUp")}
-            disabled={isLoading}
-          >
-            <Text className="text-sm font-semibold text-fixo-500">Sign Up</Text>
-          </Pressable>
-        </View>
+        <AuthFooterLink
+          message={"Don't have an account? "}
+          linkText="Sign Up"
+          onPress={() => navigation.navigate("SignUp")}
+          disabled={isLoading}
+        />
       </View>
     </KeyboardAvoidingView>
   );

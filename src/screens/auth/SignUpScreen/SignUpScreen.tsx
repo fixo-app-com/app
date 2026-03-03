@@ -1,25 +1,22 @@
 import { useState } from "react";
 import {
-  ActivityIndicator,
   Alert,
   Image,
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   Text,
   View,
 } from "react-native";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { AuthStackParamList } from "../../../navigation/RootNavigator";
 import {
   signUpWithEmail,
-  signInWithGoogle,
-  signInWithApple,
   getFirebaseAuthErrorMessage,
 } from "../../../services/auth";
 import { ENABLE_SOCIAL_LOGIN } from "../../../constants/features";
 import { Button, Input } from "../../../design-system";
+import { AuthFooterLink, SocialLoginButtons } from "../../../components";
+import { useSocialAuth } from "../../../hooks/useSocialAuth";
 import splashIcon from "../../../../assets/splash-icon.png";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "SignUp">;
@@ -28,11 +25,14 @@ export default function SignUpScreen({ navigation }: Props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [loadingAction, setLoadingAction] = useState<
-    "email" | "apple" | "google" | null
-  >(null);
 
-  const isLoading = loadingAction !== null;
+  const {
+    handleGoogleAuth,
+    handleAppleAuth,
+    loadingAction,
+    setLoadingAction,
+    isLoading,
+  } = useSocialAuth();
 
   const passwordRules = [
     { label: "At least 8 characters", met: password.length >= 8 },
@@ -64,33 +64,6 @@ export default function SignUpScreen({ navigation }: Props) {
     } catch (error) {
       const code = (error as { code?: string }).code ?? "";
       Alert.alert("Error", getFirebaseAuthErrorMessage(code));
-    } finally {
-      setLoadingAction(null);
-    }
-  }
-
-  async function handleGoogleSignUp() {
-    setLoadingAction("google");
-    try {
-      await signInWithGoogle();
-    } catch (error) {
-      if ((error as Error).message !== "Google Sign-In was cancelled") {
-        const code = (error as { code?: string }).code ?? "";
-        Alert.alert("Error", getFirebaseAuthErrorMessage(code));
-      }
-    } finally {
-      setLoadingAction(null);
-    }
-  }
-
-  async function handleAppleSignUp() {
-    setLoadingAction("apple");
-    try {
-      await signInWithApple();
-    } catch (error) {
-      const errorCode = (error as { code?: string }).code ?? "";
-      if (!errorCode.startsWith("auth/")) return;
-      Alert.alert("Error", getFirebaseAuthErrorMessage(errorCode));
     } finally {
       setLoadingAction(null);
     }
@@ -175,74 +148,21 @@ export default function SignUpScreen({ navigation }: Props) {
 
         {/* Social login */}
         {ENABLE_SOCIAL_LOGIN && (
-          <>
-            {/* Divider */}
-            <View className="mb-4 flex-row items-center">
-              <View className="h-px flex-1 bg-gray-300" />
-              <Text className="mx-4 text-sm text-gray-400">or</Text>
-              <View className="h-px flex-1 bg-gray-300" />
-            </View>
-
-            {/* Apple Sign-Up button */}
-            <View className="mb-3">
-              <Pressable
-                onPress={handleAppleSignUp}
-                disabled={isLoading}
-                className="flex-row items-center justify-center rounded-xl bg-black py-3.5"
-                style={({ pressed }) => ({
-                  opacity: pressed || isLoading ? 0.7 : 1,
-                })}
-              >
-                {loadingAction === "apple" ? (
-                  <ActivityIndicator size="small" color="#FFFFFF" />
-                ) : (
-                  <>
-                    <Ionicons name="logo-apple" size={18} color="#FFFFFF" />
-                    <Text className="ml-2 text-base font-semibold text-white">
-                      Continue with Apple
-                    </Text>
-                  </>
-                )}
-              </Pressable>
-            </View>
-
-            {/* Google Sign-Up button */}
-            <View className="mb-8">
-              <Pressable
-                onPress={handleGoogleSignUp}
-                disabled={isLoading}
-                className="flex-row items-center justify-center rounded-xl border border-gray-300 bg-white py-3.5"
-                style={({ pressed }) => ({
-                  opacity: pressed || isLoading ? 0.7 : 1,
-                })}
-              >
-                {loadingAction === "google" ? (
-                  <ActivityIndicator size="small" color="#4285F4" />
-                ) : (
-                  <>
-                    <Ionicons name="logo-google" size={18} color="#4285F4" />
-                    <Text className="ml-2 text-base font-semibold text-gray-700">
-                      Continue with Google
-                    </Text>
-                  </>
-                )}
-              </Pressable>
-            </View>
-          </>
+          <SocialLoginButtons
+            onApplePress={handleAppleAuth}
+            onGooglePress={handleGoogleAuth}
+            loadingAction={loadingAction}
+            isLoading={isLoading}
+          />
         )}
 
         {/* Sign in link */}
-        <View className="flex-row justify-center">
-          <Text className="text-sm text-gray-400">
-            {"Already have an account? "}
-          </Text>
-          <Pressable
-            onPress={() => navigation.navigate("SignIn")}
-            disabled={isLoading}
-          >
-            <Text className="text-sm font-semibold text-fixo-500">Sign In</Text>
-          </Pressable>
-        </View>
+        <AuthFooterLink
+          message={"Already have an account? "}
+          linkText="Sign In"
+          onPress={() => navigation.navigate("SignIn")}
+          disabled={isLoading}
+        />
       </View>
     </KeyboardAvoidingView>
   );
