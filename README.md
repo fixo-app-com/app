@@ -81,6 +81,18 @@ Bump types:
 | `major` | Breaking changes (e.g. 1.0.0 → 2.0.0) |
 | `none` | Skip bump — rebuild and resubmit current version |
 
+## Prerequisites
+
+- **Node.js** 20+
+- **Xcode** (latest stable) with iOS simulator
+- **CocoaPods** — `sudo gem install cocoapods`
+- **Fastlane** — `brew install fastlane` (required for local EAS builds)
+- **EAS CLI** — `npm install -g eas-cli`
+- **Expo account** — logged in via `eas login`
+- **GoogleService-Info.plist** — download from Firebase Console and place in the project root (git-ignored)
+
+Expo Go is not supported — the app requires a dev client build due to native Firebase modules.
+
 ## Setup
 
 ```bash
@@ -88,5 +100,3 @@ npm install
 npx expo prebuild --clean
 npm run ios
 ```
-
-Requires Xcode and a dev client build (Expo Go is not supported due to native Firebase modules).
