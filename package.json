@@ -1,6 +1,6 @@
 {
   "name": "fixo-app",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "main": "index.ts",
   "scripts": {
     "start": "expo start --dev-client",
@@ -12,9 +12,9 @@
     "test": "jest --forceExit --silent",
     "test:watch": "jest --watch",
     "typecheck": "tsc --noEmit",
-    "build:ios": "eas build --platform ios --profile production",
+    "build:ios": "eas build --platform ios --profile production --local",
     "submit:ios": "eas submit --platform ios --profile production",
-    "app:publish": "npm version patch && git push origin main --tags"
+    "publish:ios": "bash scripts/publish-ios.sh $npm_config_bump"
   },
   "jest": {
     "preset": "jest-expo",

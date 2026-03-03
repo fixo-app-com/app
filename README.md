@@ -19,12 +19,12 @@ This is not a daily expense tracker — it focuses exclusively on predictable, r
 | Framework | React Native + Expo (SDK 55) |
 | Language | TypeScript |
 | Styling | NativeWind (Tailwind CSS for React Native) |
-| Auth | Firebase Auth (Google OAuth + Email/Password) |
+| Auth | Firebase Auth (Google OAuth + Apple Sign-In + Email/Password) |
 | Database | Firestore |
 | Testing | Jest + React Native Testing Library |
 | Linting | ESLint 9 + Prettier |
-| Build | EAS Build (Expo) |
-| CI/CD | GitHub Actions |
+| Build | EAS Build (local) |
+| CI | GitHub Actions |
 | Platform | iOS only |
 
 ## Project Structure
@@ -43,10 +43,18 @@ Each component lives in its own folder with a colocated test file.
 
 ## Scripts
 
+### Development
+
 | Command | Description |
 |---|---|
-| `npm start` | Start Expo dev server |
+| `npm start` | Start Expo dev server (requires dev client) |
 | `npm run ios` | Launch on iOS simulator |
+| `npm run ios:build` | Clean prebuild + launch on iOS simulator |
+
+### Quality
+
+| Command | Description |
+|---|---|
 | `npm run lint` | Run ESLint |
 | `npm run lint:fix` | Auto-fix ESLint issues |
 | `npm run format` | Format code with Prettier |
@@ -54,11 +62,31 @@ Each component lives in its own folder with a colocated test file.
 | `npm run test:watch` | Run tests in watch mode |
 | `npm run typecheck` | TypeScript type checking |
 
+### Release
+
+To publish a new version to the App Store:
+
+```bash
+npm run publish:ios --bump=<type>
+```
+
+This runs the full pipeline: lint → typecheck → test → version bump → git push → local build → App Store submit.
+
+Bump types:
+
+| Type | Description |
+|---|---|
+| `patch` | Bug fixes (e.g. 1.0.0 → 1.0.1) |
+| `minor` | New features (e.g. 1.0.0 → 1.1.0) |
+| `major` | Breaking changes (e.g. 1.0.0 → 2.0.0) |
+| `none` | Skip bump — rebuild and resubmit current version |
+
 ## Setup
 
 ```bash
 npm install
-npm start
+npx expo prebuild --clean
+npm run ios
 ```
 
-Scan the QR code with Expo Go on your iPhone, or run `npm run ios` to use the iOS simulator (requires Xcode).
+Requires Xcode and a dev client build (Expo Go is not supported due to native Firebase modules).
