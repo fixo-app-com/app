@@ -18,6 +18,7 @@ import { Button, Input } from "../../../design-system";
 import { AuthFooterLink, SocialLoginButtons } from "../../../components";
 import { useSocialAuth } from "../../../hooks/useSocialAuth";
 import splashIcon from "../../../../assets/splash-icon.png";
+import { Ionicons } from "@expo/vector-icons";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "SignUp">;
 
@@ -122,7 +123,11 @@ export default function SignUpScreen({ navigation }: Props) {
 
         {/* Sign up button */}
         <View className="mb-4">
-          <Button label="Sign Up" onPress={handleSignUp} loading={loadingAction === "email"} />
+          <Button
+            label="Sign Up"
+            onPress={handleSignUp}
+            loading={loadingAction === "email"}
+          />
         </View>
 
         {/* Password rules checklist */}
@@ -137,7 +142,11 @@ export default function SignUpScreen({ navigation }: Props) {
                 />
                 <Text
                   className={`ml-2 text-xs ${rule.met ? "text-gray-400" : "text-gray-500"}`}
-                  style={rule.met ? { textDecorationLine: "line-through" } : undefined}
+                  style={
+                    rule.met
+                      ? { textDecorationLine: "line-through" }
+                      : undefined
+                  }
                 >
                   {rule.label}
                 </Text>
