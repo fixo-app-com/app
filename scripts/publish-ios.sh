@@ -35,7 +35,13 @@ git push origin main --tags
 echo "==> Building iOS locally..."
 npm run build:ios
 
-echo "==> Submitting to App Store..."
-npm run submit:ios -- --latest
+IPA_FILE=$(ls -t *.ipa 2>/dev/null | head -1)
+if [ -z "$IPA_FILE" ]; then
+  echo "Error: No .ipa file found after build"
+  exit 1
+fi
+
+echo "==> Submitting $IPA_FILE to App Store..."
+npm run submit:ios -- --path "$IPA_FILE"
 
 echo "==> Done!"
