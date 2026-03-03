@@ -40,6 +40,11 @@ yarn-error.*
 GoogleService-Info.plist
 google-services.json
 
+# build artifacts
+*.ipa
+*.apk
+*.aab
+
 # generated native folders
 /ios
 /android
