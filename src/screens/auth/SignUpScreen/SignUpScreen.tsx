@@ -18,7 +18,7 @@ import { Button, Input } from "../../../design-system";
 import { AuthFooterLink, SocialLoginButtons } from "../../../components";
 import { useSocialAuth } from "../../../hooks/useSocialAuth";
 import splashIcon from "../../../../assets/splash-icon.png";
-import { Ionicons } from "@expo/vector-icons";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "SignUp">;
 
