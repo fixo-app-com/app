@@ -45,7 +45,7 @@ export function useSocialAuth() {
       await signInWithApple();
     } catch (error) {
       const errorCode = (error as { code?: string }).code ?? "";
-      if (!errorCode.startsWith("auth/")) return;
+      if (errorCode === "ERR_REQUEST_CANCELED") return;
       if (errorCode === "auth/account-exists-with-different-credential") {
         Alert.alert(
           "Existing account",
