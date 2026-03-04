@@ -4,7 +4,6 @@ import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useData } from "../../../contexts/DataContext";
-import { deleteExpensesByCategory } from "../../../services/firestore";
 import type { HomeStackParamList } from "../../../navigation/RootNavigator";
 import {
   Button,
@@ -21,6 +20,7 @@ type Route = RouteProp<HomeStackParamList, "AddEditCategory">;
 const EMOJI_OPTIONS = [
   // People & family
   "👨‍👩‍👧‍👦",
+  "👪",
   "👶",
   "👩",
   // Transport
@@ -88,7 +88,8 @@ export default function AddEditCategoryScreen() {
   const route = useRoute<Route>();
   const { categoryId, categoryName, categoryIcon } = route.params ?? {};
   const { user } = useAuth();
-  const { addCategory, updateCategory, deleteCategory } = useData();
+  const { addCategory, updateCategory, deleteCategory, deleteExpensesByCategory } =
+    useData();
 
   const isEditing = !!categoryId;
 
@@ -109,7 +110,7 @@ export default function AddEditCategoryScreen() {
           style: "destructive",
           onPress: async () => {
             try {
-              await deleteExpensesByCategory(user.uid, categoryId);
+              await deleteExpensesByCategory(categoryId);
               await deleteCategory(categoryId);
               navigation.goBack();
             } catch (error) {
@@ -144,19 +145,20 @@ export default function AddEditCategoryScreen() {
     }
   }
 
-  return (
-    <ScreenWrapper scroll>
-      <ScreenHeader
-        title={isEditing ? "Edit category" : "New category"}
-        onBack={() => navigation.goBack()}
-      />
+  const headerContent = (
+    <ScreenHeader
+      title={isEditing ? "Edit category" : "New category"}
+      onBack={() => navigation.goBack()}
+    />
+  );
 
+  return (
+    <ScreenWrapper scroll header={headerContent}>
       <Input
         label="Name"
         value={name}
         onChangeText={setName}
         placeholder="e.g. Family, Car, Home..."
-        autoFocus={!isEditing}
         maxLength={50}
       />
 
@@ -168,23 +170,25 @@ export default function AddEditCategoryScreen() {
         onSelect={setIcon}
       />
 
-      <View className="mb-8" />
+      <View className="flex-1" />
 
-      <Button
-        label={isEditing ? "Save changes" : "Save category"}
-        onPress={handleSave}
-        loading={saving}
-      />
+      <View className="mt-8 pb-4">
+        <Button
+          label={isEditing ? "Save changes" : "Save category"}
+          onPress={handleSave}
+          loading={saving}
+        />
 
-      {isEditing && (
-        <View className="mt-3">
-          <Button
-            label="Delete category"
-            variant="destructive"
-            onPress={handleDelete}
-          />
-        </View>
-      )}
+        {isEditing && (
+          <View className="mt-3">
+            <Button
+              label="Delete category"
+              variant="destructive"
+              onPress={handleDelete}
+            />
+          </View>
+        )}
+      </View>
     </ScreenWrapper>
   );
 }

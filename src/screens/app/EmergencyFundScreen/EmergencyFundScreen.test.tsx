@@ -12,12 +12,6 @@ jest.mock("../../../contexts/AuthContext", () => ({
   useAuth: () => ({ user: { uid: "test-uid" } }),
 }));
 
-jest.mock("../../../contexts/DataContext", () => ({
-  useData: () => ({
-    currency: "EUR",
-  }),
-}));
-
 const mockExpenses = [
   {
     id: "e1",
@@ -54,6 +48,17 @@ const mockExpenses = [
   },
 ];
 
+jest.mock("../../../contexts/DataContext", () => ({
+  useData: () => ({
+    currency: "EUR",
+    emergencyMonths: 6,
+    setEmergencyMonths: jest.fn(),
+    expenses: mockExpenses,
+    expensesLoading: false,
+    ensureExpenses: jest.fn(),
+  }),
+}));
+
 jest.mock("@react-native-community/slider", () => {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { View } = require("react-native");
@@ -64,10 +69,6 @@ jest.mock("@react-native-community/slider", () => {
     ),
   };
 });
-
-jest.mock("../../../services/firestore", () => ({
-  getExpenses: jest.fn(() => Promise.resolve(mockExpenses)),
-}));
 
 describe("EmergencyFundScreen", () => {
   it("renders title", () => {

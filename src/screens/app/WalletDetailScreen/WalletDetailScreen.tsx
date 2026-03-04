@@ -9,14 +9,12 @@ import {
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useAuth } from "../../../contexts/AuthContext";
 import { useData } from "../../../contexts/DataContext";
-import { deleteExpense } from "../../../services/firestore";
 import type { WalletsStackParamList } from "../../../navigation/RootNavigator";
 import { roundToUnit, getDisplayAmountCents } from "../../../types/firestore";
 import { EmptyState, ScreenHeader, ScreenWrapper } from "../../../design-system";
 import { CurrencyText, ExpenseCard } from "../../../components";
-import { useFetchExpenses } from "../../../hooks/useFetchExpenses";
+import { useExpenses } from "../../../hooks/useExpenses";
 
 type Nav = NativeStackNavigationProp<WalletsStackParamList, "WalletDetail">;
 type Route = RouteProp<WalletsStackParamList, "WalletDetail">;
@@ -24,11 +22,14 @@ type Route = RouteProp<WalletsStackParamList, "WalletDetail">;
 export default function WalletDetailScreen() {
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
-  const { walletId, walletName, walletIcon } = route.params;
-  const { user } = useAuth();
-  const { categories, viewMode } = useData();
+  const { walletId } = route.params;
+  const { wallets, categories, viewMode, deleteExpense } = useData();
 
-  const { expenses, loading, setExpenses } = useFetchExpenses({ walletId });
+  const wallet = wallets.find((w) => w.id === walletId);
+  const walletName = wallet?.name ?? route.params.walletName;
+  const walletIcon = wallet?.icon ?? route.params.walletIcon;
+
+  const { expenses, loading } = useExpenses({ walletId });
 
   function getCategoryName(categoryId: string): string {
     return categories.find((c) => c.id === categoryId)?.name ?? "—";
@@ -41,10 +42,8 @@ export default function WalletDetailScreen() {
         text: "Delete",
         style: "destructive",
         onPress: async () => {
-          if (!user) return;
           try {
-            await deleteExpense(user.uid, expenseId);
-            setExpenses((prev) => prev.filter((e) => e.id !== expenseId));
+            await deleteExpense(expenseId);
           } catch (error) {
             if (__DEV__) console.error("Failed to delete expense:", error);
           }
@@ -57,8 +56,8 @@ export default function WalletDetailScreen() {
     expenses.reduce((sum, e) => sum + getDisplayAmountCents(e, viewMode), 0),
   );
 
-  return (
-    <ScreenWrapper>
+  const headerContent = (
+    <>
       <ScreenHeader
         title={walletName}
         onBack={() => navigation.goBack()}
@@ -94,7 +93,11 @@ export default function WalletDetailScreen() {
           />
         </Text>
       </View>
+    </>
+  );
 
+  return (
+    <ScreenWrapper header={headerContent}>
       {/* Expenses list */}
       {loading ? (
         <ActivityIndicator color="#818cf8" className="mt-8" />

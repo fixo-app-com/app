@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
 import Slider from "@react-native-community/slider";
 import { getDisplayAmountCents, roundToUnit } from "../../../types/firestore";
 import { ScreenWrapper } from "../../../design-system";
 import { CurrencyText } from "../../../components";
-import { useFetchExpenses } from "../../../hooks/useFetchExpenses";
+import { useExpenses } from "../../../hooks/useExpenses";
+import { useData } from "../../../contexts/DataContext";
 
 const SNAP_POINTS: number[] = [3, 6, 12, 18, 24, 36, 48, 60];
 
@@ -16,11 +17,42 @@ function formatPeriod(months: number): string {
 }
 
 export default function EmergencyFundScreen() {
-  const { expenses, loading } = useFetchExpenses();
-  const [selectedMonths, setSelectedMonths] = useState(6);
+  const { expenses, loading } = useExpenses();
+  const {
+    emergencyMonths,
+    setEmergencyMonths: saveEmergencyMonths,
+  } = useData();
+
+  const [selectedMonths, setSelectedMonths] = useState(emergencyMonths);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Sync from context on mount
+  useEffect(() => {
+    setSelectedMonths(emergencyMonths);
+  }, [emergencyMonths]);
+
+  const handleSlidingComplete = useCallback(
+    (index: number) => {
+      const months = SNAP_POINTS[index];
+      setSelectedMonths(months);
+
+      // Debounce save
+      if (timerRef.current) clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(() => {
+        saveEmergencyMonths(months);
+      }, 150);
+    },
+    [saveEmergencyMonths],
+  );
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
 
   const essentialExpenses = expenses.filter((e) => e.essential);
-  // Use yearly total as source of truth (no precision loss from /12 rounding)
   const yearlyEssentialCents = essentialExpenses.reduce(
     (sum, e) => sum + getDisplayAmountCents(e, "yearly"),
     0,
@@ -28,10 +60,12 @@ export default function EmergencyFundScreen() {
   const monthlyEssentialCents = roundToUnit(yearlyEssentialCents / 12);
   const targetCents = roundToUnit((yearlyEssentialCents / 12) * selectedMonths);
 
-  return (
-    <ScreenWrapper>
-      <Text className="mb-6 text-3xl font-bold text-gray-900">Emergency</Text>
+  const headerContent = (
+    <Text className="mb-6 text-3xl font-bold text-gray-900">Emergency</Text>
+  );
 
+  return (
+    <ScreenWrapper header={headerContent}>
       {loading ? (
         <ActivityIndicator color="#818cf8" className="mt-8" />
       ) : (
@@ -55,6 +89,7 @@ export default function EmergencyFundScreen() {
             step={1}
             value={SNAP_POINTS.indexOf(selectedMonths)}
             onValueChange={(i) => setSelectedMonths(SNAP_POINTS[i])}
+            onSlidingComplete={handleSlidingComplete}
             minimumTrackTintColor="#818cf8"
             maximumTrackTintColor="#e5e7eb"
             thumbTintColor="#818cf8"

@@ -36,14 +36,13 @@ jest.mock("../../../contexts/DataContext", () => ({
     ],
     wallets: mockWallets,
     currency: "EUR",
+    viewMode: "monthly",
     deleteCategory: jest.fn(),
+    deleteExpense: jest.fn(),
+    expenses: [],
+    expensesLoading: false,
+    ensureExpenses: jest.fn(),
   }),
-}));
-
-jest.mock("../../../services/firestore", () => ({
-  getExpenses: jest.fn(() => Promise.resolve([])),
-  deleteExpense: jest.fn(),
-  deleteExpensesByCategory: jest.fn(),
 }));
 
 describe("CategoryDetailScreen", () => {

@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
+  InputAccessoryView,
+  Keyboard,
   Pressable,
   Text,
   TextInput,
@@ -25,6 +27,8 @@ interface InputProps {
   style?: object;
 }
 
+let accessoryCounter = 0;
+
 export function Input({
   label,
   value,
@@ -42,6 +46,10 @@ export function Input({
 }: InputProps) {
   const [hidden, setHidden] = useState(true);
   const isPassword = secureTextEntry === true;
+
+  const accessoryId = useRef(
+    multiline ? `input-accessory-${++accessoryCounter}` : undefined,
+  ).current;
 
   return (
     <View>
@@ -62,6 +70,9 @@ export function Input({
           autoComplete={autoComplete}
           editable={editable}
           maxLength={maxLength}
+          returnKeyType={multiline ? undefined : "done"}
+          onSubmitEditing={multiline ? undefined : () => Keyboard.dismiss()}
+          inputAccessoryViewID={accessoryId}
           style={[
             {
               flex: 1,
@@ -88,6 +99,19 @@ export function Input({
           </Pressable>
         )}
       </View>
+
+      {/* Keyboard toolbar with Done button for multiline inputs */}
+      {accessoryId && (
+        <InputAccessoryView nativeID={accessoryId}>
+          <View className="flex-row justify-end border-t border-gray-200 bg-gray-100 px-4 py-2">
+            <Pressable onPress={() => Keyboard.dismiss()} hitSlop={8}>
+              <Text className="text-base font-semibold text-fixo-400">
+                Done
+              </Text>
+            </Pressable>
+          </View>
+        </InputAccessoryView>
+      )}
     </View>
   );
 }

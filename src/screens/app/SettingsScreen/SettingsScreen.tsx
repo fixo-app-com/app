@@ -49,10 +49,12 @@ export default function SettingsScreen() {
     );
   }
 
-  return (
-    <ScreenWrapper scroll>
-      <Text className="mb-6 text-3xl font-bold text-gray-900">Settings</Text>
+  const headerContent = (
+    <Text className="mb-6 text-3xl font-bold text-gray-900">Settings</Text>
+  );
 
+  return (
+    <ScreenWrapper scroll header={headerContent}>
       <SectionHeader title="Account" />
 
       <FormRow
@@ -96,24 +98,24 @@ export default function SettingsScreen() {
         right={<Ionicons name="chevron-forward" size={16} color="#9ca3af" />}
       />
 
-      <View className="mt-8" />
-
-      <Button label="Sign out" variant="secondary" onPress={() => signOut()} />
-
-      <View className="mt-3" />
-
-      <Button
-        label="Delete Account"
-        variant="destructive"
-        onPress={handleDeleteAccount}
-        loading={isDeleting}
-      />
-
       <View className="flex-1" />
 
-      <Text className="mb-4 mt-12 text-center text-xs text-gray-400">
-        Fixo v{Constants.expoConfig?.version}
-      </Text>
+      <View className="mt-6 pb-4">
+        <Button label="Sign out" variant="secondary" onPress={() => signOut()} />
+
+        <View className="mt-3">
+          <Button
+            label="Delete Account"
+            variant="destructive"
+            onPress={handleDeleteAccount}
+            loading={isDeleting}
+          />
+        </View>
+
+        <Text className="mt-6 text-center text-xs text-gray-400">
+          Fixo v{Constants.expoConfig?.version}
+        </Text>
+      </View>
     </ScreenWrapper>
   );
 }

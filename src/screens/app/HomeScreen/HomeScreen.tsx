@@ -25,7 +25,7 @@ import {
   CurrencyText,
   FloatingAction,
 } from "../../../components";
-import { useFetchExpenses } from "../../../hooks/useFetchExpenses";
+import { useExpenses } from "../../../hooks/useExpenses";
 
 type Nav = NativeStackNavigationProp<HomeStackParamList, "Home">;
 
@@ -40,7 +40,7 @@ export default function HomeScreen() {
     isLoading: dataLoading,
   } = useData();
 
-  const { expenses, loading: loadingExpenses } = useFetchExpenses();
+  const { expenses, loading: loadingExpenses } = useExpenses();
 
   const isYearly = viewMode === "yearly";
 
@@ -99,9 +99,22 @@ export default function HomeScreen() {
     return <FullScreenLoader />;
   }
 
-  return (
-    <ScreenWrapper>
+  const headerContent = (
+    <>
       <Text className="mb-4 text-3xl font-bold text-gray-900">Home</Text>
+
+      {/* Monthly / Yearly toggle */}
+      <View className="mb-4">
+        <ChipGroup
+          options={[
+            { value: "monthly" as ViewMode, label: "Monthly" },
+            { value: "yearly" as ViewMode, label: "Yearly" },
+          ]}
+          selected={viewMode}
+          onSelect={setViewMode}
+          compact
+        />
+      </View>
 
       <Card>
         <View className="py-2">
@@ -120,9 +133,9 @@ export default function HomeScreen() {
                   : "Set monthly budget"}
             </Text>
             <Ionicons
-              name="pencil-outline"
-              size={14}
-              color="#9ca3af"
+              name="create-outline"
+              size={18}
+              color="#6b7280"
               style={{ marginLeft: 6 }}
             />
           </Pressable>
@@ -144,7 +157,7 @@ export default function HomeScreen() {
                   <Text className="text-sm text-gray-500">Ordinary costs</Text>
                   <CurrencyText
                     cents={totalCents}
-                    className="text-sm font-semibold text-gray-700"
+                    className="text-sm font-semibold text-red-500"
                     hideDecimals
                   />
                 </View>
@@ -167,19 +180,12 @@ export default function HomeScreen() {
         </View>
       </Card>
 
-      {/* Monthly / Yearly toggle */}
-      <View className="mb-2 mt-4">
-        <ChipGroup
-          options={[
-            { value: "monthly" as ViewMode, label: "Monthly" },
-            { value: "yearly" as ViewMode, label: "Yearly" },
-          ]}
-          selected={viewMode}
-          onSelect={setViewMode}
-          compact
-        />
-      </View>
+      <View className="mb-2" />
+    </>
+  );
 
+  return (
+    <ScreenWrapper header={headerContent}>
       {loadingExpenses ? (
         <ActivityIndicator color="#818cf8" className="mt-8" />
       ) : (

@@ -72,9 +72,11 @@ const EmergencyStack = createNativeStackNavigator<EmergencyStackParamList>();
 const SettingsStack = createNativeStackNavigator<SettingsStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
 
+const BG_COLOR = "#f1f5f9";
+
 const stackOptions = {
   headerShown: false,
-  contentStyle: { backgroundColor: "#f9fafb" },
+  contentStyle: { backgroundColor: BG_COLOR },
 } as const;
 
 function AuthNavigator() {
@@ -187,7 +189,7 @@ function AppNavigator() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: "#f9fafb",
+          backgroundColor: BG_COLOR,
           borderTopColor: "#e5e7eb",
           borderTopWidth: 0.5,
         },

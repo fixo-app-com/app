@@ -13,12 +13,18 @@ jest.mock("@react-navigation/native", () => ({
   }),
 }));
 
+jest.mock("../../../contexts/AuthContext", () => ({
+  useAuth: () => ({ user: { uid: "test-uid" } }),
+}));
+
 const mockAddCategory = jest.fn(() => Promise.resolve("new-id"));
 const mockUpdateCategory = jest.fn(() => Promise.resolve());
 jest.mock("../../../contexts/DataContext", () => ({
   useData: () => ({
     addCategory: mockAddCategory,
     updateCategory: mockUpdateCategory,
+    deleteCategory: jest.fn(),
+    deleteExpensesByCategory: jest.fn(),
   }),
 }));
 

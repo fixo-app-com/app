@@ -4,12 +4,7 @@ import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useData } from "../../../contexts/DataContext";
-import {
-  addExpense,
-  updateExpense,
-  deleteExpense,
-  getExpenses,
-} from "../../../services/firestore";
+import { getExpenses } from "../../../services/firestore";
 import type { HomeStackParamList } from "../../../navigation/RootNavigator";
 import type { BillingFrequency, Expense } from "../../../types/firestore";
 import { getCurrencySymbol } from "../../../constants/banks";
@@ -45,6 +40,8 @@ export default function AddEditExpenseScreen() {
   const [notes, setNotes] = useState("");
   const [saving, setSaving] = useState(false);
   const [loadingExpense, setLoadingExpense] = useState(isEditing);
+
+  const { addExpense, updateExpense, deleteExpense } = useData();
 
   useEffect(() => {
     if (!isEditing || !user) return;
@@ -106,9 +103,9 @@ export default function AddEditExpenseScreen() {
       };
 
       if (isEditing && expenseId) {
-        await updateExpense(user.uid, expenseId, data);
+        await updateExpense(expenseId, data);
       } else {
-        await addExpense(user.uid, data);
+        await addExpense(data);
       }
       navigation.goBack();
     } catch (error) {
@@ -129,7 +126,7 @@ export default function AddEditExpenseScreen() {
         style: "destructive",
         onPress: async () => {
           try {
-            await deleteExpense(user.uid, expenseId);
+            await deleteExpense(expenseId);
             navigation.goBack();
           } catch (error) {
             if (__DEV__) console.error("Failed to delete expense:", error);
@@ -145,13 +142,15 @@ export default function AddEditExpenseScreen() {
 
   const currencySymbol = getCurrencySymbol(currency);
 
-  return (
-    <ScreenWrapper scroll>
-      <ScreenHeader
-        title={isEditing ? "Edit expense" : "New expense"}
-        onBack={() => navigation.goBack()}
-      />
+  const headerContent = (
+    <ScreenHeader
+      title={isEditing ? "Edit expense" : "New expense"}
+      onBack={() => navigation.goBack()}
+    />
+  );
 
+  return (
+    <ScreenWrapper scroll header={headerContent}>
       <SectionHeader title="Details" />
 
       <View className="gap-4">
@@ -218,31 +217,31 @@ export default function AddEditExpenseScreen() {
       <Input
         value={notes}
         onChangeText={setNotes}
-        placeholder="Optional notes..."
+        placeholder="Notes"
         multiline
         maxLength={500}
         style={{ minHeight: 80 }}
       />
 
-      <View className="mb-6" />
+      <View className="flex-1" />
 
-      <Button
-        label={isEditing ? "Save changes" : "Save expense"}
-        onPress={handleSave}
-        loading={saving}
-      />
+      <View className="mt-6 pb-4">
+        <Button
+          label={isEditing ? "Save changes" : "Save expense"}
+          onPress={handleSave}
+          loading={saving}
+        />
 
-      {isEditing && (
-        <View className="mt-3">
-          <Button
-            label="Delete expense"
-            variant="destructive"
-            onPress={handleDelete}
-          />
-        </View>
-      )}
-
-      <View className="mb-8" />
+        {isEditing && (
+          <View className="mt-3">
+            <Button
+              label="Delete expense"
+              variant="destructive"
+              onPress={handleDelete}
+            />
+          </View>
+        )}
+      </View>
     </ScreenWrapper>
   );
 }

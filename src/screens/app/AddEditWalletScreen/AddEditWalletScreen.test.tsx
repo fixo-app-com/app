@@ -22,11 +22,10 @@ jest.mock("../../../contexts/DataContext", () => ({
     addWallet: mockAddWallet,
     updateWallet: jest.fn(),
     deleteWallet: jest.fn(),
+    expenses: [],
+    expensesLoading: false,
+    ensureExpenses: jest.fn(),
   }),
-}));
-
-jest.mock("../../../services/firestore", () => ({
-  getExpenses: jest.fn(() => Promise.resolve([])),
 }));
 
 describe("AddEditWalletScreen", () => {

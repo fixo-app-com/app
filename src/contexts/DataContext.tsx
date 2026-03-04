@@ -1,6 +1,12 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { useAuth } from "./AuthContext";
-import type { Category, Wallet } from "../types/firestore";
+import type { Category, Expense, Wallet } from "../types/firestore";
 import * as firestoreService from "../services/firestore";
 
 export type ViewMode = "monthly" | "yearly";
@@ -13,20 +19,37 @@ interface DataContextValue {
   viewMode: ViewMode;
   setViewMode: (mode: ViewMode) => void;
   isLoading: boolean;
+  // Categories
   addCategory: (data: Pick<Category, "name" | "icon">) => Promise<string>;
   updateCategory: (
     categoryId: string,
     data: Partial<Pick<Category, "name" | "icon">>,
   ) => Promise<void>;
   deleteCategory: (categoryId: string) => Promise<void>;
+  // Wallets
   addWallet: (data: Pick<Wallet, "name" | "icon">) => Promise<string>;
   updateWallet: (
     walletId: string,
     data: Partial<Pick<Wallet, "name" | "icon">>,
   ) => Promise<void>;
   deleteWallet: (walletId: string) => Promise<void>;
+  // Settings
   setCurrency: (currency: string) => Promise<void>;
   setMonthlyBudget: (cents: number) => Promise<void>;
+  // Expenses (centralized)
+  expenses: Expense[] | null;
+  expensesLoading: boolean;
+  ensureExpenses: () => Promise<void>;
+  addExpense: (data: Omit<Expense, "id" | "createdAt">) => Promise<string>;
+  updateExpense: (
+    expenseId: string,
+    data: Partial<Omit<Expense, "id" | "createdAt">>,
+  ) => Promise<void>;
+  deleteExpense: (expenseId: string) => Promise<void>;
+  deleteExpensesByCategory: (categoryId: string) => Promise<void>;
+  // Emergency fund
+  emergencyMonths: number;
+  setEmergencyMonths: (months: number) => Promise<void>;
 }
 
 const DataContext = createContext<DataContextValue>({
@@ -45,6 +68,15 @@ const DataContext = createContext<DataContextValue>({
   deleteWallet: async () => {},
   setCurrency: async () => {},
   setMonthlyBudget: async () => {},
+  expenses: null,
+  expensesLoading: false,
+  ensureExpenses: async () => {},
+  addExpense: async () => "",
+  updateExpense: async () => {},
+  deleteExpense: async () => {},
+  deleteExpensesByCategory: async () => {},
+  emergencyMonths: 6,
+  setEmergencyMonths: async () => {},
 });
 
 export function DataProvider({ children }: { children: React.ReactNode }) {
@@ -56,11 +88,21 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   const [viewMode, setViewMode] = useState<ViewMode>("monthly");
   const [isLoading, setIsLoading] = useState(true);
 
+  // Centralized expense state
+  const [expenses, setExpenses] = useState<Expense[] | null>(null);
+  const [expensesLoading, setExpensesLoading] = useState(false);
+
+  // Emergency fund months
+  const [emergencyMonths, setEmergencyMonthsState] = useState(6);
+
   useEffect(() => {
     if (!user) {
       setCategories([]);
       setWallets([]);
       setCurrencyState("EUR");
+      setMonthlyBudgetCentsState(0);
+      setEmergencyMonthsState(6);
+      setExpenses(null);
       setIsLoading(false);
       return;
     }
@@ -108,6 +150,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       (settings) => {
         setCurrencyState(settings.currency);
         setMonthlyBudgetCentsState(settings.monthlyBudgetCents ?? 0);
+        setEmergencyMonthsState(settings.emergencyMonths ?? 6);
         settingsReady = true;
         checkReady();
       },
@@ -126,6 +169,20 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   }, [user]);
 
   const userId = user?.uid ?? "";
+
+  const ensureExpenses = useCallback(async () => {
+    if (expenses !== null || expensesLoading || !user) return;
+    setExpensesLoading(true);
+    try {
+      const data = await firestoreService.getExpenses(user.uid);
+      setExpenses(data);
+    } catch (error) {
+      if (__DEV__) console.error("Failed to load expenses:", error);
+      setExpenses([]);
+    } finally {
+      setExpensesLoading(false);
+    }
+  }, [expenses, expensesLoading, user]);
 
   const value: DataContextValue = {
     categories,
@@ -150,6 +207,46 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       setMonthlyBudgetCentsState(cents);
       await firestoreService.updateUserSettings(userId, {
         monthlyBudgetCents: cents,
+      });
+    },
+    // Expenses
+    expenses,
+    expensesLoading,
+    ensureExpenses,
+    addExpense: async (data) => {
+      const id = await firestoreService.addExpense(userId, data);
+      const newExpense: Expense = {
+        ...data,
+        id,
+        createdAt: new Date(),
+      };
+      setExpenses((prev) => (prev ? [...prev, newExpense] : [newExpense]));
+      return id;
+    },
+    updateExpense: async (expenseId, data) => {
+      await firestoreService.updateExpense(userId, expenseId, data);
+      setExpenses(
+        (prev) =>
+          prev?.map((e) => (e.id === expenseId ? { ...e, ...data } : e)) ??
+          null,
+      );
+    },
+    deleteExpense: async (expenseId) => {
+      await firestoreService.deleteExpense(userId, expenseId);
+      setExpenses((prev) => prev?.filter((e) => e.id !== expenseId) ?? null);
+    },
+    deleteExpensesByCategory: async (categoryId) => {
+      await firestoreService.deleteExpensesByCategory(userId, categoryId);
+      setExpenses(
+        (prev) => prev?.filter((e) => e.categoryId !== categoryId) ?? null,
+      );
+    },
+    // Emergency fund
+    emergencyMonths,
+    setEmergencyMonths: async (months) => {
+      setEmergencyMonthsState(months);
+      await firestoreService.updateUserSettings(userId, {
+        emergencyMonths: months,
       });
     },
   };

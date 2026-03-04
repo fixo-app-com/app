@@ -1,6 +1,11 @@
 import { fireEvent, render, screen } from "@testing-library/react-native";
 import { CategoryCard } from "./CategoryCard";
 
+// Mock DataContext for CurrencyText
+jest.mock("../../contexts/DataContext", () => ({
+  useData: () => ({ currency: "EUR" }),
+}));
+
 describe("CategoryCard", () => {
   const props = {
     icon: "\uD83C\uDFE0",
@@ -24,7 +29,7 @@ describe("CategoryCard", () => {
 
   it("renders formatted total", () => {
     render(<CategoryCard {...props} />);
-    expect(screen.getByText("\u20AC150.00")).toBeOnTheScreen();
+    expect(screen.getByText("\u20AC150,00")).toBeOnTheScreen();
   });
 
   it("calls onPress when tapped", () => {

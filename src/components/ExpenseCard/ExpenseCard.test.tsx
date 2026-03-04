@@ -21,12 +21,12 @@ describe("ExpenseCard", () => {
     render(<ExpenseCard {...props} />);
     expect(screen.getByText("Netflix")).toBeOnTheScreen();
     expect(screen.getByText("Revolut")).toBeOnTheScreen();
-    expect(screen.getByText("\u20AC12.99")).toBeOnTheScreen();
+    expect(screen.getByText("\u20AC12,99")).toBeOnTheScreen();
   });
 
   it("shows only the monthly amount (no yearly line)", () => {
     render(<ExpenseCard {...props} />);
-    expect(screen.getByText("\u20AC12.99")).toBeOnTheScreen();
+    expect(screen.getByText("\u20AC12,99")).toBeOnTheScreen();
     // Yearly line is no longer rendered — only one amount shown
     expect(screen.queryByText("\u20AC155")).toBeNull();
   });

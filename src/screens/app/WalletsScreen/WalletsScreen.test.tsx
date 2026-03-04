@@ -25,15 +25,11 @@ jest.mock("../../../contexts/DataContext", () => ({
     ],
     currency: "EUR",
     viewMode: "monthly",
+    setViewMode: jest.fn(),
     deleteWallet: jest.fn(),
-  }),
-}));
-
-jest.mock("../../../hooks/useFetchExpenses", () => ({
-  useFetchExpenses: () => ({
     expenses: [],
-    loading: false,
-    setExpenses: jest.fn(),
+    expensesLoading: false,
+    ensureExpenses: jest.fn(),
   }),
 }));
 
@@ -49,5 +45,11 @@ describe("WalletsScreen", () => {
   it("renders add wallet button", () => {
     render(<WalletsScreen />);
     expect(screen.getByText("Add wallet")).toBeOnTheScreen();
+  });
+
+  it("renders monthly/yearly toggle chips", () => {
+    render(<WalletsScreen />);
+    expect(screen.getByText("Monthly")).toBeOnTheScreen();
+    expect(screen.getByText("Yearly")).toBeOnTheScreen();
   });
 });

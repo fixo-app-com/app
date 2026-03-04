@@ -25,13 +25,13 @@ jest.mock("../../../contexts/DataContext", () => ({
       },
     ],
     currency: "EUR",
+    addExpense: jest.fn(),
+    updateExpense: jest.fn(),
+    deleteExpense: jest.fn(),
   }),
 }));
 
 jest.mock("../../../services/firestore", () => ({
-  addExpense: jest.fn(),
-  updateExpense: jest.fn(),
-  deleteExpense: jest.fn(),
   getExpenses: jest.fn(() => Promise.resolve([])),
 }));
 
@@ -66,5 +66,10 @@ describe("AddEditExpenseScreen", () => {
   it("renders save button", () => {
     render(<AddEditExpenseScreen />);
     expect(screen.getByText("Save expense")).toBeOnTheScreen();
+  });
+
+  it("renders notes placeholder", () => {
+    render(<AddEditExpenseScreen />);
+    expect(screen.getByPlaceholderText("Notes")).toBeOnTheScreen();
   });
 });

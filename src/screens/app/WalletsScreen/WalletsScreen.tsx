@@ -2,19 +2,20 @@ import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useData } from "../../../contexts/DataContext";
+import type { ViewMode } from "../../../contexts/DataContext";
 import type { WalletsStackParamList } from "../../../navigation/RootNavigator";
 import { roundToUnit, getDisplayAmountCents } from "../../../types/firestore";
-import { EmptyState, ScreenWrapper } from "../../../design-system";
+import { ChipGroup, EmptyState, ScreenWrapper } from "../../../design-system";
 import { FloatingAction, WalletCard } from "../../../components";
-import { useFetchExpenses } from "../../../hooks/useFetchExpenses";
+import { useExpenses } from "../../../hooks/useExpenses";
 
 type Nav = NativeStackNavigationProp<WalletsStackParamList>;
 
 export default function WalletsScreen() {
   const navigation = useNavigation<Nav>();
-  const { wallets, viewMode } = useData();
+  const { wallets, viewMode, setViewMode } = useData();
 
-  const { expenses, loading: loadingExpenses } = useFetchExpenses();
+  const { expenses, loading: loadingExpenses } = useExpenses();
 
   function getWalletTotal(walletId: string): number {
     return roundToUnit(
@@ -24,10 +25,27 @@ export default function WalletsScreen() {
     );
   }
 
-  return (
-    <ScreenWrapper>
-      <Text className="mb-6 text-3xl font-bold text-gray-900">Wallets</Text>
+  const headerContent = (
+    <>
+      <Text className="mb-4 text-3xl font-bold text-gray-900">Wallets</Text>
 
+      {/* Monthly / Yearly toggle */}
+      <View className="mb-2">
+        <ChipGroup
+          options={[
+            { value: "monthly" as ViewMode, label: "Monthly" },
+            { value: "yearly" as ViewMode, label: "Yearly" },
+          ]}
+          selected={viewMode}
+          onSelect={setViewMode}
+          compact
+        />
+      </View>
+    </>
+  );
+
+  return (
+    <ScreenWrapper header={headerContent}>
       {loadingExpenses ? (
         <ActivityIndicator color="#818cf8" className="mt-8" />
       ) : (

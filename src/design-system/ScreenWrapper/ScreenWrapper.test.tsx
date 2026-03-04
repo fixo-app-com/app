@@ -20,4 +20,14 @@ describe("ScreenWrapper", () => {
     );
     expect(screen.getByText("Scrollable")).toBeOnTheScreen();
   });
+
+  it("renders header prop content", () => {
+    render(
+      <ScreenWrapper header={<Text>Header Title</Text>}>
+        <Text>Body</Text>
+      </ScreenWrapper>,
+    );
+    expect(screen.getByText("Header Title")).toBeOnTheScreen();
+    expect(screen.getByText("Body")).toBeOnTheScreen();
+  });
 });

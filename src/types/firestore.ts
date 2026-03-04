@@ -42,9 +42,11 @@ export function getDisplayAmountCents(
   return getMonthlyAmountCents(expense);
 }
 
-/** Rounds cents to the nearest whole unit (≤ .50 → down, ≥ .51 → up). Use on category/wallet totals. */
+/** Rounds cents to the nearest whole unit (≥ .30 → up, < .30 → down). Use on category/wallet totals. */
 export function roundToUnit(cents: number): number {
-  return Math.round(cents / 100) * 100;
+  const remainder = Math.abs(cents) % 100;
+  const base = Math.trunc(cents / 100) * 100;
+  return remainder >= 30 ? base + Math.sign(cents) * 100 : base;
 }
 
 export interface Wallet {
@@ -57,4 +59,5 @@ export interface Wallet {
 export interface UserSettings {
   currency: string; // ISO 4217 code, e.g. "EUR", "USD"
   monthlyBudgetCents?: number; // e.g. 250000 = €2,500.00
+  emergencyMonths?: number; // slider value, default 6
 }

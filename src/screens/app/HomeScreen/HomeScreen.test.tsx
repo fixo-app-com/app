@@ -13,6 +13,7 @@ const mockExpenses = [
     categoryId: "cat1",
     name: "Netflix",
     amountCents: 1299,
+    billingFrequency: "monthly",
     walletId: "w1",
     essential: false,
     notes: "",
@@ -41,11 +42,10 @@ jest.mock("../../../contexts/DataContext", () => ({
     viewMode: "monthly",
     setViewMode: jest.fn(),
     isLoading: false,
+    expenses: mockExpenses,
+    expensesLoading: false,
+    ensureExpenses: jest.fn(),
   }),
-}));
-
-jest.mock("../../../services/firestore", () => ({
-  getExpenses: jest.fn(() => Promise.resolve(mockExpenses)),
 }));
 
 describe("HomeScreen", () => {

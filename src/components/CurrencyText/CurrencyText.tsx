@@ -1,6 +1,7 @@
 import { Text } from "react-native";
 import { useData } from "../../contexts/DataContext";
 import { getCurrencySymbol } from "../../constants/banks";
+import { formatAmount } from "../../utils/formatCurrency";
 
 interface CurrencyTextProps {
   cents: number;
@@ -19,18 +20,11 @@ export function CurrencyText({
   const { currency } = useData();
   const symbol = getCurrencySymbol(currency);
 
-  if (suffixFormat) {
-    return (
-      <Text className={className}>
-        {Math.floor(cents / 100).toLocaleString()} {symbol}
-      </Text>
-    );
-  }
+  const text = formatAmount(cents, {
+    hideDecimals,
+    suffixFormat,
+    symbol,
+  });
 
-  return (
-    <Text className={className}>
-      {symbol}
-      {hideDecimals ? Math.floor(cents / 100) : (cents / 100).toFixed(2)}
-    </Text>
-  );
+  return <Text className={className}>{text}</Text>;
 }

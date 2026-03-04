@@ -9,14 +9,12 @@ import {
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useAuth } from "../../../contexts/AuthContext";
 import { useData } from "../../../contexts/DataContext";
-import { deleteExpense } from "../../../services/firestore";
 import type { HomeStackParamList } from "../../../navigation/RootNavigator";
 import { roundToUnit, getDisplayAmountCents } from "../../../types/firestore";
 import { EmptyState, ScreenHeader, ScreenWrapper } from "../../../design-system";
 import { CurrencyText, ExpenseCard, FloatingAction } from "../../../components";
-import { useFetchExpenses } from "../../../hooks/useFetchExpenses";
+import { useExpenses } from "../../../hooks/useExpenses";
 
 type Nav = NativeStackNavigationProp<HomeStackParamList, "CategoryDetail">;
 type Route = RouteProp<HomeStackParamList, "CategoryDetail">;
@@ -24,13 +22,13 @@ type Route = RouteProp<HomeStackParamList, "CategoryDetail">;
 export default function CategoryDetailScreen() {
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
-  const { categoryId, categoryName } = route.params;
-  const { user } = useAuth();
-  const { categories, wallets, viewMode } = useData();
+  const { categoryId } = route.params;
+  const { categories, wallets, viewMode, deleteExpense } = useData();
 
   const category = categories.find((c) => c.id === categoryId);
+  const categoryName = category?.name ?? route.params.categoryName;
 
-  const { expenses, loading, setExpenses } = useFetchExpenses({ categoryId });
+  const { expenses, loading } = useExpenses({ categoryId });
 
   function getWalletName(walletId: string): string {
     return wallets.find((w) => w.id === walletId)?.name ?? "—";
@@ -43,10 +41,8 @@ export default function CategoryDetailScreen() {
         text: "Delete",
         style: "destructive",
         onPress: async () => {
-          if (!user) return;
           try {
-            await deleteExpense(user.uid, expenseId);
-            setExpenses((prev) => prev.filter((e) => e.id !== expenseId));
+            await deleteExpense(expenseId);
           } catch (error) {
             if (__DEV__) console.error("Failed to delete expense:", error);
           }
@@ -59,8 +55,8 @@ export default function CategoryDetailScreen() {
     expenses.reduce((sum, e) => sum + getDisplayAmountCents(e, viewMode), 0),
   );
 
-  return (
-    <ScreenWrapper>
+  const headerContent = (
+    <>
       <ScreenHeader
         title={category?.name ?? categoryName}
         onBack={() => navigation.goBack()}
@@ -96,7 +92,11 @@ export default function CategoryDetailScreen() {
           />
         </Text>
       </View>
+    </>
+  );
 
+  return (
+    <ScreenWrapper header={headerContent}>
       {/* Expenses list */}
       {loading ? (
         <ActivityIndicator color="#818cf8" className="mt-8" />
