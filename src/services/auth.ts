@@ -82,10 +82,11 @@ export async function signInWithApple(): Promise<FirebaseAuthTypes.UserCredentia
     throw new Error("No identity token returned from Apple Sign-In");
   }
 
-  const oauthCredential = new auth.OAuthProvider("apple.com").credential({
-    idToken: identityToken,
-    rawNonce,
-  });
+  const oauthCredential = {
+    providerId: "apple.com",
+    token: identityToken,
+    secret: rawNonce,
+  } as FirebaseAuthTypes.AuthCredential;
   const userCredential = await auth().signInWithCredential(oauthCredential);
 
   if (appleCredential.fullName) {
