@@ -18,8 +18,8 @@ describe("SignUpScreen", () => {
   it("renders email, password, and confirm password inputs", () => {
     render(<SignUpScreen navigation={mockNavigation} route={mockRoute} />);
     expect(screen.getByPlaceholderText("Email")).toBeOnTheScreen();
-    expect(screen.getByPlaceholderText("Password")).toBeOnTheScreen();
-    expect(screen.getByPlaceholderText("Confirm password")).toBeOnTheScreen();
+    expect(screen.getAllByPlaceholderText("Password").length).toBeGreaterThan(0);
+    expect(screen.getAllByPlaceholderText("Confirm password").length).toBeGreaterThan(0);
   });
 
   it("renders sign up button", () => {

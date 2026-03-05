@@ -30,17 +30,15 @@ export default function WalletsScreen() {
       <Text className="mb-4 text-3xl font-bold text-gray-900">Wallets</Text>
 
       {/* Monthly / Yearly toggle */}
-      <View className="mb-2">
-        <ChipGroup
-          options={[
-            { value: "monthly" as ViewMode, label: "Monthly" },
-            { value: "yearly" as ViewMode, label: "Yearly" },
-          ]}
-          selected={viewMode}
-          onSelect={setViewMode}
-          compact
-        />
-      </View>
+      <ChipGroup
+        options={[
+          { value: "monthly" as ViewMode, label: "Monthly" },
+          { value: "yearly" as ViewMode, label: "Yearly" },
+        ]}
+        selected={viewMode}
+        onSelect={setViewMode}
+        compact
+      />
     </>
   );
 

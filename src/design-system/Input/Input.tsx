@@ -3,6 +3,7 @@ import {
   InputAccessoryView,
   Keyboard,
   Pressable,
+  StyleSheet,
   Text,
   TextInput,
   View,
@@ -29,6 +30,19 @@ interface InputProps {
 
 let accessoryCounter = 0;
 
+const NUMERIC_KEYBOARDS: KeyboardTypeOptions[] = [
+  "decimal-pad",
+  "number-pad",
+  "phone-pad",
+];
+
+const baseInputStyle = {
+  paddingHorizontal: 16,
+  paddingVertical: 16,
+  fontSize: 16,
+  color: "#111827",
+};
+
 export function Input({
   label,
   value,
@@ -47,9 +61,26 @@ export function Input({
   const [hidden, setHidden] = useState(true);
   const isPassword = secureTextEntry === true;
 
+  const secureRef = useRef<TextInput>(null);
+  const plainRef = useRef<TextInput>(null);
+
+  const isNumericKeyboard =
+    keyboardType != null && NUMERIC_KEYBOARDS.includes(keyboardType);
+  const needsAccessory = multiline || isNumericKeyboard;
+
   const accessoryId = useRef(
-    multiline ? `input-accessory-${++accessoryCounter}` : undefined,
+    needsAccessory ? `input-accessory-${++accessoryCounter}` : undefined,
   ).current;
+
+  function handleTogglePassword() {
+    // Focus the OTHER input before toggling state.
+    // Both inputs are always mounted (the inactive one is invisible but
+    // still focusable), so iOS transfers keyboard focus between two
+    // TextInputs whose secureTextEntry never changes — no glitch.
+    const targetRef = hidden ? plainRef : secureRef;
+    targetRef.current?.focus();
+    setHidden((h) => !h);
+  }
 
   return (
     <View>
@@ -57,36 +88,81 @@ export function Input({
         <Text className="mb-2 text-sm text-gray-500">{label}</Text>
       ) : null}
       <View className="flex-row items-center rounded-xl bg-white">
-        <TextInput
-          value={value}
-          onChangeText={onChangeText}
-          placeholder={placeholder}
-          placeholderTextColor="#94a3b8"
-          multiline={multiline}
-          autoFocus={autoFocus}
-          keyboardType={keyboardType}
-          secureTextEntry={isPassword && hidden}
-          autoCapitalize={autoCapitalize}
-          autoComplete={autoComplete}
-          editable={editable}
-          maxLength={maxLength}
-          returnKeyType={multiline ? undefined : "done"}
-          onSubmitEditing={multiline ? undefined : () => Keyboard.dismiss()}
-          inputAccessoryViewID={accessoryId}
-          style={[
-            {
-              flex: 1,
-              paddingHorizontal: 16,
-              paddingVertical: 16,
-              fontSize: 16,
-              color: "#111827",
-            },
-            style,
-          ]}
-        />
+        {isPassword ? (
+          <View style={styles.passwordContainer}>
+            {/* Secure input — secureTextEntry is always true */}
+            <TextInput
+              ref={secureRef}
+              value={value}
+              onChangeText={onChangeText}
+              placeholder={placeholder}
+              placeholderTextColor="#94a3b8"
+              secureTextEntry={true}
+              autoCapitalize="none"
+              autoCorrect={false}
+              spellCheck={false}
+              textContentType="none"
+              autoComplete="off"
+              editable={editable}
+              maxLength={maxLength}
+              returnKeyType="done"
+              onSubmitEditing={() => Keyboard.dismiss()}
+              pointerEvents={hidden ? "auto" : "none"}
+              style={[
+                baseInputStyle,
+                style,
+                hidden ? styles.visibleInput : styles.hiddenInput,
+              ]}
+            />
+            {/* Plain input — secureTextEntry is always false */}
+            <TextInput
+              ref={plainRef}
+              value={value}
+              onChangeText={onChangeText}
+              placeholder={placeholder}
+              placeholderTextColor="#94a3b8"
+              secureTextEntry={false}
+              autoCapitalize="none"
+              autoCorrect={false}
+              spellCheck={false}
+              textContentType="none"
+              autoComplete="off"
+              editable={editable}
+              maxLength={maxLength}
+              returnKeyType="done"
+              onSubmitEditing={() => Keyboard.dismiss()}
+              pointerEvents={!hidden ? "auto" : "none"}
+              style={[
+                baseInputStyle,
+                style,
+                !hidden ? styles.visibleInput : styles.hiddenInput,
+              ]}
+            />
+          </View>
+        ) : (
+          <TextInput
+            value={value}
+            onChangeText={onChangeText}
+            placeholder={placeholder}
+            placeholderTextColor="#94a3b8"
+            multiline={multiline}
+            autoFocus={autoFocus}
+            keyboardType={keyboardType}
+            autoCapitalize={autoCapitalize}
+            autoComplete={autoComplete}
+            editable={editable}
+            maxLength={maxLength}
+            returnKeyType={needsAccessory ? undefined : "done"}
+            onSubmitEditing={
+              needsAccessory ? undefined : () => Keyboard.dismiss()
+            }
+            inputAccessoryViewID={accessoryId}
+            style={[{ flex: 1, ...baseInputStyle }, style]}
+          />
+        )}
         {isPassword && (
           <Pressable
-            onPress={() => setHidden((h) => !h)}
+            onPress={handleTogglePassword}
             className="pr-4"
             hitSlop={8}
             testID="toggle-password"
@@ -100,7 +176,7 @@ export function Input({
         )}
       </View>
 
-      {/* Keyboard toolbar with Done button for multiline inputs */}
+      {/* Keyboard toolbar with Done button */}
       {accessoryId && (
         <InputAccessoryView nativeID={accessoryId}>
           <View className="flex-row justify-end border-t border-gray-200 bg-gray-100 px-4 py-2">
@@ -115,3 +191,22 @@ export function Input({
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  passwordContainer: {
+    flex: 1,
+    position: "relative",
+  },
+  visibleInput: {
+    // Normal flow — takes space in the layout
+  },
+  hiddenInput: {
+    // Overlaid behind the visible input — invisible but still focusable
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    opacity: 0,
+  },
+});

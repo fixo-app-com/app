@@ -19,7 +19,7 @@ describe("SignInScreen", () => {
   it("renders email and password inputs", () => {
     render(<SignInScreen navigation={mockNavigation} route={mockRoute} />);
     expect(screen.getByPlaceholderText("Email")).toBeOnTheScreen();
-    expect(screen.getByPlaceholderText("Password")).toBeOnTheScreen();
+    expect(screen.getAllByPlaceholderText("Password").length).toBeGreaterThan(0);
   });
 
   it("renders sign in button", () => {

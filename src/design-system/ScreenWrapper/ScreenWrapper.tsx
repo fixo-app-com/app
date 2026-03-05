@@ -30,7 +30,7 @@ export function ScreenWrapper({
         <KeyboardAvoidingView
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : undefined}
-          keyboardVerticalOffset={insets.top}
+          keyboardVerticalOffset={0}
         >
           <ScrollView
             className="flex-1 px-4"

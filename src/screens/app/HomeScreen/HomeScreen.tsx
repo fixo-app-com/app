@@ -104,17 +104,15 @@ export default function HomeScreen() {
       <Text className="mb-4 text-3xl font-bold text-gray-900">Home</Text>
 
       {/* Monthly / Yearly toggle */}
-      <View className="mb-4">
-        <ChipGroup
-          options={[
-            { value: "monthly" as ViewMode, label: "Monthly" },
-            { value: "yearly" as ViewMode, label: "Yearly" },
-          ]}
-          selected={viewMode}
-          onSelect={setViewMode}
-          compact
-        />
-      </View>
+      <ChipGroup
+        options={[
+          { value: "monthly" as ViewMode, label: "Monthly" },
+          { value: "yearly" as ViewMode, label: "Yearly" },
+        ]}
+        selected={viewMode}
+        onSelect={setViewMode}
+        compact
+      />
 
       <Card>
         <View className="py-2">

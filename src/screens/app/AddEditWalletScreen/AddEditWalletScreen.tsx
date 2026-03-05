@@ -47,8 +47,10 @@ export default function AddEditWalletScreen() {
 
   // Responsive grid
   const containerWidth = screenWidth - H_PADDING;
-  const columns = Math.floor(containerWidth / (ITEM_BASE_WIDTH + ITEM_GAP));
-  const itemWidth = (containerWidth - columns * ITEM_GAP) / columns;
+  const columns = Math.floor(
+    (containerWidth + ITEM_GAP) / (ITEM_BASE_WIDTH + ITEM_GAP),
+  );
+  const itemWidth = (containerWidth - (columns - 1) * ITEM_GAP) / columns;
 
   // Filter banks based on name input
   const query = name.toLowerCase().trim();
@@ -146,14 +148,14 @@ export default function AddEditWalletScreen() {
 
       <SectionHeader title="Bank icon" />
 
-      <View className="flex-row flex-wrap">
+      <View className="flex-row flex-wrap" style={{ gap: ITEM_GAP }}>
         {/* Generic / no icon option */}
         <Pressable
           onPress={handleGenericSelect}
           className={`items-center justify-center rounded-xl p-2 ${
             icon === "" ? "bg-fixo-100" : "bg-white"
           }`}
-          style={{ width: itemWidth, height: itemWidth, margin: ITEM_GAP / 2 }}
+          style={{ width: itemWidth, height: itemWidth }}
         >
           <BankIcon bankKey="" size={32} />
           <Text className="mt-1 text-[9px] text-gray-400" numberOfLines={1}>
@@ -173,7 +175,6 @@ export default function AddEditWalletScreen() {
               style={{
                 width: itemWidth,
                 height: itemWidth,
-                margin: ITEM_GAP / 2,
               }}
             >
               <BankIcon bankKey={bank.key} size={32} />

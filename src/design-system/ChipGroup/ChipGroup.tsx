@@ -8,7 +8,7 @@ interface ChipGroupProps<T extends string> {
 }
 
 const HORIZONTAL_PADDING = 32; // px-4 on each side
-const GAP = 8; // m-1 on each side = 4+4 = 8
+const GAP = 8;
 
 export function ChipGroup<T extends string>({
   options,
@@ -26,21 +26,26 @@ export function ChipGroup<T extends string>({
 
   let itemSize: number | undefined;
   if (!compact) {
-    const columns = Math.floor(containerWidth / (itemBaseWidth + GAP));
-    itemSize = (containerWidth - columns * GAP) / columns;
+    const columns = Math.floor(
+      (containerWidth + GAP) / (itemBaseWidth + GAP),
+    );
+    itemSize = (containerWidth - (columns - 1) * GAP) / columns;
   }
 
   return (
-    <View className="flex-row flex-wrap">
+    <View
+      className={`flex-row flex-wrap${compact ? " mb-2" : ""}`}
+      style={compact ? undefined : { gap: GAP }}
+    >
       {options.map((option) => {
         const isSelected = option.value === selected;
         return (
           <Pressable
             key={option.value}
             onPress={() => onSelect(option.value)}
-            className={`m-1 items-center justify-center rounded-xl ${chipPadding} ${
+            className={`items-center justify-center rounded-xl ${chipPadding} ${
               isSelected ? "bg-fixo-100" : "bg-white"
-            }`}
+            }${compact ? " m-1" : ""}`}
             style={
               compact
                 ? undefined
