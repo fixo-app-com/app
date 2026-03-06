@@ -3,6 +3,7 @@ import { View, Text } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import crashlytics from "@react-native-firebase/crashlytics";
 import { Button } from "../../design-system";
+import { colors } from "../../constants/colors";
 import i18n from "../../i18n";
 
 interface Props {
@@ -35,7 +36,7 @@ export class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         <View className="flex-1 items-center justify-center bg-gray-100 px-8">
-          <Ionicons name="alert-circle-outline" size={64} color="#818cf8" />
+          <Ionicons name="alert-circle-outline" size={64} color={colors.fixo[400]} />
           <Text className="mt-4 text-xl font-semibold text-gray-900">
             {i18n.t("errorBoundary.title")}
           </Text>

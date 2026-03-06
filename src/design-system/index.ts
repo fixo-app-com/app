@@ -7,6 +7,7 @@ export { FloatingAction } from "./FloatingAction/FloatingAction";
 export { FooterLink } from "./FooterLink/FooterLink";
 export { FormRow } from "./FormRow/FormRow";
 export { FullScreenLoader } from "./FullScreenLoader/FullScreenLoader";
+export { IconButton } from "./IconButton/IconButton";
 export { Input } from "./Input/Input";
 export { SaveDeleteFooter } from "./SaveDeleteFooter/SaveDeleteFooter";
 export { ScreenHeader } from "./ScreenHeader/ScreenHeader";

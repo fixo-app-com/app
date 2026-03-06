@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -14,9 +14,9 @@ import { useTranslation } from "react-i18next";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useData } from "../../../contexts/DataContext";
+import { colors } from "../../../constants/colors";
 import type { HomeStackParamList } from "../../../navigation/RootNavigator";
-import { roundToUnit, getDisplayAmountCents } from "../../../types/firestore";
-import type { Category } from "../../../types/firestore";
+import { roundToUnit, sumDisplayCents } from "../../../types/firestore";
 import {
   EmptyState,
   FloatingAction,
@@ -27,11 +27,12 @@ import {
 } from "../../../design-system";
 import {
   CategoryCard,
+  ListSpacer,
   ViewModeToggle,
 } from "../../../components";
 import { useExpenses } from "../../../hooks/useExpenses";
 import { useSortSheet } from "../../../hooks/useSortSheet";
-import { makeSortComparator } from "../../../utils/sort";
+import { useEntityList } from "../../../hooks/useEntityList";
 import { BudgetCard } from "./BudgetCard";
 import { BudgetChartCard } from "./BudgetChartCard";
 import { DotIndicators } from "./DotIndicators";
@@ -54,35 +55,21 @@ export default function HomeScreen() {
 
   const { expenses, loading: loadingExpenses } = useExpenses();
   const sort = useSortSheet("categories");
-
-  const sortedCategories = useMemo(() => {
-    const comparator = makeSortComparator<Category>(
-      sort.selected,
-      (c) => getCategoryTotal(c.id),
-      (c) => c.createdAt,
-    );
-    return [...categories].sort(comparator);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [categories, sort.selected, expenses, viewMode]);
+  const { sorted: sortedCategories, getTotal: getCategoryTotal } = useEntityList(
+    categories,
+    expenses,
+    viewMode,
+    sort.selected,
+    "categoryId",
+  );
 
   const isYearly = viewMode === "yearly";
-
-  function getCategoryTotal(categoryId: string): number {
-    return roundToUnit(
-      expenses
-        .filter((e) => e.categoryId === categoryId)
-        .reduce((sum, e) => sum + getDisplayAmountCents(e, viewMode), 0),
-    );
-  }
 
   function getCategoryCount(categoryId: string): number {
     return expenses.filter((e) => e.categoryId === categoryId).length;
   }
 
-  const rawTotalCents = expenses.reduce(
-    (sum, e) => sum + getDisplayAmountCents(e, viewMode),
-    0,
-  );
+  const rawTotalCents = sumDisplayCents(expenses, viewMode);
   const totalCents = roundToUnit(rawTotalCents);
   const budgetDisplayCents = isYearly
     ? monthlyBudgetCents * 12
@@ -202,7 +189,7 @@ export default function HomeScreen() {
   return (
     <ScreenWrapper header={headerContent}>
       {loadingExpenses ? (
-        <ActivityIndicator color="#818cf8" className="mt-8" />
+        <ActivityIndicator color={colors.fixo[400]} className="mt-8" />
       ) : (
         <FlatList
           data={sortedCategories}
@@ -222,7 +209,7 @@ export default function HomeScreen() {
               }
             />
           )}
-          ItemSeparatorComponent={() => <View className="h-3" />}
+          ItemSeparatorComponent={ListSpacer}
           ListEmptyComponent={
             <EmptyState icon="grid-outline" message={t("home.noCategories")} />
           }

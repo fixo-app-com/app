@@ -5,6 +5,7 @@ import { ActivityIndicator, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useAuth } from "../contexts/AuthContext";
+import { colors } from "../constants/colors";
 import SignInScreen from "../screens/auth/SignInScreen/SignInScreen";
 import SignUpScreen from "../screens/auth/SignUpScreen/SignUpScreen";
 import ForgotPasswordScreen from "../screens/auth/ForgotPasswordScreen/ForgotPasswordScreen";
@@ -201,11 +202,11 @@ function AppNavigator() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: "#ffffff",
+          backgroundColor: colors.white,
           borderTopColor: "#e2e8f0",
           borderTopWidth: 0.5,
         },
-        tabBarActiveTintColor: "#818cf8",
+        tabBarActiveTintColor: colors.fixo[400],
         tabBarInactiveTintColor: "#94a3b8",
         tabBarShowLabel: true,
         tabBarLabelStyle: { fontSize: 10, fontWeight: "500" },
@@ -253,7 +254,7 @@ export default function RootNavigator() {
   if (isLoading) {
     return (
       <View className="flex-1 items-center justify-center bg-gray-100">
-        <ActivityIndicator size="large" color="#818cf8" />
+        <ActivityIndicator size="large" color={colors.fixo[400]} />
       </View>
     );
   }

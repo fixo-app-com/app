@@ -1,4 +1,5 @@
 import { ActivityIndicator, Pressable, Text } from "react-native";
+import { colors } from "../../constants/colors";
 
 interface ButtonProps {
   label: string;
@@ -46,7 +47,7 @@ export function Button({
     >
       {loading ? (
         <ActivityIndicator
-          color={variant === "destructive" ? "#ef4444" : variant === "outline" ? "#818cf8" : "#ffffff"}
+          color={variant === "destructive" ? colors.red[500] : variant === "outline" ? colors.fixo[400] : colors.white}
           size="small"
         />
       ) : (

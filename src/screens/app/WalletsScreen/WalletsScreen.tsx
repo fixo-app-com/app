@@ -1,15 +1,10 @@
-import { useMemo } from "react";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useData } from "../../../contexts/DataContext";
+import { colors } from "../../../constants/colors";
 import type { WalletsStackParamList } from "../../../navigation/RootNavigator";
-import {
-  roundToUnit,
-  getDisplayAmountCents,
-  type Wallet,
-} from "../../../types/firestore";
 import {
   EmptyState,
   FloatingAction,
@@ -17,10 +12,10 @@ import {
   SortBottomSheet,
   SortTrigger,
 } from "../../../design-system";
-import { ViewModeToggle, WalletCard } from "../../../components";
+import { ListSpacer, ViewModeToggle, WalletCard } from "../../../components";
 import { useExpenses } from "../../../hooks/useExpenses";
 import { useSortSheet } from "../../../hooks/useSortSheet";
-import { makeSortComparator } from "../../../utils/sort";
+import { useEntityList } from "../../../hooks/useEntityList";
 
 type Nav = NativeStackNavigationProp<WalletsStackParamList>;
 
@@ -31,14 +26,13 @@ export default function WalletsScreen() {
 
   const { expenses, loading: loadingExpenses } = useExpenses();
   const sort = useSortSheet("wallets");
-
-  function getWalletTotal(walletId: string): number {
-    return roundToUnit(
-      expenses
-        .filter((e) => e.walletId === walletId)
-        .reduce((sum, e) => sum + getDisplayAmountCents(e, viewMode), 0),
-    );
-  }
+  const { sorted: sortedWallets, getTotal: getWalletTotal } = useEntityList(
+    wallets,
+    expenses,
+    viewMode,
+    sort.selected,
+    "walletId",
+  );
 
   const headerContent = (
     <>
@@ -55,20 +49,10 @@ export default function WalletsScreen() {
     </>
   );
 
-  const sortedWallets = useMemo(() => {
-    const comparator = makeSortComparator<Wallet>(
-      sort.selected,
-      (w) => getWalletTotal(w.id),
-      (w) => w.createdAt,
-    );
-    return [...wallets].sort(comparator);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wallets, sort.selected, expenses, viewMode]);
-
   return (
     <ScreenWrapper header={headerContent}>
       {loadingExpenses ? (
-        <ActivityIndicator color="#818cf8" className="mt-8" />
+        <ActivityIndicator color={colors.fixo[400]} className="mt-8" />
       ) : (
         <FlatList
           data={sortedWallets}
@@ -88,7 +72,7 @@ export default function WalletsScreen() {
               }
             />
           )}
-          ItemSeparatorComponent={() => <View className="h-3" />}
+          ItemSeparatorComponent={ListSpacer}
           ListEmptyComponent={
             <EmptyState icon="wallet-outline" message={t("wallets.noWallets")} />
           }

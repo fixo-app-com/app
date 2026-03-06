@@ -4,8 +4,10 @@ import { useTranslation } from "react-i18next";
 import Slider from "@react-native-community/slider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { getDisplayAmountCents, roundToUnit } from "../../../types/firestore";
+import { sumDisplayCents, roundToUnit, getDisplayAmountCents } from "../../../types/firestore";
 import type { Expense } from "../../../types/firestore";
+import { getCurrencySymbol } from "../../../constants/banks";
+import { colors } from "../../../constants/colors";
 import {
   BottomSheet,
   Card,
@@ -37,6 +39,7 @@ export default function EmergencyFundScreen() {
     emergencyMonths,
     setEmergencyMonths: saveEmergencyMonths,
     wallets,
+    currency,
   } = useData();
 
   const [selectedMonths, setSelectedMonths] = useState(emergencyMonths);
@@ -100,10 +103,7 @@ export default function EmergencyFundScreen() {
   );
 
   const essentialExpenses = expenses.filter((e) => e.essential);
-  const yearlyEssentialCents = essentialExpenses.reduce(
-    (sum, e) => sum + getDisplayAmountCents(e, "yearly"),
-    0,
-  );
+  const yearlyEssentialCents = sumDisplayCents(essentialExpenses, "yearly");
   const monthlyEssentialCents = roundToUnit(yearlyEssentialCents / 12);
   const targetCents = roundToUnit((yearlyEssentialCents / 12) * selectedMonths);
 
@@ -121,7 +121,7 @@ export default function EmergencyFundScreen() {
   return (
     <ScreenWrapper header={headerContent} scroll>
       {loading ? (
-        <ActivityIndicator color="#818cf8" className="mt-8" />
+        <ActivityIndicator color={colors.fixo[400]} className="mt-8" />
       ) : essentialExpenses.length === 0 ? (
         <EmptyState
           icon="shield-outline"
@@ -173,9 +173,9 @@ export default function EmergencyFundScreen() {
                 value={SNAP_POINTS.indexOf(selectedMonths)}
                 onValueChange={(i) => setSelectedMonths(SNAP_POINTS[i])}
                 onSlidingComplete={handleSlidingComplete}
-                minimumTrackTintColor="#818cf8"
+                minimumTrackTintColor={colors.fixo[400]}
                 maximumTrackTintColor="#e5e7eb"
-                thumbTintColor="#818cf8"
+                thumbTintColor={colors.fixo[400]}
               />
               <Text className="mt-1 text-center text-xl font-bold text-gray-900">
                 {formatPeriod(selectedMonths)}
@@ -198,7 +198,7 @@ export default function EmergencyFundScreen() {
               <Text className="mt-2 text-center text-xs text-gray-400">
                 {t("emergency.targetDetail", {
                   count: essentialExpenses.length,
-                  monthlyCost: `\u20AC${(monthlyEssentialCents / 100).toFixed(0)}`,
+                  monthlyCost: `${getCurrencySymbol(currency)}${(monthlyEssentialCents / 100).toFixed(0)}`,
                   months: selectedMonths,
                 })}
               </Text>
@@ -210,7 +210,7 @@ export default function EmergencyFundScreen() {
             <Ionicons
               name="information-circle-outline"
               size={20}
-              color="#818cf8"
+              color={colors.fixo[400]}
               style={{ marginRight: 8, marginTop: 2 }}
             />
             <Text className="flex-1 text-sm leading-5 text-gray-600">

@@ -49,6 +49,25 @@ export function roundToUnit(cents: number): number {
   return remainder >= 30 ? base + Math.sign(cents) * 100 : base;
 }
 
+/** Sums getDisplayAmountCents for all expenses without rounding. */
+export function sumDisplayCents(
+  expenses: Pick<Expense, "amountCents" | "billingFrequency">[],
+  viewMode: "monthly" | "yearly",
+): number {
+  return expenses.reduce(
+    (sum, e) => sum + getDisplayAmountCents(e, viewMode),
+    0,
+  );
+}
+
+/** Sums display cents and rounds to the nearest whole unit. */
+export function computeTotalCents(
+  expenses: Pick<Expense, "amountCents" | "billingFrequency">[],
+  viewMode: "monthly" | "yearly",
+): number {
+  return roundToUnit(sumDisplayCents(expenses, viewMode));
+}
+
 export interface Wallet {
   id: string;
   name: string; // "Intesa Sanpaolo", "Revolut"

@@ -3,7 +3,7 @@ import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useData } from "../../../contexts/DataContext";
 import type { HomeStackParamList } from "../../../navigation/RootNavigator";
-import { roundToUnit, getDisplayAmountCents } from "../../../types/firestore";
+import { computeTotalCents } from "../../../types/firestore";
 import { useExpenses } from "../../../hooks/useExpenses";
 import { useSortSheet } from "../../../hooks/useSortSheet";
 import { EntityDetailScreen } from "../shared/EntityDetailScreen";
@@ -24,9 +24,7 @@ export default function CategoryDetailScreen() {
   const sort = useSortSheet("expenses");
   const { expenses, loading } = useExpenses({ categoryId, sort: sort.selected });
 
-  const totalCents = roundToUnit(
-    expenses.reduce((sum, e) => sum + getDisplayAmountCents(e, viewMode), 0),
-  );
+  const totalCents = computeTotalCents(expenses, viewMode);
 
   return (
     <EntityDetailScreen

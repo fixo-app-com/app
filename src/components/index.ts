@@ -4,6 +4,7 @@ export { CategoryCard } from "./CategoryCard/CategoryCard";
 export { CurrencyText } from "./CurrencyText/CurrencyText";
 export { ExpenseCard } from "./ExpenseCard/ExpenseCard";
 export { ExpenseList } from "./ExpenseList/ExpenseList";
+export { ListSpacer } from "./ListSpacer";
 export { SocialLoginButtons } from "./SocialLoginButtons/SocialLoginButtons";
 export { SwipeableRow } from "./SwipeableRow/SwipeableRow";
 export { ViewModeToggle } from "./ViewModeToggle/ViewModeToggle";

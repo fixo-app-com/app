@@ -3,6 +3,7 @@ import { Pressable, Text, View } from "react-native";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { BottomSheet } from "../BottomSheet/BottomSheet";
+import { colors } from "../../constants/colors";
 
 type Option<T extends string> = { value: T; label: string };
 
@@ -66,7 +67,7 @@ export function SortBottomSheet<T extends string>({
                 {option.label}
               </Text>
               {isSelected && (
-                <Ionicons name="checkmark" size={20} color="#818cf8" />
+                <Ionicons name="checkmark" size={20} color={colors.fixo[400]} />
               )}
             </Pressable>
           );

@@ -10,6 +10,7 @@ import { useDeleteConfirmation } from "../../../hooks/useDeleteConfirmation";
 import type { HomeStackParamList } from "../../../navigation/RootNavigator";
 import type { BillingFrequency, Expense } from "../../../types/firestore";
 import { getCurrencySymbol } from "../../../constants/banks";
+import { colors } from "../../../constants/colors";
 import {
   Button,
   ChipGroup,
@@ -233,8 +234,8 @@ export default function AddEditExpenseScreen() {
           <Switch
             value={essential}
             onValueChange={setEssential}
-            trackColor={{ false: "#d1d5db", true: "#818cf8" }}
-            thumbColor="#fff"
+            trackColor={{ false: colors.gray[200], true: colors.fixo[400] }}
+            thumbColor={colors.white}
           />
         }
       />

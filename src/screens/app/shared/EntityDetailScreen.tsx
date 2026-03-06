@@ -1,7 +1,7 @@
-import { Pressable, Text, View } from "react-native";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { Text, View } from "react-native";
 import {
   FloatingAction,
+  IconButton,
   ScreenHeader,
   ScreenWrapper,
   SortBottomSheet,
@@ -50,18 +50,7 @@ export function EntityDetailScreen({
         title={title}
         onBack={onBack}
         right={
-          <Pressable
-            onPress={onEdit}
-            className="items-center justify-center"
-            style={({ pressed }) => ({
-              opacity: pressed ? 0.6 : 1,
-              width: 44,
-              height: 44,
-            })}
-            hitSlop={8}
-          >
-            <Ionicons name="create-outline" size={22} color="#6b7280" />
-          </Pressable>
+          <IconButton name="create-outline" onPress={onEdit} accessibilityLabel="Edit" />
         }
       />
 

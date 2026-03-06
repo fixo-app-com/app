@@ -1,7 +1,9 @@
-import { ActivityIndicator, FlatList, View } from "react-native";
+import { ActivityIndicator, FlatList } from "react-native";
 import { useTranslation } from "react-i18next";
 import { EmptyState } from "../../design-system";
+import { colors } from "../../constants/colors";
 import { ExpenseCard } from "../ExpenseCard/ExpenseCard";
+import { ListSpacer } from "../ListSpacer";
 import { SwipeableRow } from "../SwipeableRow/SwipeableRow";
 import type { Expense } from "../../types/firestore";
 
@@ -25,7 +27,7 @@ export function ExpenseList({
   const { t } = useTranslation();
 
   if (loading) {
-    return <ActivityIndicator color="#818cf8" className="mt-8" />;
+    return <ActivityIndicator color={colors.fixo[400]} className="mt-8" />;
   }
 
   return (
@@ -50,7 +52,7 @@ export function ExpenseList({
           />
         </SwipeableRow>
       )}
-      ItemSeparatorComponent={() => <View className="h-3" />}
+      ItemSeparatorComponent={ListSpacer}
       ListEmptyComponent={
         <EmptyState icon="receipt-outline" message={emptyMessage} />
       }
