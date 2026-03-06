@@ -3,10 +3,16 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import { useAuth } from "./AuthContext";
-import type { Category, Expense, Wallet } from "../types/firestore";
+import type {
+  Category,
+  Expense,
+  PinnedBudgetMetric,
+  Wallet,
+} from "../types/firestore";
 import * as firestoreService from "../services/firestore";
 
 export type ViewMode = "monthly" | "yearly";
@@ -50,6 +56,9 @@ interface DataContextValue {
   // Emergency fund
   emergencyMonths: number;
   setEmergencyMonths: (months: number) => Promise<void>;
+  // Pinned budget metric
+  pinnedBudgetMetric: PinnedBudgetMetric;
+  setPinnedBudgetMetric: (metric: PinnedBudgetMetric) => Promise<void>;
 }
 
 const DataContext = createContext<DataContextValue>({
@@ -77,6 +86,8 @@ const DataContext = createContext<DataContextValue>({
   deleteExpensesByCategory: async () => {},
   emergencyMonths: 6,
   setEmergencyMonths: async () => {},
+  pinnedBudgetMetric: "budget",
+  setPinnedBudgetMetric: async () => {},
 });
 
 export function DataProvider({ children }: { children: React.ReactNode }) {
@@ -95,6 +106,11 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   // Emergency fund months
   const [emergencyMonths, setEmergencyMonthsState] = useState(6);
 
+  // Pinned budget metric
+  const [pinnedBudgetMetric, setPinnedBudgetMetricState] =
+    useState<PinnedBudgetMetric>("budget");
+  const pendingPinnedRef = useRef<PinnedBudgetMetric | null>(null);
+
   useEffect(() => {
     if (!user) {
       setCategories([]);
@@ -102,6 +118,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       setCurrencyState("EUR");
       setMonthlyBudgetCentsState(0);
       setEmergencyMonthsState(6);
+      setPinnedBudgetMetricState("budget");
       setExpenses(null);
       setIsLoading(false);
       return;
@@ -151,6 +168,13 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         setCurrencyState(settings.currency);
         setMonthlyBudgetCentsState(settings.monthlyBudgetCents ?? 0);
         setEmergencyMonthsState(settings.emergencyMonths ?? 6);
+        const serverMetric = settings.pinnedBudgetMetric ?? "budget";
+        if (pendingPinnedRef.current === null) {
+          setPinnedBudgetMetricState(serverMetric);
+        } else if (pendingPinnedRef.current === serverMetric) {
+          // Server caught up with our optimistic write
+          pendingPinnedRef.current = null;
+        }
         settingsReady = true;
         checkReady();
       },
@@ -247,6 +271,15 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       setEmergencyMonthsState(months);
       await firestoreService.updateUserSettings(userId, {
         emergencyMonths: months,
+      });
+    },
+    // Pinned budget metric
+    pinnedBudgetMetric,
+    setPinnedBudgetMetric: async (metric) => {
+      pendingPinnedRef.current = metric;
+      setPinnedBudgetMetricState(metric);
+      await firestoreService.updateUserSettings(userId, {
+        pinnedBudgetMetric: metric,
       });
     },
   };

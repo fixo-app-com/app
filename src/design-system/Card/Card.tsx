@@ -5,9 +5,10 @@ interface CardProps {
   onPress?: () => void;
   onLongPress?: () => void;
   children: ReactNode;
+  testID?: string;
 }
 
-export function Card({ onPress, onLongPress, children }: CardProps) {
+export function Card({ onPress, onLongPress, children, testID }: CardProps) {
   const isInteractive = !!onPress || !!onLongPress;
 
   return (
@@ -18,6 +19,7 @@ export function Card({ onPress, onLongPress, children }: CardProps) {
       style={({ pressed }) => ({
         opacity: pressed && isInteractive ? 0.7 : 1,
       })}
+      testID={testID}
     >
       {children}
     </Pressable>
