@@ -183,9 +183,9 @@ const en = {
     monthlyCost: "Monthly cost",
     coveragePeriod: "Coverage period",
     yourTarget: "Your target",
-    targetDescription: "{{period}} of essential expenses",
     targetDetail:
       "{{count}} expenses \u00B7 {{monthlyCost}}/mo \u00D7 {{months}} mo",
+    topExpenses: "Top expenses",
     recommendation:
       "Most financial advisors recommend saving 3 to 6 months of essential expenses. Adjust based on your job stability and personal comfort.",
     essentialExpenses: "Essential expenses",

@@ -229,6 +229,8 @@ const DEFAULT_SETTINGS: UserSettings = {
   currency: "EUR",
   monthlyBudgetCents: 0,
   emergencyMonths: 6,
+  emergencySavedCents: 0,
+  emergencyMonthlySavingCents: 0,
   language: undefined,
 };
 
@@ -248,6 +250,11 @@ export function subscribeUserSettings(
             data?.monthlyBudgetCents ?? DEFAULT_SETTINGS.monthlyBudgetCents,
           emergencyMonths:
             data?.emergencyMonths ?? DEFAULT_SETTINGS.emergencyMonths,
+          emergencySavedCents:
+            data?.emergencySavedCents ?? DEFAULT_SETTINGS.emergencySavedCents,
+          emergencyMonthlySavingCents:
+            data?.emergencyMonthlySavingCents ??
+            DEFAULT_SETTINGS.emergencyMonthlySavingCents,
           language: data?.language ?? DEFAULT_SETTINGS.language,
         });
       },

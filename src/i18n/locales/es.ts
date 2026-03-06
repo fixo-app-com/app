@@ -187,9 +187,9 @@ const es = {
     monthlyCost: "Costo mensual",
     coveragePeriod: "Per\u00EDodo de cobertura",
     yourTarget: "Tu objetivo",
-    targetDescription: "{{period}} de gastos esenciales",
     targetDetail:
       "{{count}} gastos \u00B7 {{monthlyCost}}/mes \u00D7 {{months}} meses",
+    topExpenses: "Gastos principales",
     recommendation:
       "La mayor\u00EDa de los asesores financieros recomiendan ahorrar de 3 a 6 meses de gastos esenciales. Ajusta seg\u00FAn la estabilidad de tu empleo y tu comodidad personal.",
     essentialExpenses: "Gastos esenciales",

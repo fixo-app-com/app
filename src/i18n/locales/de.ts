@@ -186,9 +186,9 @@ const de = {
     monthlyCost: "Monatliche Kosten",
     coveragePeriod: "Abdeckungszeitraum",
     yourTarget: "Dein Ziel",
-    targetDescription: "{{period}} an wesentlichen Ausgaben",
     targetDetail:
       "{{count}} Ausgaben \u00B7 {{monthlyCost}}/Mo \u00D7 {{months}} Mo",
+    topExpenses: "Top-Ausgaben",
     recommendation:
       "Die meisten Finanzberater empfehlen, 3 bis 6 Monate an wesentlichen Ausgaben zu sparen. Passe es an deine Arbeitsplatzsicherheit und deinen pers\u00F6nlichen Komfort an.",
     essentialExpenses: "Wesentliche Ausgaben",

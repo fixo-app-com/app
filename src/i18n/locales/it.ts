@@ -184,9 +184,9 @@ const it = {
     monthlyCost: "Costo mensile",
     coveragePeriod: "Periodo di copertura",
     yourTarget: "Il tuo obiettivo",
-    targetDescription: "{{period}} di spese essenziali",
     targetDetail:
       "{{count}} spese \u00B7 {{monthlyCost}}/mese \u00D7 {{months}} mesi",
+    topExpenses: "Spese principali",
     recommendation:
       "La maggior parte dei consulenti finanziari consiglia di risparmiare da 3 a 6 mesi di spese essenziali. Regola in base alla stabilit\u00E0 del tuo lavoro e al tuo comfort personale.",
     essentialExpenses: "Spese essenziali",

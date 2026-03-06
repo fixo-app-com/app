@@ -60,6 +60,10 @@ interface DataContextValue {
   // Emergency fund
   emergencyMonths: number;
   setEmergencyMonths: (months: number) => Promise<void>;
+  emergencySavedCents: number;
+  setEmergencySavedCents: (cents: number) => Promise<void>;
+  emergencyMonthlySavingCents: number;
+  setEmergencyMonthlySavingCents: (cents: number) => Promise<void>;
   // Pinned budget metric
   pinnedBudgetMetric: PinnedBudgetMetric;
   setPinnedBudgetMetric: (metric: PinnedBudgetMetric) => Promise<void>;
@@ -93,6 +97,10 @@ const DataContext = createContext<DataContextValue>({
   deleteExpensesByCategory: async () => {},
   emergencyMonths: 6,
   setEmergencyMonths: async () => {},
+  emergencySavedCents: 0,
+  setEmergencySavedCents: async () => {},
+  emergencyMonthlySavingCents: 0,
+  setEmergencyMonthlySavingCents: async () => {},
   pinnedBudgetMetric: "budget",
   setPinnedBudgetMetric: async () => {},
   language: "en",
@@ -114,6 +122,9 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
 
   // Emergency fund months
   const [emergencyMonths, setEmergencyMonthsState] = useState(6);
+  const [emergencySavedCents, setEmergencySavedCentsState] = useState(0);
+  const [emergencyMonthlySavingCents, setEmergencyMonthlySavingCentsState] =
+    useState(0);
 
   // Language
   const [language, setLanguageState] = useState<SupportedLanguage>("en");
@@ -137,6 +148,8 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       setCurrencyState("EUR");
       setMonthlyBudgetCentsState(0);
       setEmergencyMonthsState(6);
+      setEmergencySavedCentsState(0);
+      setEmergencyMonthlySavingCentsState(0);
       setLanguageState("en");
       setPinnedBudgetMetricState("budget");
       setExpenses(null);
@@ -188,6 +201,10 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         setCurrencyState(settings.currency);
         setMonthlyBudgetCentsState(settings.monthlyBudgetCents ?? 0);
         setEmergencyMonthsState(settings.emergencyMonths ?? 6);
+        setEmergencySavedCentsState(settings.emergencySavedCents ?? 0);
+        setEmergencyMonthlySavingCentsState(
+          settings.emergencyMonthlySavingCents ?? 0,
+        );
         if (settings.language) {
           setLanguageState(settings.language);
           setI18nLanguage(settings.language);
@@ -295,6 +312,20 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       setEmergencyMonthsState(months);
       await firestoreService.updateUserSettings(userId, {
         emergencyMonths: months,
+      });
+    },
+    emergencySavedCents,
+    setEmergencySavedCents: async (cents) => {
+      setEmergencySavedCentsState(cents);
+      await firestoreService.updateUserSettings(userId, {
+        emergencySavedCents: cents,
+      });
+    },
+    emergencyMonthlySavingCents,
+    setEmergencyMonthlySavingCents: async (cents) => {
+      setEmergencyMonthlySavingCentsState(cents);
+      await firestoreService.updateUserSettings(userId, {
+        emergencyMonthlySavingCents: cents,
       });
     },
     // Pinned budget metric
