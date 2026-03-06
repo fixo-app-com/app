@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from "react";
 import { useData } from "../contexts/DataContext";
 import type { Expense } from "../types/firestore";
+import { getDisplayAmountCents } from "../types/firestore";
 import type { SortOption } from "../constants/sort";
 import { makeSortComparator } from "../utils/sort";
 
@@ -12,7 +13,7 @@ export function useExpenses(filter?: {
   expenses: Expense[];
   loading: boolean;
 } {
-  const { expenses: allExpenses, expensesLoading, ensureExpenses } = useData();
+  const { expenses: allExpenses, expensesLoading, ensureExpenses, viewMode } = useData();
 
   useEffect(() => {
     ensureExpenses();
@@ -29,11 +30,11 @@ export function useExpenses(filter?: {
     }
     const comparator = makeSortComparator<Expense>(
       filter?.sort ?? "newest",
-      (e) => e.amountCents,
+      (e) => getDisplayAmountCents(e, viewMode),
       (e) => e.createdAt,
     );
     return [...result].sort(comparator);
-  }, [allExpenses, filter?.categoryId, filter?.walletId, filter?.sort]);
+  }, [allExpenses, filter?.categoryId, filter?.walletId, filter?.sort, viewMode]);
 
   return {
     expenses: filtered,
