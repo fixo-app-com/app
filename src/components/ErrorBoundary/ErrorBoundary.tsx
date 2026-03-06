@@ -3,6 +3,7 @@ import { View, Text } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import crashlytics from "@react-native-firebase/crashlytics";
 import { Button } from "../../design-system";
+import i18n from "../../i18n";
 
 interface Props {
   children: ReactNode;
@@ -36,13 +37,13 @@ export class ErrorBoundary extends Component<Props, State> {
         <View className="flex-1 items-center justify-center bg-gray-100 px-8">
           <Ionicons name="alert-circle-outline" size={64} color="#818cf8" />
           <Text className="mt-4 text-xl font-semibold text-gray-900">
-            Something went wrong
+            {i18n.t("errorBoundary.title")}
           </Text>
           <Text className="mt-2 text-center text-base text-gray-500">
-            An unexpected error occurred. Please restart the app.
+            {i18n.t("errorBoundary.message")}
           </Text>
           <View className="mt-8 w-full">
-            <Button label="Restart" onPress={this.handleRestart} />
+            <Button label={i18n.t("errorBoundary.restart")} onPress={this.handleRestart} />
           </View>
         </View>
       );

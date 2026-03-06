@@ -38,19 +38,19 @@ jest.mock("../../../services/firestore", () => ({
 describe("AddEditExpenseScreen", () => {
   it("renders title for new expense", () => {
     render(<AddEditExpenseScreen />);
-    expect(screen.getByText("New expense")).toBeOnTheScreen();
+    expect(screen.getByText("addEditExpense.newTitle")).toBeOnTheScreen();
   });
 
   it("renders name input", () => {
     render(<AddEditExpenseScreen />);
     expect(
-      screen.getByPlaceholderText("e.g. Netflix, Insurance..."),
+      screen.getByPlaceholderText("addEditExpense.namePlaceholder"),
     ).toBeOnTheScreen();
   });
 
   it("renders amount input", () => {
     render(<AddEditExpenseScreen />);
-    expect(screen.getByPlaceholderText("12.99")).toBeOnTheScreen();
+    expect(screen.getByPlaceholderText("addEditExpense.amountPlaceholder")).toBeOnTheScreen();
   });
 
   it("renders wallet picker", () => {
@@ -60,16 +60,16 @@ describe("AddEditExpenseScreen", () => {
 
   it("renders essential toggle", () => {
     render(<AddEditExpenseScreen />);
-    expect(screen.getByText("Essential expense")).toBeOnTheScreen();
+    expect(screen.getByText("addEditExpense.essentialLabel")).toBeOnTheScreen();
   });
 
   it("renders save button", () => {
     render(<AddEditExpenseScreen />);
-    expect(screen.getByText("Save expense")).toBeOnTheScreen();
+    expect(screen.getByText("addEditExpense.saveExpense")).toBeOnTheScreen();
   });
 
   it("renders notes section", () => {
     render(<AddEditExpenseScreen />);
-    expect(screen.getByText("Notes")).toBeOnTheScreen();
+    expect(screen.getByText("addEditExpense.notesSection")).toBeOnTheScreen();
   });
 });

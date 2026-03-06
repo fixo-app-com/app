@@ -17,30 +17,30 @@ describe("SignUpScreen", () => {
 
   it("renders email, password, and confirm password inputs", () => {
     render(<SignUpScreen navigation={mockNavigation} route={mockRoute} />);
-    expect(screen.getByPlaceholderText("Email")).toBeOnTheScreen();
-    expect(screen.getAllByPlaceholderText("Password").length).toBeGreaterThan(0);
-    expect(screen.getAllByPlaceholderText("Confirm password").length).toBeGreaterThan(0);
+    expect(screen.getByPlaceholderText("auth.email")).toBeOnTheScreen();
+    expect(screen.getAllByPlaceholderText("auth.password").length).toBeGreaterThan(0);
+    expect(screen.getAllByPlaceholderText("auth.confirmPassword").length).toBeGreaterThan(0);
   });
 
   it("renders sign up button", () => {
     render(<SignUpScreen navigation={mockNavigation} route={mockRoute} />);
-    expect(screen.getByText("Sign Up")).toBeOnTheScreen();
+    expect(screen.getByText("auth.signUp")).toBeOnTheScreen();
   });
 
   it("renders social login buttons", () => {
     render(<SignUpScreen navigation={mockNavigation} route={mockRoute} />);
-    expect(screen.getByText("Continue with Apple")).toBeOnTheScreen();
-    expect(screen.getByText("Continue with Google")).toBeOnTheScreen();
+    expect(screen.getByText("auth.continueWithApple")).toBeOnTheScreen();
+    expect(screen.getByText("auth.continueWithGoogle")).toBeOnTheScreen();
   });
 
   it("renders sign in link", () => {
     render(<SignUpScreen navigation={mockNavigation} route={mockRoute} />);
-    expect(screen.getByText("Sign In")).toBeOnTheScreen();
+    expect(screen.getByText("auth.signIn")).toBeOnTheScreen();
   });
 
   it("navigates to SignIn screen", () => {
     render(<SignUpScreen navigation={mockNavigation} route={mockRoute} />);
-    fireEvent.press(screen.getByText("Sign In"));
+    fireEvent.press(screen.getByText("auth.signIn"));
     expect(mockNavigate).toHaveBeenCalledWith("SignIn");
   });
 });

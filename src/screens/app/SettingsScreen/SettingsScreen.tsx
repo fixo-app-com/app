@@ -1,11 +1,17 @@
 import { useState } from "react";
 import { Alert, Linking, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Constants from "expo-constants";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useData } from "../../../contexts/DataContext";
 import { signOut, deleteAccount } from "../../../services/auth";
 import { CURRENCIES } from "../../../constants/banks";
+import type { SupportedLanguage } from "../../../types/firestore";
+import {
+  SUPPORTED_LANGUAGES,
+  LANGUAGE_LABELS,
+} from "../../../i18n";
 import {
   Button,
   ChipGroup,
@@ -15,18 +21,19 @@ import {
 } from "../../../design-system";
 
 export default function SettingsScreen() {
+  const { t } = useTranslation();
   const { user } = useAuth();
-  const { currency, setCurrency } = useData();
+  const { currency, setCurrency, language, setLanguage } = useData();
   const [isDeleting, setIsDeleting] = useState(false);
 
   function handleDeleteAccount() {
     Alert.alert(
-      "Delete Account",
-      "This will permanently delete your account and all your data. This action cannot be undone.",
+      t("settings.deleteAccountTitle"),
+      t("settings.deleteAccountMessage"),
       [
-        { text: "Cancel", style: "cancel" },
+        { text: t("common.cancel"), style: "cancel" },
         {
-          text: "Delete",
+          text: t("common.delete"),
           style: "destructive",
           onPress: async () => {
             setIsDeleting(true);
@@ -35,10 +42,10 @@ export default function SettingsScreen() {
             } catch (error) {
               const code = (error as { code?: string }).code ?? "";
               Alert.alert(
-                "Error",
+                t("common.error"),
                 code === "auth/requires-recent-login"
-                  ? "For security, please sign out and sign back in before deleting your account."
-                  : "Failed to delete account. Please try again.",
+                  ? t("settings.deleteAccountRecentLogin")
+                  : t("settings.deleteAccountFailed"),
               );
             } finally {
               setIsDeleting(false);
@@ -50,23 +57,23 @@ export default function SettingsScreen() {
   }
 
   const headerContent = (
-    <Text className="mb-6 text-3xl font-bold text-gray-900">Settings</Text>
+    <Text className="mb-6 text-3xl font-bold text-gray-900">{t("settings.title")}</Text>
   );
 
   return (
     <ScreenWrapper scroll header={headerContent}>
-      <SectionHeader title="Account" />
+      <SectionHeader title={t("settings.account")} />
 
       <FormRow
-        label="Email"
+        label={t("settings.email")}
         first
         last
         right={
-          <Text className="text-base text-gray-500">{user?.email ?? "—"}</Text>
+          <Text className="text-base text-gray-500">{user?.email ?? "\u2014"}</Text>
         }
       />
 
-      <SectionHeader title="Currency" />
+      <SectionHeader title={t("settings.currency")} />
 
       <ChipGroup
         options={CURRENCIES.map((c) => ({
@@ -78,21 +85,33 @@ export default function SettingsScreen() {
         compact
       />
 
-      <SectionHeader title="Legal" />
+      <SectionHeader title={t("settings.language")} />
+
+      <ChipGroup
+        options={SUPPORTED_LANGUAGES.map((lang) => ({
+          value: lang,
+          label: LANGUAGE_LABELS[lang],
+        }))}
+        selected={language}
+        onSelect={(lang) => setLanguage(lang as SupportedLanguage)}
+        compact
+      />
+
+      <SectionHeader title={t("settings.legal")} />
 
       <FormRow
-        label="Privacy Policy"
+        label={t("settings.privacyPolicy")}
         first
         onPress={() => Linking.openURL("https://www.fixo-app.com/privacy")}
         right={<Ionicons name="chevron-forward" size={16} color="#9ca3af" />}
       />
       <FormRow
-        label="Terms of Service"
+        label={t("settings.termsOfService")}
         onPress={() => Linking.openURL("https://www.fixo-app.com/terms")}
         right={<Ionicons name="chevron-forward" size={16} color="#9ca3af" />}
       />
       <FormRow
-        label="Support"
+        label={t("settings.support")}
         last
         onPress={() => Linking.openURL("https://www.fixo-app.com/support")}
         right={<Ionicons name="chevron-forward" size={16} color="#9ca3af" />}
@@ -101,11 +120,11 @@ export default function SettingsScreen() {
       <View className="flex-1" />
 
       <View className="mt-6 pb-4">
-        <Button label="Sign out" variant="secondary" onPress={() => signOut()} />
+        <Button label={t("settings.signOut")} variant="secondary" onPress={() => signOut()} />
 
         <View className="mt-3">
           <Button
-            label="Delete Account"
+            label={t("settings.deleteAccount")}
             variant="destructive"
             onPress={handleDeleteAccount}
             loading={isDeleting}
@@ -113,7 +132,7 @@ export default function SettingsScreen() {
         </View>
 
         <Text className="mt-6 text-center text-xs text-gray-400">
-          Fixo v{Constants.expoConfig?.version}
+          {t("settings.version", { version: Constants.expoConfig?.version })}
         </Text>
       </View>
     </ScreenWrapper>

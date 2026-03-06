@@ -2,6 +2,7 @@ import type { ComponentProps } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { ActivityIndicator, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useAuth } from "../contexts/AuthContext";
 import SignInScreen from "../screens/auth/SignInScreen/SignInScreen";
@@ -193,6 +194,8 @@ function TabIcon({
 }
 
 function AppNavigator() {
+  const { t } = useTranslation();
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -212,7 +215,7 @@ function AppNavigator() {
         name="HomeTab"
         component={HomeStackNavigator}
         options={{
-          tabBarLabel: "Home",
+          tabBarLabel: t("tabs.home"),
           tabBarIcon: (props) => <TabIcon {...props} label="Home" />,
         }}
       />
@@ -220,7 +223,7 @@ function AppNavigator() {
         name="WalletsTab"
         component={WalletsStackNavigator}
         options={{
-          tabBarLabel: "Wallets",
+          tabBarLabel: t("tabs.wallets"),
           tabBarIcon: (props) => <TabIcon {...props} label="Wallets" />,
         }}
       />
@@ -228,7 +231,7 @@ function AppNavigator() {
         name="EmergencyTab"
         component={EmergencyStackNavigator}
         options={{
-          tabBarLabel: "Emergency",
+          tabBarLabel: t("tabs.emergency"),
           tabBarIcon: (props) => <TabIcon {...props} label="Emergency" />,
         }}
       />
@@ -236,7 +239,7 @@ function AppNavigator() {
         name="SettingsTab"
         component={SettingsStackNavigator}
         options={{
-          tabBarLabel: "Settings",
+          tabBarLabel: t("tabs.settings"),
           tabBarIcon: (props) => <TabIcon {...props} label="Settings" />,
         }}
       />

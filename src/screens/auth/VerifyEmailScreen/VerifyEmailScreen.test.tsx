@@ -17,26 +17,26 @@ describe("VerifyEmailScreen", () => {
 
   it("renders verify email heading", () => {
     render(<VerifyEmailScreen />);
-    expect(screen.getByText("Verify your email")).toBeOnTheScreen();
+    expect(screen.getByText("verify.title")).toBeOnTheScreen();
   });
 
-  it("displays the user email", () => {
+  it("displays the verification message", () => {
     render(<VerifyEmailScreen />);
-    expect(screen.getByText("test@example.com")).toBeOnTheScreen();
+    expect(screen.getByText("verify.message")).toBeOnTheScreen();
   });
 
   it("renders verification button", () => {
     render(<VerifyEmailScreen />);
-    expect(screen.getByText("I've verified my email")).toBeOnTheScreen();
+    expect(screen.getByText("verify.checkButton")).toBeOnTheScreen();
   });
 
   it("renders resend button", () => {
     render(<VerifyEmailScreen />);
-    expect(screen.getByText("Resend verification email")).toBeOnTheScreen();
+    expect(screen.getByText("verify.resendButton")).toBeOnTheScreen();
   });
 
   it("renders sign out button", () => {
     render(<VerifyEmailScreen />);
-    expect(screen.getByText("Sign out")).toBeOnTheScreen();
+    expect(screen.getByText("verify.signOut")).toBeOnTheScreen();
   });
 });

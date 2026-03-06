@@ -6,6 +6,7 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
+import { useTranslation } from "react-i18next";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useData } from "../../../contexts/DataContext";
@@ -29,6 +30,7 @@ const H_PADDING = 32;
 const ITEM_GAP = 8;
 
 export default function AddEditWalletScreen() {
+  const { t } = useTranslation();
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
   const { walletId, walletName, walletIcon } = route.params;
@@ -89,7 +91,7 @@ export default function AddEditWalletScreen() {
   async function handleSave() {
     const trimmed = name.trim();
     if (!trimmed) {
-      Alert.alert("Error", "Please enter a wallet name.");
+      Alert.alert(t("common.error"), t("addEditWallet.enterName"));
       return;
     }
 
@@ -103,7 +105,7 @@ export default function AddEditWalletScreen() {
       navigation.goBack();
     } catch (error) {
       if (__DEV__) console.error("Failed to save wallet:", error);
-      Alert.alert("Error", "Failed to save wallet.");
+      Alert.alert(t("common.error"), t("addEditWallet.saveFailed"));
     } finally {
       setSaving(false);
     }
@@ -112,15 +114,15 @@ export default function AddEditWalletScreen() {
   async function handleDelete() {
     if (!walletId) return;
 
-    Alert.alert("Delete wallet", `Delete "${name}"?`, [
-      { text: "Cancel", style: "cancel" },
+    Alert.alert(t("addEditWallet.deleteTitle"), t("addEditWallet.deleteMessage", { name }), [
+      { text: t("common.cancel"), style: "cancel" },
       {
-        text: "Delete",
+        text: t("common.delete"),
         style: "destructive",
         onPress: async () => {
           try {
             await deleteWallet(walletId);
-            navigation.goBack();
+            navigation.popTo("Wallets");
           } catch (error) {
             if (__DEV__) console.error("Failed to delete wallet:", error);
           }
@@ -131,7 +133,7 @@ export default function AddEditWalletScreen() {
 
   const headerContent = (
     <ScreenHeader
-      title={isEditing ? "Edit wallet" : "New wallet"}
+      title={isEditing ? t("addEditWallet.editTitle") : t("addEditWallet.newTitle")}
       onBack={() => navigation.goBack()}
     />
   );
@@ -139,14 +141,14 @@ export default function AddEditWalletScreen() {
   return (
     <ScreenWrapper scroll header={headerContent}>
       <Input
-        label="Name"
+        label={t("addEditWallet.nameLabel")}
         value={name}
         onChangeText={handleNameChange}
-        placeholder="e.g. Revolut, N26..."
+        placeholder={t("addEditWallet.namePlaceholder")}
         maxLength={50}
       />
 
-      <SectionHeader title="Bank icon" />
+      <SectionHeader title={t("addEditWallet.bankIconSection")} />
 
       <View className="flex-row flex-wrap" style={{ gap: ITEM_GAP }}>
         {/* Generic / no icon option */}
@@ -159,7 +161,7 @@ export default function AddEditWalletScreen() {
         >
           <BankIcon bankKey="" size={32} />
           <Text className="mt-1 text-[9px] text-gray-400" numberOfLines={1}>
-            Other
+            {t("addEditWallet.other")}
           </Text>
         </Pressable>
 
@@ -193,7 +195,7 @@ export default function AddEditWalletScreen() {
 
       <View className="mt-6 pb-4">
         <Button
-          label={isEditing ? "Save changes" : "Save wallet"}
+          label={isEditing ? t("addEditWallet.saveChanges") : t("addEditWallet.saveWallet")}
           onPress={handleSave}
           loading={saving}
         />
@@ -201,7 +203,7 @@ export default function AddEditWalletScreen() {
         {isEditing && !hasExpenses && (
           <View className="mt-3">
             <Button
-              label="Delete wallet"
+              label={t("addEditWallet.deleteWallet")}
               variant="destructive"
               onPress={handleDelete}
             />

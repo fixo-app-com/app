@@ -10,12 +10,14 @@ export const DEFAULT_SORT: SortPreferences = {
   wallets: "newest",
 };
 
-export const SORT_OPTIONS: { value: SortOption; label: string }[] = [
-  { value: "newest", label: "Newest" },
-  { value: "price_desc", label: "Highest" },
-  { value: "price_asc", label: "Lowest" },
+export type SortLabelKey = "sort.newest" | "sort.highest" | "sort.lowest";
+
+export const SORT_OPTIONS: { value: SortOption; labelKey: SortLabelKey }[] = [
+  { value: "newest", labelKey: "sort.newest" },
+  { value: "price_desc", labelKey: "sort.highest" },
+  { value: "price_asc", labelKey: "sort.lowest" },
 ];
 
-export function getSortLabel(option: SortOption): string {
-  return SORT_OPTIONS.find((o) => o.value === option)?.label ?? "Newest";
+export function getSortLabelKey(option: SortOption): SortLabelKey {
+  return SORT_OPTIONS.find((o) => o.value === option)?.labelKey ?? "sort.newest";
 }

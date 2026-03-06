@@ -11,6 +11,7 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
+import { useTranslation } from "react-i18next";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -35,7 +36,7 @@ import {
 } from "../../../components";
 import { useExpenses } from "../../../hooks/useExpenses";
 import { useSortPreferences } from "../../../hooks/useSortPreferences";
-import { getSortLabel } from "../../../constants/sort";
+import { getSortLabelKey } from "../../../constants/sort";
 import { makeSortComparator } from "../../../utils/sort";
 
 type Nav = NativeStackNavigationProp<HomeStackParamList, "Home">;
@@ -48,53 +49,6 @@ type MetricDef = {
   cents: number;
   colorClass: string;
 };
-
-function buildMetrics(
-  budgetDisplayCents: number,
-  totalCents: number,
-  availableCents: number,
-  isYearly: boolean,
-): MetricDef[] {
-  return [
-    {
-      key: "budget",
-      label: isYearly ? "Yearly budget" : "Monthly budget",
-      cents: budgetDisplayCents,
-      colorClass: "text-gray-900",
-    },
-    {
-      key: "costs",
-      label: "Total costs",
-      cents: totalCents,
-      colorClass: "text-red-500",
-    },
-    {
-      key: "available",
-      label: "Leftover",
-      cents: availableCents,
-      colorClass: availableCents >= 0 ? "text-emerald-600" : "text-red-500",
-    },
-  ];
-}
-
-/* ---------- Slide Content Wrapper ---------- */
-
-const SLIDE_MIN_HEIGHT = 125;
-
-function SlideContent({ children }: { children: React.ReactNode }) {
-  return (
-    <View
-      style={{
-        minHeight: SLIDE_MIN_HEIGHT,
-        justifyContent: "space-between",
-      }}
-    >
-      {children}
-    </View>
-  );
-}
-
-/* ---------- Budget Card ---------- */
 
 function BudgetCard({
   hasBudget,
@@ -115,6 +69,29 @@ function BudgetCard({
   onPin: (m: PinnedBudgetMetric) => void;
   onBudgetEdit: () => void;
 }) {
+  const { t } = useTranslation();
+
+  const metrics: MetricDef[] = [
+    {
+      key: "budget",
+      label: isYearly ? t("home.yearlyBudget") : t("home.monthlyBudget"),
+      cents: budgetDisplayCents,
+      colorClass: "text-gray-900",
+    },
+    {
+      key: "costs",
+      label: t("home.totalCosts"),
+      cents: totalCents,
+      colorClass: "text-red-500",
+    },
+    {
+      key: "available",
+      label: t("home.leftover"),
+      cents: availableCents,
+      colorClass: availableCents >= 0 ? "text-emerald-600" : "text-red-500",
+    },
+  ];
+
   if (!hasBudget) {
     return (
       <Card>
@@ -123,7 +100,7 @@ function BudgetCard({
           className="flex-row items-center justify-center py-2"
         >
           <Text className="text-sm font-medium text-gray-500">
-            {isYearly ? "Set yearly budget" : "Set monthly budget"}
+            {isYearly ? t("home.setYearlyBudget") : t("home.setMonthlyBudget")}
           </Text>
           <Ionicons
             name="create-outline"
@@ -140,15 +117,8 @@ function BudgetCard({
     );
   }
 
-  const metrics = buildMetrics(
-    budgetDisplayCents,
-    totalCents,
-    availableCents,
-    isYearly,
-  );
   const hero = metrics.find((m) => m.key === pinnedMetric) ?? metrics[0];
   const secondary = metrics.filter((m) => m.key !== pinnedMetric);
-
   const isHeroBudget = hero.key === "budget";
 
   return (
@@ -205,6 +175,23 @@ function BudgetCard({
   );
 }
 
+/* ---------- Slide Content Wrapper ---------- */
+
+const SLIDE_MIN_HEIGHT = 125;
+
+function SlideContent({ children }: { children: React.ReactNode }) {
+  return (
+    <View
+      style={{
+        minHeight: SLIDE_MIN_HEIGHT,
+        justifyContent: "space-between",
+      }}
+    >
+      {children}
+    </View>
+  );
+}
+
 /* ---------- Budget Chart Card ---------- */
 
 function BudgetChartCard({
@@ -218,6 +205,7 @@ function BudgetChartCard({
   totalCents: number;
   availableCents: number;
 }) {
+  const { t } = useTranslation();
   const ratio = budgetDisplayCents > 0 ? totalCents / budgetDisplayCents : 0;
   const pct = Math.round(ratio * 100);
   const barWidth = Math.min(pct, 100);
@@ -230,7 +218,7 @@ function BudgetChartCard({
         {/* Header: budget label + amount */}
         <View className="flex-row items-center justify-between">
           <Text className="text-xs font-medium uppercase tracking-wide text-gray-400">
-            {isYearly ? "Yearly budget" : "Monthly budget"}
+            {isYearly ? t("home.yearlyBudget") : t("home.monthlyBudget")}
           </Text>
           <CurrencyText
             cents={budgetDisplayCents}
@@ -249,7 +237,7 @@ function BudgetChartCard({
             />
           </View>
           <Text className="mt-2 text-center text-sm font-semibold text-gray-700">
-            {pct}% used
+            {t("home.pctUsed", { pct })}
           </Text>
         </View>
 
@@ -257,7 +245,7 @@ function BudgetChartCard({
         <View className="flex-row justify-between">
           <View>
             <Text className="text-xs font-medium text-gray-400">
-              Total costs
+              {t("home.totalCosts")}
             </Text>
             <CurrencyText
               cents={totalCents}
@@ -266,7 +254,7 @@ function BudgetChartCard({
             />
           </View>
           <View className="items-end">
-            <Text className="text-xs font-medium text-gray-400">Leftover</Text>
+            <Text className="text-xs font-medium text-gray-400">{t("home.leftover")}</Text>
             <CurrencyText
               cents={availableCents}
               className={`mt-0.5 text-sm font-semibold ${availableCents >= 0 ? "text-emerald-600" : "text-red-500"}`}
@@ -298,6 +286,7 @@ function DotIndicators({ count, active }: { count: number; active: number }) {
 }
 
 export default function HomeScreen() {
+  const { t } = useTranslation();
   const navigation = useNavigation<Nav>();
   const {
     categories,
@@ -354,14 +343,15 @@ export default function HomeScreen() {
       ? monthlyBudgetCents * 12
       : monthlyBudgetCents;
     const current = hasBudget ? String(Math.floor(displayCents / 100)) : "";
-    const label = isYearly ? "Yearly budget" : "Monthly budget";
+    const label = isYearly ? t("home.yearlyBudget") : t("home.monthlyBudget");
+    const period = isYearly ? t("common.yearly").toLowerCase() : t("common.monthly").toLowerCase();
     Alert.prompt(
       label,
-      `Enter your total ${isYearly ? "yearly" : "monthly"} budget`,
+      t("home.enterBudget", { period }),
       [
-        { text: "Cancel", style: "cancel" },
+        { text: t("common.cancel"), style: "cancel" },
         {
-          text: "Save",
+          text: t("common.save"),
           onPress: (value?: string) => {
             const parsed = parseFloat((value ?? "").replace(",", "."));
             if (!isNaN(parsed) && parsed >= 0) {
@@ -395,13 +385,13 @@ export default function HomeScreen() {
 
   const headerContent = (
     <>
-      <Text className="mb-4 text-3xl font-bold text-gray-900">Home</Text>
+      <Text className="mb-4 text-3xl font-bold text-gray-900">{t("home.title")}</Text>
 
       {/* Monthly / Yearly toggle */}
       <ChipGroup
         options={[
-          { value: "monthly" as ViewMode, label: "Monthly" },
-          { value: "yearly" as ViewMode, label: "Yearly" },
+          { value: "monthly" as ViewMode, label: t("common.monthly") },
+          { value: "yearly" as ViewMode, label: t("common.yearly") },
         ]}
         selected={viewMode}
         onSelect={setViewMode}
@@ -462,7 +452,7 @@ export default function HomeScreen() {
 
       <View className="mb-2 flex-row justify-end">
         <SortTrigger
-          label={getSortLabel(sortPrefs.categories)}
+          label={t(getSortLabelKey(sortPrefs.categories))}
           onPress={() => setSortSheetOpen(true)}
         />
       </View>
@@ -494,13 +484,13 @@ export default function HomeScreen() {
           )}
           ItemSeparatorComponent={() => <View className="h-3" />}
           ListEmptyComponent={
-            <EmptyState icon="grid-outline" message="No categories yet." />
+            <EmptyState icon="grid-outline" message={t("home.noCategories")} />
           }
         />
       )}
 
       <FloatingAction
-        label="Add category"
+        label={t("home.addCategory")}
         onPress={() => navigation.navigate("AddEditCategory", {})}
       />
 

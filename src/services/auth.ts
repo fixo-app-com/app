@@ -6,6 +6,7 @@ import {
   isSuccessResponse,
 } from "@react-native-google-signin/google-signin";
 import { deleteAllUserData } from "./firestore";
+import i18n from "../i18n";
 
 const WEB_CLIENT_ID =
   "903158549460-8o3b9bgcc72voq0mr3cu208g2a0f9pdp.apps.googleusercontent.com";
@@ -173,30 +174,10 @@ export async function linkGoogleToEmailAccount(
 }
 
 export function getFirebaseAuthErrorMessage(code: string): string {
-  switch (code) {
-    case "auth/invalid-email":
-      return "The email address is not valid.";
-    case "auth/user-disabled":
-      return "This account has been disabled.";
-    case "auth/user-not-found":
-      return "No account found with this email.";
-    case "auth/wrong-password":
-      return "Incorrect password.";
-    case "auth/invalid-credential":
-      return "Invalid credentials. Check your email and password.";
-    case "auth/email-already-in-use":
-      return "An account with this email already exists.";
-    case "auth/weak-password":
-      return "Password is too weak. Use at least 8 characters with uppercase, number, and special character.";
-    case "auth/too-many-requests":
-      return "Too many attempts. Please try again later.";
-    case "auth/network-request-failed":
-      return "Network error. Check your connection.";
-    case "auth/account-exists-with-different-credential":
-      return "An account with this email already exists. Sign in with your existing method to link this account.";
-    case "auth/requires-recent-login":
-      return "For security, please sign out and sign back in before deleting your account.";
-    default:
-      return "An error occurred. Please try again.";
+  const key = `authErrors.${code}`;
+  if (i18n.exists(key)) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return i18n.t(key as any);
   }
+  return i18n.t("authErrors.default");
 }

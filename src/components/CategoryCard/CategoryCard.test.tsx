@@ -19,12 +19,12 @@ describe("CategoryCard", () => {
     render(<CategoryCard {...props} />);
     expect(screen.getByText("\uD83C\uDFE0")).toBeOnTheScreen();
     expect(screen.getByText("Home")).toBeOnTheScreen();
-    expect(screen.getByText("3 expenses")).toBeOnTheScreen();
+    expect(screen.getByText("categoryCard.expense")).toBeOnTheScreen();
   });
 
   it("renders singular expense label for count 1", () => {
     render(<CategoryCard {...props} expenseCount={1} />);
-    expect(screen.getByText("1 expense")).toBeOnTheScreen();
+    expect(screen.getByText("categoryCard.expense")).toBeOnTheScreen();
   });
 
   it("renders formatted total", () => {

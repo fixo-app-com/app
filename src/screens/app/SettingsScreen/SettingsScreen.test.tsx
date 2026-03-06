@@ -20,7 +20,7 @@ jest.mock("../../../services/auth", () => ({
 describe("SettingsScreen", () => {
   it("renders title", () => {
     render(<SettingsScreen />);
-    expect(screen.getByText("Settings")).toBeOnTheScreen();
+    expect(screen.getByText("settings.title")).toBeOnTheScreen();
   });
 
   it("renders user email", () => {
@@ -30,23 +30,23 @@ describe("SettingsScreen", () => {
 
   it("renders sign out button", () => {
     render(<SettingsScreen />);
-    expect(screen.getByText("Sign out")).toBeOnTheScreen();
+    expect(screen.getByText("settings.signOut")).toBeOnTheScreen();
   });
 
   it("renders delete account button", () => {
     render(<SettingsScreen />);
-    expect(screen.getByText("Delete Account")).toBeOnTheScreen();
+    expect(screen.getByText("settings.deleteAccount")).toBeOnTheScreen();
   });
 
   it("renders legal section links", () => {
     render(<SettingsScreen />);
-    expect(screen.getByText("Privacy Policy")).toBeOnTheScreen();
-    expect(screen.getByText("Terms of Service")).toBeOnTheScreen();
-    expect(screen.getByText("Support")).toBeOnTheScreen();
+    expect(screen.getByText("settings.privacyPolicy")).toBeOnTheScreen();
+    expect(screen.getByText("settings.termsOfService")).toBeOnTheScreen();
+    expect(screen.getByText("settings.support")).toBeOnTheScreen();
   });
 
   it("renders version info", () => {
     render(<SettingsScreen />);
-    expect(screen.getByText(/Fixo v/)).toBeOnTheScreen();
+    expect(screen.getByText("settings.version")).toBeOnTheScreen();
   });
 });

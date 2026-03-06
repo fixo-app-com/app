@@ -15,19 +15,19 @@ describe("SocialLoginButtons", () => {
 
   it("renders both buttons with labels", () => {
     render(<SocialLoginButtons {...defaultProps} />);
-    expect(screen.getByText("Continue with Apple")).toBeOnTheScreen();
-    expect(screen.getByText("Continue with Google")).toBeOnTheScreen();
+    expect(screen.getByText("auth.continueWithApple")).toBeOnTheScreen();
+    expect(screen.getByText("auth.continueWithGoogle")).toBeOnTheScreen();
   });
 
   it("renders the divider", () => {
     render(<SocialLoginButtons {...defaultProps} />);
-    expect(screen.getByText("or")).toBeOnTheScreen();
+    expect(screen.getByText("auth.or")).toBeOnTheScreen();
   });
 
   it("calls onApplePress when Apple button is pressed", () => {
     const onApplePress = jest.fn();
     render(<SocialLoginButtons {...defaultProps} onApplePress={onApplePress} />);
-    fireEvent.press(screen.getByText("Continue with Apple"));
+    fireEvent.press(screen.getByText("auth.continueWithApple"));
     expect(onApplePress).toHaveBeenCalledTimes(1);
   });
 
@@ -36,7 +36,7 @@ describe("SocialLoginButtons", () => {
     render(
       <SocialLoginButtons {...defaultProps} onGooglePress={onGooglePress} />,
     );
-    fireEvent.press(screen.getByText("Continue with Google"));
+    fireEvent.press(screen.getByText("auth.continueWithGoogle"));
     expect(onGooglePress).toHaveBeenCalledTimes(1);
   });
 
@@ -48,8 +48,8 @@ describe("SocialLoginButtons", () => {
         isLoading={true}
       />,
     );
-    expect(screen.queryByText("Continue with Apple")).not.toBeOnTheScreen();
-    expect(screen.getByText("Continue with Google")).toBeOnTheScreen();
+    expect(screen.queryByText("auth.continueWithApple")).not.toBeOnTheScreen();
+    expect(screen.getByText("auth.continueWithGoogle")).toBeOnTheScreen();
   });
 
   it("shows Google loading indicator when loadingAction is google", () => {
@@ -60,7 +60,7 @@ describe("SocialLoginButtons", () => {
         isLoading={true}
       />,
     );
-    expect(screen.getByText("Continue with Apple")).toBeOnTheScreen();
-    expect(screen.queryByText("Continue with Google")).not.toBeOnTheScreen();
+    expect(screen.getByText("auth.continueWithApple")).toBeOnTheScreen();
+    expect(screen.queryByText("auth.continueWithGoogle")).not.toBeOnTheScreen();
   });
 });

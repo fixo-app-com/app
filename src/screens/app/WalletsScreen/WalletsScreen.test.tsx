@@ -44,12 +44,12 @@ describe("WalletsScreen", () => {
 
   it("renders add wallet button", () => {
     render(<WalletsScreen />);
-    expect(screen.getByText("Add wallet")).toBeOnTheScreen();
+    expect(screen.getByText("wallets.addWallet")).toBeOnTheScreen();
   });
 
   it("renders monthly/yearly toggle chips", () => {
     render(<WalletsScreen />);
-    expect(screen.getByText("Monthly")).toBeOnTheScreen();
-    expect(screen.getByText("Yearly")).toBeOnTheScreen();
+    expect(screen.getByText("common.monthly")).toBeOnTheScreen();
+    expect(screen.getByText("common.yearly")).toBeOnTheScreen();
   });
 });

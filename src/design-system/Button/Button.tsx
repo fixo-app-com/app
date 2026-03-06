@@ -3,7 +3,7 @@ import { ActivityIndicator, Pressable, Text } from "react-native";
 interface ButtonProps {
   label: string;
   onPress: () => void;
-  variant?: "primary" | "secondary" | "destructive";
+  variant?: "primary" | "secondary" | "destructive" | "outline";
   disabled?: boolean;
   loading?: boolean;
 }
@@ -20,6 +20,10 @@ const variantStyles = {
   destructive: {
     container: "items-center rounded-xl py-3.5",
     text: "text-base font-semibold text-red-500",
+  },
+  outline: {
+    container: "self-start items-center rounded-lg border border-fixo-300 px-4 py-2",
+    text: "text-sm font-medium text-fixo-500",
   },
 };
 
@@ -42,7 +46,7 @@ export function Button({
     >
       {loading ? (
         <ActivityIndicator
-          color={variant === "destructive" ? "#ef4444" : "#ffffff"}
+          color={variant === "destructive" ? "#ef4444" : variant === "outline" ? "#818cf8" : "#ffffff"}
           size="small"
         />
       ) : (

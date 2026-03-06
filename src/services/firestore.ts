@@ -229,6 +229,7 @@ const DEFAULT_SETTINGS: UserSettings = {
   currency: "EUR",
   monthlyBudgetCents: 0,
   emergencyMonths: 6,
+  language: undefined,
 };
 
 export function subscribeUserSettings(
@@ -247,6 +248,7 @@ export function subscribeUserSettings(
             data?.monthlyBudgetCents ?? DEFAULT_SETTINGS.monthlyBudgetCents,
           emergencyMonths:
             data?.emergencyMonths ?? DEFAULT_SETTINGS.emergencyMonths,
+          language: data?.language ?? DEFAULT_SETTINGS.language,
         });
       },
       (error) => onError(error),

@@ -10,7 +10,7 @@ export function SortTrigger({ label, onPress }: Props) {
   return (
     <Pressable
       onPress={onPress}
-      className="flex-row items-center px-1 py-2"
+      className="flex-row items-center py-2"
       style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
       testID="sort-trigger"
     >

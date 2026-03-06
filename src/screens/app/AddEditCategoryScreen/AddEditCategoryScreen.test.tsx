@@ -35,19 +35,19 @@ describe("AddEditCategoryScreen", () => {
 
   it("renders title for new category", () => {
     render(<AddEditCategoryScreen />);
-    expect(screen.getByText("New category")).toBeOnTheScreen();
+    expect(screen.getByText("addEditCategory.newTitle")).toBeOnTheScreen();
   });
 
   it("renders name input", () => {
     render(<AddEditCategoryScreen />);
     expect(
-      screen.getByPlaceholderText("e.g. Family, Car, Home..."),
+      screen.getByPlaceholderText("addEditCategory.namePlaceholder"),
     ).toBeOnTheScreen();
   });
 
   it("renders save button", () => {
     render(<AddEditCategoryScreen />);
-    expect(screen.getByText("Save category")).toBeOnTheScreen();
+    expect(screen.getByText("addEditCategory.saveCategory")).toBeOnTheScreen();
   });
 
   it("renders emoji picker", () => {
@@ -58,11 +58,11 @@ describe("AddEditCategoryScreen", () => {
 
   it("calls addCategory and navigates back on save", async () => {
     render(<AddEditCategoryScreen />);
-    const input = screen.getByPlaceholderText("e.g. Family, Car, Home...");
+    const input = screen.getByPlaceholderText("addEditCategory.namePlaceholder");
     fireEvent.changeText(input, "Test Category");
-    fireEvent.press(screen.getByText("Save category"));
+    fireEvent.press(screen.getByText("addEditCategory.saveCategory"));
 
-    await screen.findByText("Save category");
+    await screen.findByText("addEditCategory.saveCategory");
     expect(mockAddCategory).toHaveBeenCalledWith({
       name: "Test Category",
       icon: "📦",

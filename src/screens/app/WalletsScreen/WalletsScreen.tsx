@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useData } from "../../../contexts/DataContext";
@@ -20,12 +21,13 @@ import {
 import { FloatingAction, WalletCard } from "../../../components";
 import { useExpenses } from "../../../hooks/useExpenses";
 import { useSortPreferences } from "../../../hooks/useSortPreferences";
-import { getSortLabel } from "../../../constants/sort";
+import { getSortLabelKey } from "../../../constants/sort";
 import { makeSortComparator } from "../../../utils/sort";
 
 type Nav = NativeStackNavigationProp<WalletsStackParamList>;
 
 export default function WalletsScreen() {
+  const { t } = useTranslation();
   const navigation = useNavigation<Nav>();
   const { wallets, viewMode, setViewMode } = useData();
 
@@ -43,21 +45,21 @@ export default function WalletsScreen() {
 
   const headerContent = (
     <>
-      <Text className="mb-4 text-3xl font-bold text-gray-900">Wallets</Text>
+      <Text className="mb-4 text-3xl font-bold text-gray-900">{t("wallets.title")}</Text>
 
       {/* Monthly / Yearly toggle + sort */}
       <View className="flex-row items-center justify-between">
         <ChipGroup
           options={[
-            { value: "monthly" as ViewMode, label: "Monthly" },
-            { value: "yearly" as ViewMode, label: "Yearly" },
+            { value: "monthly" as ViewMode, label: t("common.monthly") },
+            { value: "yearly" as ViewMode, label: t("common.yearly") },
           ]}
           selected={viewMode}
           onSelect={setViewMode}
           compact
         />
         <SortTrigger
-          label={getSortLabel(sortPrefs.wallets)}
+          label={t(getSortLabelKey(sortPrefs.wallets))}
           onPress={() => setSortSheetOpen(true)}
         />
       </View>
@@ -99,13 +101,13 @@ export default function WalletsScreen() {
           )}
           ItemSeparatorComponent={() => <View className="h-3" />}
           ListEmptyComponent={
-            <EmptyState icon="wallet-outline" message="No wallets yet." />
+            <EmptyState icon="wallet-outline" message={t("wallets.noWallets")} />
           }
         />
       )}
 
       <FloatingAction
-        label="Add wallet"
+        label={t("wallets.addWallet")}
         onPress={() => navigation.navigate("AddEditWallet", {})}
       />
 

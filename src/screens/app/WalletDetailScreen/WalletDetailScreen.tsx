@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -15,12 +16,13 @@ import {
 import { CurrencyText, ExpenseList } from "../../../components";
 import { useExpenses } from "../../../hooks/useExpenses";
 import { useSortPreferences } from "../../../hooks/useSortPreferences";
-import { getSortLabel } from "../../../constants/sort";
+import { getSortLabelKey } from "../../../constants/sort";
 
 type Nav = NativeStackNavigationProp<WalletsStackParamList, "WalletDetail">;
 type Route = RouteProp<WalletsStackParamList, "WalletDetail">;
 
 export default function WalletDetailScreen() {
+  const { t } = useTranslation();
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
   const { walletId } = route.params;
@@ -72,14 +74,14 @@ export default function WalletDetailScreen() {
       {/* Summary + sort */}
       <View className="mb-4 flex-row items-center justify-between">
         <Text className="text-sm text-gray-500">
-          {viewMode === "yearly" ? "Yearly:" : "Monthly:"}{" "}
+          {viewMode === "yearly" ? t("walletDetail.yearlyPrefix") : t("walletDetail.monthlyPrefix")}{" "}
           <CurrencyText
             cents={totalCents}
             className="text-sm font-semibold text-fixo-400"
           />
         </Text>
         <SortTrigger
-          label={getSortLabel(sortPrefs.expenses)}
+          label={t(getSortLabelKey(sortPrefs.expenses))}
           onPress={() => setSortSheetOpen(true)}
         />
       </View>
@@ -91,9 +93,9 @@ export default function WalletDetailScreen() {
       <ExpenseList
         expenses={expenses}
         loading={loading}
-        emptyMessage={"No expenses for this wallet.\nAdd expenses from a category."}
+        emptyMessage={t("walletDetail.noExpenses")}
         getSubtitle={(e) =>
-          categories.find((c) => c.id === e.categoryId)?.name ?? "—"
+          categories.find((c) => c.id === e.categoryId)?.name ?? "\u2014"
         }
         onPress={(e) =>
           navigation.navigate("AddEditExpense", {

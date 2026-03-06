@@ -1,9 +1,13 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Text, View } from "react-native";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import Slider from "@react-native-community/slider";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { getDisplayAmountCents, roundToUnit } from "../../../types/firestore";
+import type { Expense } from "../../../types/firestore";
 import {
+  BottomSheet,
   Card,
   EmptyState,
   ScreenWrapper,
@@ -15,17 +19,25 @@ import { useData } from "../../../contexts/DataContext";
 
 const SNAP_POINTS: number[] = [3, 6, 12, 18, 24, 36, 48, 60];
 
-function formatPeriod(months: number): string {
-  if (months < 12) return `${months} months`;
-  const years = months / 12;
-  const yStr = Number.isInteger(years) ? `${years}` : years.toFixed(1);
-  return `${yStr} ${years === 1 ? "year" : "years"}`;
+function useFormatPeriod() {
+  const { t } = useTranslation();
+  return (months: number): string => {
+    if (months < 12) return t("emergency.months", { count: months });
+    const years = months / 12;
+    if (Number.isInteger(years)) return t("emergency.years", { count: years });
+    return t("emergency.months", { count: months });
+  };
 }
 
 export default function EmergencyFundScreen() {
+  const { t } = useTranslation();
+  const formatPeriod = useFormatPeriod();
   const { expenses, loading } = useExpenses();
-  const { emergencyMonths, setEmergencyMonths: saveEmergencyMonths } =
-    useData();
+  const {
+    emergencyMonths,
+    setEmergencyMonths: saveEmergencyMonths,
+    wallets,
+  } = useData();
 
   const [selectedMonths, setSelectedMonths] = useState(emergencyMonths);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -56,6 +68,37 @@ export default function EmergencyFundScreen() {
     };
   }, []);
 
+  const detailSheetRef = useRef<BottomSheetModal>(null);
+
+  const walletNameMap = useMemo(() => {
+    const map: Record<string, string> = {};
+    for (const w of wallets) map[w.id] = w.name;
+    return map;
+  }, [wallets]);
+
+  const renderExpenseRow = useCallback(
+    ({ item }: { item: Expense }) => {
+      const displayCents = getDisplayAmountCents(item, "monthly");
+      return (
+        <View className="flex-row items-center justify-between py-3">
+          <View className="mr-4 flex-1">
+            <Text className="text-base font-semibold text-gray-900">
+              {item.name}
+            </Text>
+            <Text className="mt-0.5 text-sm text-gray-500">
+              {walletNameMap[item.walletId] ?? "\u2014"}
+            </Text>
+          </View>
+          <CurrencyText
+            cents={displayCents}
+            className="text-base font-semibold text-gray-900"
+          />
+        </View>
+      );
+    },
+    [walletNameMap],
+  );
+
   const essentialExpenses = expenses.filter((e) => e.essential);
   const yearlyEssentialCents = essentialExpenses.reduce(
     (sum, e) => sum + getDisplayAmountCents(e, "yearly"),
@@ -67,11 +110,10 @@ export default function EmergencyFundScreen() {
   const headerContent = (
     <View>
       <Text className="text-3xl font-bold text-gray-900 mb-3">
-        Emergency fund
+        {t("emergency.title")}
       </Text>
       <Text className="mb-4 mt-1 text-sm text-gray-500">
-        Simulate how much cash you need to cover your essential expenses if your
-        income stops.
+        {t("emergency.description")}
       </Text>
     </View>
   );
@@ -83,19 +125,30 @@ export default function EmergencyFundScreen() {
       ) : essentialExpenses.length === 0 ? (
         <EmptyState
           icon="shield-outline"
-          message="No essential expenses yet. Mark an expense as essential to start calculating your emergency fund."
+          message={t("emergency.noEssential")}
         />
       ) : (
-        <View className="gap-4 pb-8">
+        <View className="gap-4 pb-4">
           {/* Essentials Summary */}
           <Card>
             <View className="flex-row items-center">
-              <View className="flex-1 items-center">
-                <Text className="text-2xl font-bold text-gray-900">
-                  {essentialExpenses.length}
-                </Text>
-                <Text className="text-xs text-gray-400">Expenses</Text>
-              </View>
+              <Pressable
+                className="flex-1 items-center"
+                onPress={() => detailSheetRef.current?.present()}
+              >
+                <View className="flex-row items-center">
+                  <Text className="text-2xl font-bold text-gray-900">
+                    {essentialExpenses.length}
+                  </Text>
+                  <Ionicons
+                    name="information-circle-outline"
+                    size={16}
+                    color="#9ca3af"
+                    style={{ marginLeft: 4 }}
+                  />
+                </View>
+                <Text className="text-xs text-gray-400">{t("emergency.expenses")}</Text>
+              </Pressable>
               <View className="w-px self-stretch bg-gray-200" />
               <View className="flex-1 items-center">
                 <CurrencyText
@@ -103,14 +156,14 @@ export default function EmergencyFundScreen() {
                   className="text-2xl font-bold text-gray-900"
                   suffixFormat
                 />
-                <Text className="text-xs text-gray-400">Monthly cost</Text>
+                <Text className="text-xs text-gray-400">{t("emergency.monthlyCost")}</Text>
               </View>
             </View>
           </Card>
 
           {/* Coverage Period */}
           <View>
-            <SectionHeader title="Coverage period" />
+            <SectionHeader title={t("emergency.coveragePeriod")} />
             <Card>
               <Slider
                 testID="slider"
@@ -127,15 +180,12 @@ export default function EmergencyFundScreen() {
               <Text className="mt-1 text-center text-xl font-bold text-gray-900">
                 {formatPeriod(selectedMonths)}
               </Text>
-              <Text className="mt-1 text-center text-xs text-gray-400">
-                Drag to adjust
-              </Text>
             </Card>
           </View>
 
           {/* Target Card */}
           <View>
-            <SectionHeader title="Your target" />
+            <SectionHeader title={t("emergency.yourTarget")} />
             <Card>
               <CurrencyText
                 cents={targetCents}
@@ -143,12 +193,14 @@ export default function EmergencyFundScreen() {
                 suffixFormat
               />
               <Text className="mt-1 text-center text-sm text-gray-500">
-                {formatPeriod(selectedMonths)} of essential expenses
+                {t("emergency.targetDescription", { period: formatPeriod(selectedMonths) })}
               </Text>
               <Text className="mt-2 text-center text-xs text-gray-400">
-                {essentialExpenses.length} expenses · €
-                {(monthlyEssentialCents / 100).toFixed(0)}/mo × {selectedMonths}{" "}
-                mo
+                {t("emergency.targetDetail", {
+                  count: essentialExpenses.length,
+                  monthlyCost: `\u20AC${(monthlyEssentialCents / 100).toFixed(0)}`,
+                  months: selectedMonths,
+                })}
               </Text>
             </Card>
           </View>
@@ -162,13 +214,21 @@ export default function EmergencyFundScreen() {
               style={{ marginRight: 8, marginTop: 2 }}
             />
             <Text className="flex-1 text-sm leading-5 text-gray-600">
-              Most financial advisors recommend saving 3 to 6 months of
-              essential expenses. Adjust based on your job stability and
-              personal comfort.
+              {t("emergency.recommendation")}
             </Text>
           </View>
         </View>
       )}
+      <BottomSheet ref={detailSheetRef} snapPoints={["50%"]}>
+        <View>
+          {essentialExpenses.map((item, index) => (
+            <View key={item.id}>
+              {index > 0 && <View className="h-px bg-gray-100" />}
+              {renderExpenseRow({ item })}
+            </View>
+          ))}
+        </View>
+      </BottomSheet>
     </ScreenWrapper>
   );
 }

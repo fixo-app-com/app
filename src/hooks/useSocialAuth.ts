@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Alert } from "react-native";
+import i18n from "../i18n";
 import {
   signInWithGoogle,
   signInWithApple,
@@ -23,14 +24,14 @@ export function useSocialAuth() {
         firebaseError.code === "auth/account-exists-with-different-credential"
       ) {
         Alert.alert(
-          "Existing account",
-          "An account with this email already exists. Sign in with your password to link Google.",
+          i18n.t("auth.existingAccountTitle"),
+          i18n.t("auth.existingAccountGoogle"),
         );
         return;
       }
       if ((error as Error).message !== "Google Sign-In was cancelled") {
         Alert.alert(
-          "Error",
+          i18n.t("common.error"),
           getFirebaseAuthErrorMessage(firebaseError.code ?? ""),
         );
       }
@@ -48,12 +49,12 @@ export function useSocialAuth() {
       if (errorCode === "ERR_REQUEST_CANCELED") return;
       if (errorCode === "auth/account-exists-with-different-credential") {
         Alert.alert(
-          "Existing account",
-          "An account with this email already exists. Sign in with your existing method to link this account.",
+          i18n.t("auth.existingAccountTitle"),
+          i18n.t("auth.existingAccountOther"),
         );
         return;
       }
-      Alert.alert("Error", getFirebaseAuthErrorMessage(errorCode));
+      Alert.alert(i18n.t("common.error"), getFirebaseAuthErrorMessage(errorCode));
     } finally {
       setLoadingAction(null);
     }

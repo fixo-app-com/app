@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Alert, Switch, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAuth } from "../../../contexts/AuthContext";
@@ -23,6 +24,7 @@ type Nav = NativeStackNavigationProp<HomeStackParamList, "AddEditExpense">;
 type Route = RouteProp<HomeStackParamList, "AddEditExpense">;
 
 export default function AddEditExpenseScreen() {
+  const { t } = useTranslation();
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
   const { categoryId, expenseId } = route.params;
@@ -87,24 +89,24 @@ export default function AddEditExpenseScreen() {
   async function handleSave() {
     const trimmedName = name.trim();
     if (!trimmedName) {
-      Alert.alert("Error", "Please enter an expense name.");
+      Alert.alert(t("common.error"), t("addEditExpense.enterName"));
       return;
     }
 
     const amountCents = parseAmount(amountText);
     if (amountCents === null || amountCents <= 0) {
-      Alert.alert("Error", "Please enter a valid amount.");
+      Alert.alert(t("common.error"), t("addEditExpense.invalidAmount"));
       return;
     }
 
     if (!walletId) {
       Alert.alert(
-        "Wallet required",
-        "You need at least one wallet to save an expense. Create one now?",
+        t("addEditExpense.walletRequiredTitle"),
+        t("addEditExpense.walletRequiredMessage"),
         [
-          { text: "Cancel", style: "cancel" },
+          { text: t("common.cancel"), style: "cancel" },
           {
-            text: "Create wallet",
+            text: t("addEditExpense.createWallet"),
             onPress: () =>
               navigation.navigate("AddEditWallet", {}),
           },
@@ -135,7 +137,7 @@ export default function AddEditExpenseScreen() {
       navigation.goBack();
     } catch (error) {
       if (__DEV__) console.error("Failed to save expense:", error);
-      Alert.alert("Error", "Failed to save expense.");
+      Alert.alert(t("common.error"), t("addEditExpense.saveFailed"));
     } finally {
       setSaving(false);
     }
@@ -144,10 +146,10 @@ export default function AddEditExpenseScreen() {
   async function handleDelete() {
     if (!user || !expenseId) return;
 
-    Alert.alert("Delete expense", `Delete "${name}"?`, [
-      { text: "Cancel", style: "cancel" },
+    Alert.alert(t("addEditExpense.deleteTitle"), t("addEditExpense.deleteMessage", { name }), [
+      { text: t("common.cancel"), style: "cancel" },
       {
-        text: "Delete",
+        text: t("common.delete"),
         style: "destructive",
         onPress: async () => {
           try {
@@ -169,7 +171,7 @@ export default function AddEditExpenseScreen() {
 
   const headerContent = (
     <ScreenHeader
-      title={isEditing ? "Edit expense" : "New expense"}
+      title={isEditing ? t("addEditExpense.editTitle") : t("addEditExpense.newTitle")}
       onBack={() => navigation.goBack()}
     />
   );
@@ -178,25 +180,25 @@ export default function AddEditExpenseScreen() {
     <ScreenWrapper scroll header={headerContent}>
       <View className="gap-4">
         <Input
-          label="Name"
+          label={t("addEditExpense.nameLabel")}
           value={name}
           onChangeText={setName}
-          placeholder="e.g. Netflix, Insurance..."
+          placeholder={t("addEditExpense.namePlaceholder")}
           maxLength={100}
         />
 
         <Input
-          label={`Amount (${currencySymbol})`}
+          label={t("addEditExpense.amountLabel", { symbol: currencySymbol })}
           value={amountText}
           onChangeText={setAmountText}
-          placeholder="12.99"
+          placeholder={t("addEditExpense.amountPlaceholder")}
           keyboardType="decimal-pad"
         />
 
         <ChipGroup
           options={[
-            { value: "monthly" as BillingFrequency, label: "Monthly" },
-            { value: "yearly" as BillingFrequency, label: "Yearly" },
+            { value: "monthly" as BillingFrequency, label: t("common.monthly") },
+            { value: "yearly" as BillingFrequency, label: t("common.yearly") },
           ]}
           selected={billingFrequency}
           onSelect={setBillingFrequency}
@@ -204,17 +206,14 @@ export default function AddEditExpenseScreen() {
         />
       </View>
 
-      <SectionHeader title="Wallet" />
+      <SectionHeader title={t("addEditExpense.walletSection")} />
 
       {wallets.length === 0 ? (
-        <Text
-          className="text-sm text-fixo-400"
-          onPress={() =>
-            navigation.navigate("AddEditWallet", {})
-          }
-        >
-          No wallets yet. Tap to create one.
-        </Text>
+        <Button
+          label={t("addEditExpense.createWallet")}
+          variant="outline"
+          onPress={() => navigation.navigate("AddEditWallet", {})}
+        />
       ) : (
         <ChipGroup
           options={wallets.map((w) => ({ value: w.id, label: w.name }))}
@@ -224,10 +223,10 @@ export default function AddEditExpenseScreen() {
         />
       )}
 
-      <SectionHeader title="Options" />
+      <SectionHeader title={t("addEditExpense.optionsSection")} />
 
       <FormRow
-        label="Essential expense"
+        label={t("addEditExpense.essentialLabel")}
         first
         last
         right={
@@ -239,11 +238,11 @@ export default function AddEditExpenseScreen() {
           />
         }
       />
-      <Text className="mt-2 px-1 text-xs text-gray-400">
-        Essential expenses are fixed costs you can't avoid, like rent, insurance or subscriptions. They are used to calculate your emergency fund.
+      <Text className="mt-2 text-xs text-gray-400">
+        {t("addEditExpense.essentialHint")}
       </Text>
 
-      <SectionHeader title="Notes" />
+      <SectionHeader title={t("addEditExpense.notesSection")} />
 
       <Input
         value={notes}
@@ -258,7 +257,7 @@ export default function AddEditExpenseScreen() {
 
       <View className="mt-6 pb-4">
         <Button
-          label={isEditing ? "Save changes" : "Save expense"}
+          label={isEditing ? t("addEditExpense.saveChanges") : t("addEditExpense.saveExpense")}
           onPress={handleSave}
           loading={saving}
         />
@@ -266,7 +265,7 @@ export default function AddEditExpenseScreen() {
         {isEditing && (
           <View className="mt-3">
             <Button
-              label="Delete expense"
+              label={t("addEditExpense.deleteExpense")}
               variant="destructive"
               onPress={handleDelete}
             />

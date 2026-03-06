@@ -174,6 +174,43 @@ jest.mock("@react-native-async-storage/async-storage", () => ({
   removeItem: jest.fn(() => Promise.resolve()),
 }));
 
+// Mock expo-localization
+jest.mock("expo-localization", () => ({
+  getLocales: jest.fn(() => [{ languageCode: "en" }]),
+}));
+
+// Mock react-i18next
+jest.mock("react-i18next", () => ({
+  useTranslation: () => ({
+    t: (key: string) => key,
+    i18n: { language: "en", changeLanguage: jest.fn() },
+  }),
+  I18nextProvider: ({ children }: { children: React.ReactNode }) => children,
+  initReactI18next: { type: "3rdParty", init: jest.fn() },
+}));
+
+// Mock i18n module
+jest.mock("../../src/i18n", () => ({
+  __esModule: true,
+  default: {
+    t: (key: string) => key,
+    exists: jest.fn(() => true),
+    language: "en",
+    changeLanguage: jest.fn(),
+    use: jest.fn(() => ({ init: jest.fn() })),
+  },
+  initLanguage: jest.fn(() => Promise.resolve()),
+  setLanguage: jest.fn(() => Promise.resolve()),
+  SUPPORTED_LANGUAGES: ["en", "it", "fr", "de", "es"],
+  LANGUAGE_LABELS: {
+    en: "English",
+    it: "Italiano",
+    fr: "Fran\u00E7ais",
+    de: "Deutsch",
+    es: "Espa\u00F1ol",
+  },
+}));
+
 // Mock @gorhom/bottom-sheet
 jest.mock("@gorhom/bottom-sheet", () => {
   const PassThrough = ({ children }: { children: React.ReactNode }) => children;
@@ -183,6 +220,7 @@ jest.mock("@gorhom/bottom-sheet", () => {
     BottomSheetModal: PassThrough,
     BottomSheetModalProvider: PassThrough,
     BottomSheetView: PassThrough,
+    BottomSheetFlatList: PassThrough,
     BottomSheetBackdrop: () => null,
   };
 });

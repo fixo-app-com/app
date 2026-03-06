@@ -64,13 +64,13 @@ describe("HomeScreen", () => {
 
   it("renders Home title", () => {
     render(<HomeScreen />);
-    expect(screen.getByText("Home")).toBeOnTheScreen();
+    expect(screen.getByText("home.title")).toBeOnTheScreen();
   });
 
   it("renders monthly/yearly toggle chips", () => {
     render(<HomeScreen />);
-    expect(screen.getByText("Monthly")).toBeOnTheScreen();
-    expect(screen.getByText("Yearly")).toBeOnTheScreen();
+    expect(screen.getByText("common.monthly")).toBeOnTheScreen();
+    expect(screen.getByText("common.yearly")).toBeOnTheScreen();
   });
 
   it("renders categories", async () => {
@@ -83,15 +83,15 @@ describe("HomeScreen", () => {
 
   it("shows set-budget prompt when no budget is set", () => {
     render(<HomeScreen />);
-    expect(screen.getByText("Set monthly budget")).toBeOnTheScreen();
+    expect(screen.getByText("home.setMonthlyBudget")).toBeOnTheScreen();
   });
 
   it("displays hero and secondary metrics when budget is set", () => {
     mockDataOverrides = { monthlyBudgetCents: 250000 };
     render(<HomeScreen />);
     expect(screen.getByTestId("hero-metric")).toBeOnTheScreen();
-    expect(screen.getAllByText("Total costs").length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText("Leftover").length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText("home.totalCosts").length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText("home.leftover").length).toBeGreaterThanOrEqual(1);
   });
 
   it("tapping secondary metric calls setPinnedBudgetMetric", () => {
@@ -126,7 +126,7 @@ describe("HomeScreen", () => {
     mockDataOverrides = { monthlyBudgetCents: 250000 };
     render(<HomeScreen />);
     expect(screen.getByTestId("budget-chart-card")).toBeOnTheScreen();
-    expect(screen.getByText(/used/)).toBeOnTheScreen();
+    expect(screen.getByText("home.pctUsed")).toBeOnTheScreen();
   });
 
   it("renders dot indicators when budget is set", () => {

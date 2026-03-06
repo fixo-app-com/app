@@ -7,6 +7,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { useTranslation } from "react-i18next";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { AuthStackParamList } from "../../../navigation/RootNavigator";
 import {
@@ -23,6 +24,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 type Props = NativeStackScreenProps<AuthStackParamList, "SignUp">;
 
 export default function SignUpScreen({ navigation }: Props) {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -36,26 +38,26 @@ export default function SignUpScreen({ navigation }: Props) {
   } = useSocialAuth();
 
   const passwordRules = [
-    { label: "At least 8 characters", met: password.length >= 8 },
-    { label: "One uppercase letter", met: /[A-Z]/.test(password) },
-    { label: "One number", met: /[0-9]/.test(password) },
-    { label: "One special character", met: /[^A-Za-z0-9]/.test(password) },
+    { label: t("auth.passwordRuleLength"), met: password.length >= 8 },
+    { label: t("auth.passwordRuleUppercase"), met: /[A-Z]/.test(password) },
+    { label: t("auth.passwordRuleNumber"), met: /[0-9]/.test(password) },
+    { label: t("auth.passwordRuleSpecial"), met: /[^A-Za-z0-9]/.test(password) },
   ];
   const allRulesMet = passwordRules.every((r) => r.met);
 
   async function handleSignUp() {
     if (!email.trim() || !password.trim() || !confirmPassword.trim()) {
-      Alert.alert("Error", "Please fill in all fields.");
+      Alert.alert(t("common.error"), t("auth.fillAllFields"));
       return;
     }
 
     if (!allRulesMet) {
-      Alert.alert("Error", "Please meet all password requirements.");
+      Alert.alert(t("common.error"), t("auth.meetPasswordRequirements"));
       return;
     }
 
     if (password !== confirmPassword) {
-      Alert.alert("Error", "Passwords do not match.");
+      Alert.alert(t("common.error"), t("auth.passwordsDoNotMatch"));
       return;
     }
 
@@ -64,7 +66,7 @@ export default function SignUpScreen({ navigation }: Props) {
       await signUpWithEmail(email.trim(), password);
     } catch (error) {
       const code = (error as { code?: string }).code ?? "";
-      Alert.alert("Error", getFirebaseAuthErrorMessage(code));
+      Alert.alert(t("common.error"), getFirebaseAuthErrorMessage(code));
     } finally {
       setLoadingAction(null);
     }
@@ -89,7 +91,7 @@ export default function SignUpScreen({ navigation }: Props) {
           <Input
             value={email}
             onChangeText={setEmail}
-            placeholder="Email"
+            placeholder={t("auth.email")}
             autoCapitalize="none"
             keyboardType="email-address"
             autoComplete="email"
@@ -102,7 +104,7 @@ export default function SignUpScreen({ navigation }: Props) {
           <Input
             value={password}
             onChangeText={setPassword}
-            placeholder="Password"
+            placeholder={t("auth.password")}
             secureTextEntry
             autoComplete="new-password"
             editable={!isLoading}
@@ -114,7 +116,7 @@ export default function SignUpScreen({ navigation }: Props) {
           <Input
             value={confirmPassword}
             onChangeText={setConfirmPassword}
-            placeholder="Confirm password"
+            placeholder={t("auth.confirmPassword")}
             secureTextEntry
             autoComplete="new-password"
             editable={!isLoading}
@@ -124,7 +126,7 @@ export default function SignUpScreen({ navigation }: Props) {
         {/* Sign up button */}
         <View className="mb-4">
           <Button
-            label="Sign Up"
+            label={t("auth.signUp")}
             onPress={handleSignUp}
             loading={loadingAction === "email"}
           />
@@ -167,8 +169,8 @@ export default function SignUpScreen({ navigation }: Props) {
 
         {/* Sign in link */}
         <AuthFooterLink
-          message={"Already have an account? "}
-          linkText="Sign In"
+          message={t("auth.hasAccount")}
+          linkText={t("auth.signIn")}
           onPress={() => navigation.navigate("SignIn")}
           disabled={isLoading}
         />

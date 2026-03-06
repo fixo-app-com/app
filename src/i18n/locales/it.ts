@@ -1,0 +1,249 @@
+const it = {
+  common: {
+    cancel: "Annulla",
+    delete: "Elimina",
+    save: "Salva",
+    error: "Errore",
+    monthly: "Mensile",
+    yearly: "Annuale",
+    success: "Successo",
+  },
+  auth: {
+    signIn: "Accedi",
+    signUp: "Registrati",
+    email: "Email",
+    password: "Password",
+    confirmPassword: "Conferma password",
+    forgotPassword: "Password dimenticata?",
+    noAccount: "Non hai un account? ",
+    hasAccount: "Hai gi\u00E0 un account? ",
+    enterEmailAndPassword: "Inserisci email e password.",
+    fillAllFields: "Compila tutti i campi.",
+    meetPasswordRequirements: "Soddisfa tutti i requisiti della password.",
+    passwordsDoNotMatch: "Le password non corrispondono.",
+    sendResetLink: "Invia link di reset",
+    backToLogin: "Torna al login",
+    enterEmailForReset:
+      "Inserisci la tua email per ricevere un link di reset della password.",
+    enterEmail: "Inserisci la tua email.",
+    resetEmailSent:
+      "Ti abbiamo inviato un\u2019email con un link per reimpostare la password. Controlla la tua casella di posta.",
+    invalidCredentialTitle: "Email o password non validi",
+    invalidCredentialMessage:
+      "Controlla le tue credenziali e riprova.",
+    tryAgain: "Riprova",
+    resetPassword: "Reimposta password",
+    emailSentTitle: "Email inviata",
+    emailSentMessage:
+      "Controlla la tua casella di posta per il link di reset.",
+    linkGoogleBanner:
+      "Accedi con la tua password per collegare il tuo account Google.",
+    googleLinkedSuccess: "Account Google collegato con successo!",
+    passwordRuleLength: "Almeno 8 caratteri",
+    passwordRuleUppercase: "Una lettera maiuscola",
+    passwordRuleNumber: "Un numero",
+    passwordRuleSpecial: "Un carattere speciale",
+    or: "oppure",
+    continueWithApple: "Continua con Apple",
+    continueWithGoogle: "Continua con Google",
+    existingAccountTitle: "Account esistente",
+    existingAccountGoogle:
+      "Un account con questa email esiste gi\u00E0. Accedi con la tua password per collegare Google.",
+    existingAccountOther:
+      "Un account con questa email esiste gi\u00E0. Accedi con il tuo metodo esistente per collegare questo account.",
+  },
+  verify: {
+    title: "Verifica la tua email",
+    message:
+      "Abbiamo inviato un link di verifica a\n{{email}}\nControlla la casella di posta o la cartella spam e tocca il link per continuare.",
+    checkButton: "Ho verificato la mia email",
+    resendButton: "Reinvia email di verifica",
+    signOut: "Esci",
+    emailSentTitle: "Email inviata",
+    emailSentMessage: "\u00C8 stata inviata una nuova email di verifica.",
+    notVerifiedTitle: "Non ancora verificata",
+    notVerifiedMessage:
+      "La tua email non \u00E8 ancora verificata. Controlla la casella di posta o la cartella spam e tocca il link di verifica.",
+    checkErrorMessage:
+      "Impossibile verificare lo stato. Riprova.",
+  },
+  authErrors: {
+    "auth/invalid-email": "L\u2019indirizzo email non \u00E8 valido.",
+    "auth/user-disabled": "Questo account \u00E8 stato disabilitato.",
+    "auth/user-not-found": "Nessun account trovato con questa email.",
+    "auth/wrong-password": "Password errata.",
+    "auth/invalid-credential":
+      "Credenziali non valide. Controlla email e password.",
+    "auth/email-already-in-use":
+      "Un account con questa email esiste gi\u00E0.",
+    "auth/weak-password":
+      "La password \u00E8 troppo debole. Usa almeno 8 caratteri con maiuscola, numero e carattere speciale.",
+    "auth/too-many-requests": "Troppi tentativi. Riprova pi\u00F9 tardi.",
+    "auth/network-request-failed":
+      "Errore di rete. Controlla la connessione.",
+    "auth/account-exists-with-different-credential":
+      "Un account con questa email esiste gi\u00E0. Accedi con il metodo esistente per collegare questo account.",
+    "auth/requires-recent-login":
+      "Per sicurezza, esci e accedi di nuovo prima di eliminare il tuo account.",
+    default: "Si \u00E8 verificato un errore. Riprova.",
+  },
+  home: {
+    title: "Home",
+    yearlyBudget: "Budget annuale",
+    monthlyBudget: "Budget mensile",
+    totalCosts: "Costi totali",
+    leftover: "Rimanente",
+    setYearlyBudget: "Imposta budget annuale",
+    setMonthlyBudget: "Imposta budget mensile",
+    pctUsed: "{{pct}}% utilizzato",
+    enterBudget: "Inserisci il tuo budget {{period}} totale",
+    noCategories: "Nessuna categoria ancora.",
+    addCategory: "Aggiungi categoria",
+  },
+  wallets: {
+    title: "Portafogli",
+    noWallets: "Nessun portafoglio ancora.",
+    addWallet: "Aggiungi portafoglio",
+  },
+  categoryDetail: {
+    yearlyPrefix: "Annuale:",
+    monthlyPrefix: "Mensile:",
+    noExpenses: "Nessuna spesa in questa categoria.",
+    addExpense: "Aggiungi spesa",
+  },
+  walletDetail: {
+    yearlyPrefix: "Annuale:",
+    monthlyPrefix: "Mensile:",
+    noExpenses:
+      "Nessuna spesa per questo portafoglio.\nAggiungi spese da una categoria.",
+  },
+  addEditCategory: {
+    editTitle: "Modifica categoria",
+    newTitle: "Nuova categoria",
+    nameLabel: "Nome",
+    namePlaceholder: "es. Famiglia, Auto, Casa...",
+    iconSection: "Icona",
+    saveChanges: "Salva modifiche",
+    saveCategory: "Salva categoria",
+    deleteCategory: "Elimina categoria",
+    deleteTitle: "Elimina categoria",
+    deleteMessage:
+      'Eliminare "{{name}}"? Tutte le spese in questa categoria verranno eliminate. Questa azione non pu\u00F2 essere annullata.',
+    enterName: "Inserisci il nome della categoria.",
+    saveFailed: "Salvataggio categoria fallito.",
+  },
+  addEditExpense: {
+    editTitle: "Modifica spesa",
+    newTitle: "Nuova spesa",
+    nameLabel: "Nome",
+    namePlaceholder: "es. Netflix, Assicurazione...",
+    amountLabel: "Importo ({{symbol}})",
+    amountPlaceholder: "12,99",
+    walletSection: "Portafoglio",
+    noWallets: "Nessun portafoglio. Tocca per crearne uno.",
+    optionsSection: "Opzioni",
+    essentialLabel: "Spesa essenziale",
+    essentialHint:
+      "Le spese essenziali sono costi fissi inevitabili come affitto, assicurazione o abbonamenti. Vengono usate per calcolare il fondo di emergenza.",
+    notesSection: "Note",
+    saveChanges: "Salva modifiche",
+    saveExpense: "Salva spesa",
+    deleteExpense: "Elimina spesa",
+    deleteTitle: "Elimina spesa",
+    deleteMessage: 'Eliminare "{{name}}"?',
+    enterName: "Inserisci il nome della spesa.",
+    invalidAmount: "Inserisci un importo valido.",
+    walletRequiredTitle: "Portafoglio richiesto",
+    walletRequiredMessage:
+      "Hai bisogno di almeno un portafoglio per salvare una spesa. Crearne uno ora?",
+    createWallet: "Crea portafoglio",
+    saveFailed: "Salvataggio spesa fallito.",
+  },
+  addEditWallet: {
+    editTitle: "Modifica portafoglio",
+    newTitle: "Nuovo portafoglio",
+    nameLabel: "Nome",
+    namePlaceholder: "es. Revolut, N26...",
+    bankIconSection: "Icona banca",
+    other: "Altro",
+    saveChanges: "Salva modifiche",
+    saveWallet: "Salva portafoglio",
+    deleteWallet: "Elimina portafoglio",
+    deleteTitle: "Elimina portafoglio",
+    deleteMessage: 'Eliminare "{{name}}"?',
+    enterName: "Inserisci il nome del portafoglio.",
+    saveFailed: "Salvataggio portafoglio fallito.",
+  },
+  emergency: {
+    title: "Fondo di emergenza",
+    description:
+      "Simula quanto denaro ti serve per coprire le spese essenziali se il tuo reddito si interrompe.",
+    noEssential:
+      "Nessuna spesa essenziale ancora. Segna una spesa come essenziale per iniziare a calcolare il fondo di emergenza.",
+    expenses: "Spese",
+    monthlyCost: "Costo mensile",
+    coveragePeriod: "Periodo di copertura",
+    yourTarget: "Il tuo obiettivo",
+    targetDescription: "{{period}} di spese essenziali",
+    targetDetail:
+      "{{count}} spese \u00B7 {{monthlyCost}}/mese \u00D7 {{months}} mesi",
+    recommendation:
+      "La maggior parte dei consulenti finanziari consiglia di risparmiare da 3 a 6 mesi di spese essenziali. Regola in base alla stabilit\u00E0 del tuo lavoro e al tuo comfort personale.",
+    essentialExpenses: "Spese essenziali",
+    months_one: "{{count}} mese",
+    months_other: "{{count}} mesi",
+    years_one: "{{count}} anno",
+    years_other: "{{count}} anni",
+  },
+  settings: {
+    title: "Impostazioni",
+    account: "Account",
+    email: "Email",
+    currency: "Valuta",
+    language: "Lingua",
+    legal: "Legale",
+    privacyPolicy: "Informativa sulla privacy",
+    termsOfService: "Termini di servizio",
+    support: "Supporto",
+    signOut: "Esci",
+    deleteAccount: "Elimina account",
+    deleteAccountTitle: "Elimina account",
+    deleteAccountMessage:
+      "Questo eliminer\u00E0 permanentemente il tuo account e tutti i tuoi dati. Questa azione non pu\u00F2 essere annullata.",
+    deleteAccountRecentLogin:
+      "Per sicurezza, esci e accedi di nuovo prima di eliminare il tuo account.",
+    deleteAccountFailed:
+      "Eliminazione account fallita. Riprova.",
+    version: "Fixo v{{version}}",
+  },
+  sort: {
+    sortBy: "Ordina per",
+    newest: "Pi\u00F9 recenti",
+    highest: "Pi\u00F9 costosi",
+    lowest: "Meno costosi",
+  },
+  errorBoundary: {
+    title: "Qualcosa \u00E8 andato storto",
+    message: "Si \u00E8 verificato un errore imprevisto. Riavvia l\u2019app.",
+    restart: "Riavvia",
+  },
+  tabs: {
+    home: "Home",
+    wallets: "Portafogli",
+    emergency: "Emergenza",
+    settings: "Impostazioni",
+  },
+  expenseList: {
+    deleteFailed:
+      'Impossibile eliminare "{{name}}". Riprova.',
+  },
+  categoryCard: {
+    expense_one: "{{count}} spesa",
+    expense_other: "{{count}} spese",
+  },
+  expenseCard: {
+    essential: "Essenziale",
+  },
+} as const;
+
+export default it;

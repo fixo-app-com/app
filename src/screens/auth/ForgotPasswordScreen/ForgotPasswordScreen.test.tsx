@@ -25,28 +25,28 @@ describe("ForgotPasswordScreen", () => {
     render(
       <ForgotPasswordScreen navigation={mockNavigation} route={mockRoute} />,
     );
-    expect(screen.getByPlaceholderText("Email")).toBeOnTheScreen();
+    expect(screen.getByPlaceholderText("auth.email")).toBeOnTheScreen();
   });
 
   it("renders reset password button", () => {
     render(
       <ForgotPasswordScreen navigation={mockNavigation} route={mockRoute} />,
     );
-    expect(screen.getByText("Send reset link")).toBeOnTheScreen();
+    expect(screen.getByText("auth.sendResetLink")).toBeOnTheScreen();
   });
 
   it("renders back to login link", () => {
     render(
       <ForgotPasswordScreen navigation={mockNavigation} route={mockRoute} />,
     );
-    expect(screen.getByText("Back to login")).toBeOnTheScreen();
+    expect(screen.getByText("auth.backToLogin")).toBeOnTheScreen();
   });
 
   it("navigates back to SignIn screen", () => {
     render(
       <ForgotPasswordScreen navigation={mockNavigation} route={mockRoute} />,
     );
-    fireEvent.press(screen.getByText("Back to login"));
+    fireEvent.press(screen.getByText("auth.backToLogin"));
     expect(mockNavigate).toHaveBeenCalledWith("SignIn");
   });
 });

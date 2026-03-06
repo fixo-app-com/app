@@ -8,6 +8,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { useTranslation } from "react-i18next";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { AuthStackParamList } from "../../../navigation/RootNavigator";
 import {
@@ -25,6 +26,7 @@ import splashIcon from "../../../../assets/splash-icon.png";
 type Props = NativeStackScreenProps<AuthStackParamList, "SignIn">;
 
 export default function SignInScreen({ navigation, route }: Props) {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -40,7 +42,7 @@ export default function SignInScreen({ navigation, route }: Props) {
 
   async function handleSignIn() {
     if (!email.trim() || !password.trim()) {
-      Alert.alert("Error", "Please enter your email and password.");
+      Alert.alert(t("common.error"), t("auth.enterEmailAndPassword"));
       return;
     }
 
@@ -48,7 +50,7 @@ export default function SignInScreen({ navigation, route }: Props) {
     try {
       if (pendingGoogleIdToken) {
         await linkGoogleToEmailAccount(email.trim(), password, pendingGoogleIdToken);
-        Alert.alert("Success", "Google account linked successfully!");
+        Alert.alert(t("common.success"), t("auth.googleLinkedSuccess"));
       } else {
         await signInWithEmail(email.trim(), password);
       }
@@ -57,24 +59,24 @@ export default function SignInScreen({ navigation, route }: Props) {
 
       if (code === "auth/invalid-credential") {
         Alert.alert(
-          "Invalid email or password",
-          "Please check your credentials and try again.",
+          t("auth.invalidCredentialTitle"),
+          t("auth.invalidCredentialMessage"),
           [
-            { text: "Try again", style: "cancel" },
+            { text: t("auth.tryAgain"), style: "cancel" },
             {
-              text: "Reset password",
+              text: t("auth.resetPassword"),
               onPress: () => {
                 resetPassword(email.trim());
                 Alert.alert(
-                  "Email sent",
-                  "Check your inbox for a password reset link.",
+                  t("auth.emailSentTitle"),
+                  t("auth.emailSentMessage"),
                 );
               },
             },
           ],
         );
       } else {
-        Alert.alert("Error", getFirebaseAuthErrorMessage(code));
+        Alert.alert(t("common.error"), getFirebaseAuthErrorMessage(code));
       }
     } finally {
       setLoadingAction(null);
@@ -98,7 +100,7 @@ export default function SignInScreen({ navigation, route }: Props) {
         {ENABLE_SOCIAL_LOGIN && pendingGoogleIdToken && (
           <View className="mb-4 rounded-lg bg-fixo-100 p-3">
             <Text className="text-center text-sm text-fixo-600">
-              Sign in with your password to link your Google account.
+              {t("auth.linkGoogleBanner")}
             </Text>
           </View>
         )}
@@ -108,7 +110,7 @@ export default function SignInScreen({ navigation, route }: Props) {
           <Input
             value={email}
             onChangeText={setEmail}
-            placeholder="Email"
+            placeholder={t("auth.email")}
             autoCapitalize="none"
             keyboardType="email-address"
             autoComplete="email"
@@ -121,7 +123,7 @@ export default function SignInScreen({ navigation, route }: Props) {
           <Input
             value={password}
             onChangeText={setPassword}
-            placeholder="Password"
+            placeholder={t("auth.password")}
             secureTextEntry
             autoComplete="password"
             editable={!isLoading}
@@ -134,12 +136,12 @@ export default function SignInScreen({ navigation, route }: Props) {
           className="mb-6 self-end"
           disabled={isLoading}
         >
-          <Text className="text-sm text-fixo-500">Forgot password?</Text>
+          <Text className="text-sm text-fixo-500">{t("auth.forgotPassword")}</Text>
         </Pressable>
 
         {/* Sign in button */}
         <View className={ENABLE_SOCIAL_LOGIN ? "mb-4" : "mb-8"}>
-          <Button label="Sign In" onPress={handleSignIn} loading={loadingAction === "email"} />
+          <Button label={t("auth.signIn")} onPress={handleSignIn} loading={loadingAction === "email"} />
         </View>
 
         {/* Social login */}
@@ -154,8 +156,8 @@ export default function SignInScreen({ navigation, route }: Props) {
 
         {/* Sign up link */}
         <AuthFooterLink
-          message={"Don't have an account? "}
-          linkText="Sign Up"
+          message={t("auth.noAccount")}
+          linkText={t("auth.signUp")}
           onPress={() => navigation.navigate("SignUp")}
           disabled={isLoading}
         />

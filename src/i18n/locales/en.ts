@@ -1,0 +1,248 @@
+const en = {
+  common: {
+    cancel: "Cancel",
+    delete: "Delete",
+    save: "Save",
+    error: "Error",
+    monthly: "Monthly",
+    yearly: "Yearly",
+    success: "Success",
+  },
+  auth: {
+    signIn: "Sign In",
+    signUp: "Sign Up",
+    email: "Email",
+    password: "Password",
+    confirmPassword: "Confirm password",
+    forgotPassword: "Forgot password?",
+    noAccount: "Don't have an account? ",
+    hasAccount: "Already have an account? ",
+    enterEmailAndPassword: "Please enter your email and password.",
+    fillAllFields: "Please fill in all fields.",
+    meetPasswordRequirements: "Please meet all password requirements.",
+    passwordsDoNotMatch: "Passwords do not match.",
+    sendResetLink: "Send reset link",
+    backToLogin: "Back to login",
+    enterEmailForReset: "Enter your email to receive a password reset link.",
+    enterEmail: "Please enter your email.",
+    resetEmailSent:
+      "We sent you an email with a link to reset your password. Check your inbox.",
+    invalidCredentialTitle: "Invalid email or password",
+    invalidCredentialMessage:
+      "Please check your credentials and try again.",
+    tryAgain: "Try again",
+    resetPassword: "Reset password",
+    emailSentTitle: "Email sent",
+    emailSentMessage: "Check your inbox for a password reset link.",
+    linkGoogleBanner:
+      "Sign in with your password to link your Google account.",
+    googleLinkedSuccess: "Google account linked successfully!",
+    passwordRuleLength: "At least 8 characters",
+    passwordRuleUppercase: "One uppercase letter",
+    passwordRuleNumber: "One number",
+    passwordRuleSpecial: "One special character",
+    or: "or",
+    continueWithApple: "Continue with Apple",
+    continueWithGoogle: "Continue with Google",
+    existingAccountTitle: "Existing account",
+    existingAccountGoogle:
+      "An account with this email already exists. Sign in with your password to link Google.",
+    existingAccountOther:
+      "An account with this email already exists. Sign in with your existing method to link this account.",
+  },
+  verify: {
+    title: "Verify your email",
+    message:
+      "We sent a verification link to\n{{email}}\nCheck your inbox or spam folder and tap the link to continue.",
+    checkButton: "I've verified my email",
+    resendButton: "Resend verification email",
+    signOut: "Sign out",
+    emailSentTitle: "Email sent",
+    emailSentMessage: "A new verification email has been sent.",
+    notVerifiedTitle: "Not verified yet",
+    notVerifiedMessage:
+      "Your email is not verified yet. Please check your inbox or spam folder and tap the verification link.",
+    checkErrorMessage:
+      "Could not check verification status. Try again.",
+  },
+  authErrors: {
+    "auth/invalid-email": "The email address is not valid.",
+    "auth/user-disabled": "This account has been disabled.",
+    "auth/user-not-found": "No account found with this email.",
+    "auth/wrong-password": "Incorrect password.",
+    "auth/invalid-credential":
+      "Invalid credentials. Check your email and password.",
+    "auth/email-already-in-use":
+      "An account with this email already exists.",
+    "auth/weak-password":
+      "Password is too weak. Use at least 8 characters with uppercase, number, and special character.",
+    "auth/too-many-requests":
+      "Too many attempts. Please try again later.",
+    "auth/network-request-failed":
+      "Network error. Check your connection.",
+    "auth/account-exists-with-different-credential":
+      "An account with this email already exists. Sign in with your existing method to link this account.",
+    "auth/requires-recent-login":
+      "For security, please sign out and sign back in before deleting your account.",
+    default: "An error occurred. Please try again.",
+  },
+  home: {
+    title: "Home",
+    yearlyBudget: "Yearly budget",
+    monthlyBudget: "Monthly budget",
+    totalCosts: "Total costs",
+    leftover: "Leftover",
+    setYearlyBudget: "Set yearly budget",
+    setMonthlyBudget: "Set monthly budget",
+    pctUsed: "{{pct}}% used",
+    enterBudget: "Enter your total {{period}} budget",
+    noCategories: "No categories yet.",
+    addCategory: "Add category",
+  },
+  wallets: {
+    title: "Wallets",
+    noWallets: "No wallets yet.",
+    addWallet: "Add wallet",
+  },
+  categoryDetail: {
+    yearlyPrefix: "Yearly:",
+    monthlyPrefix: "Monthly:",
+    noExpenses: "No expenses in this category.",
+    addExpense: "Add expense",
+  },
+  walletDetail: {
+    yearlyPrefix: "Yearly:",
+    monthlyPrefix: "Monthly:",
+    noExpenses:
+      "No expenses for this wallet.\nAdd expenses from a category.",
+  },
+  addEditCategory: {
+    editTitle: "Edit category",
+    newTitle: "New category",
+    nameLabel: "Name",
+    namePlaceholder: "e.g. Family, Car, Home...",
+    iconSection: "Icon",
+    saveChanges: "Save changes",
+    saveCategory: "Save category",
+    deleteCategory: "Delete category",
+    deleteTitle: "Delete category",
+    deleteMessage:
+      'Delete "{{name}}"? All expenses in this category will also be deleted. This action cannot be undone.',
+    enterName: "Please enter a category name.",
+    saveFailed: "Failed to save category.",
+  },
+  addEditExpense: {
+    editTitle: "Edit expense",
+    newTitle: "New expense",
+    nameLabel: "Name",
+    namePlaceholder: "e.g. Netflix, Insurance...",
+    amountLabel: "Amount ({{symbol}})",
+    amountPlaceholder: "12.99",
+    walletSection: "Wallet",
+    noWallets: "No wallets yet. Tap to create one.",
+    optionsSection: "Options",
+    essentialLabel: "Essential expense",
+    essentialHint:
+      "Essential expenses are fixed costs you can't avoid, like rent, insurance or subscriptions. They are used to calculate your emergency fund.",
+    notesSection: "Notes",
+    saveChanges: "Save changes",
+    saveExpense: "Save expense",
+    deleteExpense: "Delete expense",
+    deleteTitle: "Delete expense",
+    deleteMessage: 'Delete "{{name}}"?',
+    enterName: "Please enter an expense name.",
+    invalidAmount: "Please enter a valid amount.",
+    walletRequiredTitle: "Wallet required",
+    walletRequiredMessage:
+      "You need at least one wallet to save an expense. Create one now?",
+    createWallet: "Create wallet",
+    saveFailed: "Failed to save expense.",
+  },
+  addEditWallet: {
+    editTitle: "Edit wallet",
+    newTitle: "New wallet",
+    nameLabel: "Name",
+    namePlaceholder: "e.g. Revolut, N26...",
+    bankIconSection: "Bank icon",
+    other: "Other",
+    saveChanges: "Save changes",
+    saveWallet: "Save wallet",
+    deleteWallet: "Delete wallet",
+    deleteTitle: "Delete wallet",
+    deleteMessage: 'Delete "{{name}}"?',
+    enterName: "Please enter a wallet name.",
+    saveFailed: "Failed to save wallet.",
+  },
+  emergency: {
+    title: "Emergency fund",
+    description:
+      "Simulate how much cash you need to cover your essential expenses if your income stops.",
+    noEssential:
+      "No essential expenses yet. Mark an expense as essential to start calculating your emergency fund.",
+    expenses: "Expenses",
+    monthlyCost: "Monthly cost",
+    coveragePeriod: "Coverage period",
+    yourTarget: "Your target",
+    targetDescription: "{{period}} of essential expenses",
+    targetDetail:
+      "{{count}} expenses \u00B7 {{monthlyCost}}/mo \u00D7 {{months}} mo",
+    recommendation:
+      "Most financial advisors recommend saving 3 to 6 months of essential expenses. Adjust based on your job stability and personal comfort.",
+    essentialExpenses: "Essential expenses",
+    months_one: "{{count}} month",
+    months_other: "{{count}} months",
+    years_one: "{{count}} year",
+    years_other: "{{count}} years",
+  },
+  settings: {
+    title: "Settings",
+    account: "Account",
+    email: "Email",
+    currency: "Currency",
+    language: "Language",
+    legal: "Legal",
+    privacyPolicy: "Privacy Policy",
+    termsOfService: "Terms of Service",
+    support: "Support",
+    signOut: "Sign out",
+    deleteAccount: "Delete Account",
+    deleteAccountTitle: "Delete Account",
+    deleteAccountMessage:
+      "This will permanently delete your account and all your data. This action cannot be undone.",
+    deleteAccountRecentLogin:
+      "For security, please sign out and sign back in before deleting your account.",
+    deleteAccountFailed: "Failed to delete account. Please try again.",
+    version: "Fixo v{{version}}",
+  },
+  sort: {
+    sortBy: "Sort by",
+    newest: "Newest",
+    highest: "Highest",
+    lowest: "Lowest",
+  },
+  errorBoundary: {
+    title: "Something went wrong",
+    message: "An unexpected error occurred. Please restart the app.",
+    restart: "Restart",
+  },
+  tabs: {
+    home: "Home",
+    wallets: "Wallets",
+    emergency: "Emergency",
+    settings: "Settings",
+  },
+  expenseList: {
+    deleteFailed: 'Could not delete "{{name}}". Please try again.',
+  },
+  categoryCard: {
+    expense_one: "{{count}} expense",
+    expense_other: "{{count}} expenses",
+  },
+  expenseCard: {
+    essential: "Essential",
+  },
+} as const;
+
+export default en;
+
+export type TranslationKeys = typeof en;

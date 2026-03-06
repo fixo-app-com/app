@@ -1,4 +1,5 @@
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { Card } from "../../design-system";
 import { CurrencyText } from "../CurrencyText/CurrencyText";
 import { useData } from "../../contexts/DataContext";
@@ -26,6 +27,7 @@ export function ExpenseCard({
   onPress,
   onLongPress,
 }: ExpenseCardProps) {
+  const { t } = useTranslation();
   const { viewMode } = useData();
   const displayCents = getDisplayAmountCents(
     { amountCents, billingFrequency },
@@ -40,9 +42,12 @@ export function ExpenseCard({
           <View className="mt-1 flex-row items-center">
             <Text className="text-sm text-gray-500">{walletName}</Text>
             {essential && (
-              <Text className="ml-2 text-sm font-medium text-amber-500">
-                Essential
-              </Text>
+              <>
+                <Text className="mx-2 text-sm text-gray-400">•</Text>
+                <Text className="text-sm font-medium text-amber-500">
+                  {t("expenseCard.essential")}
+                </Text>
+              </>
             )}
           </View>
           {notes ? (

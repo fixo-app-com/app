@@ -1,13 +1,10 @@
-import { useCallback, useMemo, useRef, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { Pressable, Text, View } from "react-native";
-import {
-  BottomSheetBackdrop,
-  BottomSheetModal,
-  BottomSheetView,
-} from "@gorhom/bottom-sheet";
-import { Easing } from "react-native-reanimated";
+import { useTranslation } from "react-i18next";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { SORT_OPTIONS, type SortOption } from "../../constants/sort";
+import { BottomSheet } from "../BottomSheet/BottomSheet";
 
 type Props = {
   visible: boolean;
@@ -22,6 +19,7 @@ export function SortBottomSheet({
   onSelect,
   onClose,
 }: Props) {
+  const { t } = useTranslation();
   const sheetRef = useRef<BottomSheetModal>(null);
 
   useEffect(() => {
@@ -40,63 +38,21 @@ export function SortBottomSheet({
     [onSelect, onClose],
   );
 
-  const renderBackdrop = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (props: any) => (
-      <BottomSheetBackdrop
-        {...props}
-        disappearsOnIndex={-1}
-        appearsOnIndex={0}
-        pressBehavior="close"
-      />
-    ),
-    [],
-  );
-
-  const snapPoints = useMemo(() => ["30%"], []);
-
-  const animationConfigs = useMemo(
-    () => ({ duration: 350, easing: Easing.out(Easing.cubic) }),
-    [],
-  );
-
   return (
-    <BottomSheetModal
+    <BottomSheet
       ref={sheetRef}
-      snapPoints={snapPoints}
-      enablePanDownToClose
+      title={t("sort.sortBy")}
+      snapPoints={["30%"]}
       onDismiss={onClose}
-      backdropComponent={renderBackdrop}
-      animationConfigs={animationConfigs}
-      backgroundStyle={{ borderTopLeftRadius: 20, borderTopRightRadius: 20 }}
-      handleIndicatorStyle={{ backgroundColor: "#d1d5db", width: 40 }}
     >
-      <BottomSheetView className="flex-1 px-5 pb-6">
-        {/* Header */}
-        <View className="mb-4 flex-row items-center justify-between">
-          <Text className="text-lg font-semibold text-gray-900">Sort by</Text>
-          <Pressable
-            onPress={onClose}
-            hitSlop={8}
-            className="items-center justify-center"
-            style={({ pressed }) => ({
-              opacity: pressed ? 0.6 : 1,
-              width: 32,
-              height: 32,
-            })}
-          >
-            <Ionicons name="close" size={22} color="#6b7280" />
-          </Pressable>
-        </View>
-
-        {/* Options */}
+      <View className="pb-6">
         {SORT_OPTIONS.map((option) => {
           const isSelected = option.value === selected;
           return (
             <Pressable
               key={option.value}
               onPress={() => handleSelect(option.value)}
-              className="flex-row items-center justify-between rounded-xl py-3 px-2"
+              className="flex-row items-center justify-between rounded-xl py-3"
               style={({ pressed }) => ({
                 backgroundColor: pressed ? "#f3f4f6" : "transparent",
               })}
@@ -104,7 +60,7 @@ export function SortBottomSheet({
               <Text
                 className={`text-base ${isSelected ? "font-semibold text-fixo-400" : "text-gray-700"}`}
               >
-                {option.label}
+                {t(option.labelKey)}
               </Text>
               {isSelected && (
                 <Ionicons name="checkmark" size={20} color="#818cf8" />
@@ -112,7 +68,7 @@ export function SortBottomSheet({
             </Pressable>
           );
         })}
-      </BottomSheetView>
-    </BottomSheetModal>
+      </View>
+    </BottomSheet>
   );
 }

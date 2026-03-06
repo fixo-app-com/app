@@ -1,4 +1,5 @@
 import { ActivityIndicator, FlatList, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { EmptyState } from "../../design-system";
 import { ExpenseCard } from "../ExpenseCard/ExpenseCard";
 import { SwipeableRow } from "../SwipeableRow/SwipeableRow";
@@ -21,6 +22,8 @@ export function ExpenseList({
   onPress,
   onDelete,
 }: ExpenseListProps) {
+  const { t } = useTranslation();
+
   if (loading) {
     return <ActivityIndicator color="#818cf8" className="mt-8" />;
   }
@@ -29,11 +32,11 @@ export function ExpenseList({
     <FlatList
       data={expenses}
       keyExtractor={(item) => item.id}
-      contentContainerStyle={{ paddingBottom: 160 }}
+      contentContainerStyle={{ paddingBottom: 80 }}
       renderItem={({ item }) => (
         <SwipeableRow
           onDelete={() => onDelete(item.id)}
-          errorMessage={`Could not delete "${item.name}". Please try again.`}
+          errorMessage={t("expenseList.deleteFailed", { name: item.name })}
         >
           <ExpenseCard
             name={item.name}
@@ -51,7 +54,6 @@ export function ExpenseList({
       ListEmptyComponent={
         <EmptyState icon="receipt-outline" message={emptyMessage} />
       }
-      ListFooterComponent={<View className="h-8" />}
     />
   );
 }

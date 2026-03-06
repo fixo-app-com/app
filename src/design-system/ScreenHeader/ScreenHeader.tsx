@@ -16,13 +16,12 @@ export function ScreenHeader({ title, onBack, right }: ScreenHeaderProps) {
           onPress={onBack}
           accessibilityRole="button"
           accessibilityLabel="Go back"
-          className="mr-2 items-center justify-center"
+          className="mr-2 justify-center"
           style={({ pressed }) => ({
             opacity: pressed ? 0.6 : 1,
-            width: 44,
             height: 44,
           })}
-          hitSlop={8}
+          hitSlop={{ top: 8, bottom: 8, right: 8, left: 0 }}
         >
           <Ionicons name="chevron-back" size={24} color="#6b7280" />
         </Pressable>

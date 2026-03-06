@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -15,12 +16,13 @@ import {
 import { CurrencyText, ExpenseList, FloatingAction } from "../../../components";
 import { useExpenses } from "../../../hooks/useExpenses";
 import { useSortPreferences } from "../../../hooks/useSortPreferences";
-import { getSortLabel } from "../../../constants/sort";
+import { getSortLabelKey } from "../../../constants/sort";
 
 type Nav = NativeStackNavigationProp<HomeStackParamList, "CategoryDetail">;
 type Route = RouteProp<HomeStackParamList, "CategoryDetail">;
 
 export default function CategoryDetailScreen() {
+  const { t } = useTranslation();
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
   const { categoryId } = route.params;
@@ -71,14 +73,14 @@ export default function CategoryDetailScreen() {
       {/* Summary + sort */}
       <View className="mb-4 flex-row items-center justify-between">
         <Text className="text-sm text-gray-500">
-          {viewMode === "yearly" ? "Yearly:" : "Monthly:"}{" "}
+          {viewMode === "yearly" ? t("categoryDetail.yearlyPrefix") : t("categoryDetail.monthlyPrefix")}{" "}
           <CurrencyText
             cents={totalCents}
             className="text-sm font-semibold text-fixo-400"
           />
         </Text>
         <SortTrigger
-          label={getSortLabel(sortPrefs.expenses)}
+          label={t(getSortLabelKey(sortPrefs.expenses))}
           onPress={() => setSortSheetOpen(true)}
         />
       </View>
@@ -90,8 +92,8 @@ export default function CategoryDetailScreen() {
       <ExpenseList
         expenses={expenses}
         loading={loading}
-        emptyMessage="No expenses in this category."
-        getSubtitle={(e) => wallets.find((w) => w.id === e.walletId)?.name ?? "—"}
+        emptyMessage={t("categoryDetail.noExpenses")}
+        getSubtitle={(e) => wallets.find((w) => w.id === e.walletId)?.name ?? "\u2014"}
         onPress={(e) =>
           navigation.navigate("AddEditExpense", {
             categoryId,
@@ -102,7 +104,7 @@ export default function CategoryDetailScreen() {
       />
 
       <FloatingAction
-        label="Add expense"
+        label={t("categoryDetail.addExpense")}
         onPress={() =>
           navigation.navigate("AddEditExpense", {
             categoryId,

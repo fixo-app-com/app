@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Alert, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import auth from "@react-native-firebase/auth";
 import { useAuth } from "../../../contexts/AuthContext";
 import {
@@ -10,6 +11,7 @@ import {
 import { Button } from "../../../design-system";
 
 export default function VerifyEmailScreen() {
+  const { t } = useTranslation();
   const { user, reloadUser } = useAuth();
   const [isResending, setIsResending] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
@@ -18,10 +20,10 @@ export default function VerifyEmailScreen() {
     setIsResending(true);
     try {
       await resendVerificationEmail();
-      Alert.alert("Email sent", "A new verification email has been sent.");
+      Alert.alert(t("verify.emailSentTitle"), t("verify.emailSentMessage"));
     } catch (error) {
       const code = (error as { code?: string }).code ?? "";
-      Alert.alert("Error", getFirebaseAuthErrorMessage(code));
+      Alert.alert(t("common.error"), getFirebaseAuthErrorMessage(code));
     } finally {
       setIsResending(false);
     }
@@ -34,12 +36,12 @@ export default function VerifyEmailScreen() {
       const refreshed = auth().currentUser;
       if (refreshed && !refreshed.emailVerified) {
         Alert.alert(
-          "Not verified yet",
-          "Your email is not verified yet. Please check your inbox or spam folder and tap the verification link.",
+          t("verify.notVerifiedTitle"),
+          t("verify.notVerifiedMessage"),
         );
       }
     } catch {
-      Alert.alert("Error", "Could not check verification status. Try again.");
+      Alert.alert(t("common.error"), t("verify.checkErrorMessage"));
     } finally {
       setIsChecking(false);
     }
@@ -52,19 +54,17 @@ export default function VerifyEmailScreen() {
       </Text>
 
       <Text className="mb-2 text-center text-lg font-semibold text-gray-900">
-        Verify your email
+        {t("verify.title")}
       </Text>
 
       <Text className="mb-8 text-center text-base text-gray-400">
-        We sent a verification link to{"\n"}
-        <Text className="text-gray-900">{user?.email}</Text>
-        {"\n"}Check your inbox or spam folder and tap the link to continue.
+        {t("verify.message", { email: user?.email })}
       </Text>
 
       {/* Check verification button */}
       <View className="mb-4">
         <Button
-          label="I've verified my email"
+          label={t("verify.checkButton")}
           onPress={handleCheckVerification}
           loading={isChecking}
         />
@@ -73,7 +73,7 @@ export default function VerifyEmailScreen() {
       {/* Resend email button */}
       <View className="mb-4">
         <Button
-          label="Resend verification email"
+          label={t("verify.resendButton")}
           variant="secondary"
           onPress={handleResend}
           loading={isResending}
@@ -82,7 +82,7 @@ export default function VerifyEmailScreen() {
 
       {/* Sign out button */}
       <Button
-        label="Sign out"
+        label={t("verify.signOut")}
         variant="destructive"
         onPress={() => signOut()}
       />

@@ -1,4 +1,5 @@
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Card } from "../../design-system";
 import { CurrencyText } from "../CurrencyText/CurrencyText";
@@ -18,6 +19,8 @@ export function CategoryCard({
   totalCents,
   onPress,
 }: CategoryCardProps) {
+  const { t } = useTranslation();
+
   return (
     <Card onPress={onPress}>
       <View className="flex-row items-center justify-between">
@@ -28,7 +31,7 @@ export function CategoryCard({
               {name}
             </Text>
             <Text className="text-sm text-gray-500">
-              {expenseCount} {expenseCount === 1 ? "expense" : "expenses"}
+              {t("categoryCard.expense", { count: expenseCount })}
             </Text>
           </View>
         </View>

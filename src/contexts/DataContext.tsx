@@ -11,9 +11,11 @@ import type {
   Category,
   Expense,
   PinnedBudgetMetric,
+  SupportedLanguage,
   Wallet,
 } from "../types/firestore";
 import * as firestoreService from "../services/firestore";
+import i18n, { setLanguage as setI18nLanguage } from "../i18n";
 
 const PINNED_METRIC_KEY = "pinnedBudgetMetric";
 
@@ -61,6 +63,9 @@ interface DataContextValue {
   // Pinned budget metric
   pinnedBudgetMetric: PinnedBudgetMetric;
   setPinnedBudgetMetric: (metric: PinnedBudgetMetric) => Promise<void>;
+  // Language
+  language: SupportedLanguage;
+  setLanguage: (lang: SupportedLanguage) => Promise<void>;
 }
 
 const DataContext = createContext<DataContextValue>({
@@ -90,6 +95,8 @@ const DataContext = createContext<DataContextValue>({
   setEmergencyMonths: async () => {},
   pinnedBudgetMetric: "budget",
   setPinnedBudgetMetric: async () => {},
+  language: "en",
+  setLanguage: async () => {},
 });
 
 export function DataProvider({ children }: { children: React.ReactNode }) {
@@ -107,6 +114,9 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
 
   // Emergency fund months
   const [emergencyMonths, setEmergencyMonthsState] = useState(6);
+
+  // Language
+  const [language, setLanguageState] = useState<SupportedLanguage>("en");
 
   // Pinned budget metric (local-only, persisted via AsyncStorage)
   const [pinnedBudgetMetric, setPinnedBudgetMetricState] =
@@ -127,6 +137,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       setCurrencyState("EUR");
       setMonthlyBudgetCentsState(0);
       setEmergencyMonthsState(6);
+      setLanguageState("en");
       setPinnedBudgetMetricState("budget");
       setExpenses(null);
       setIsLoading(false);
@@ -177,6 +188,17 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         setCurrencyState(settings.currency);
         setMonthlyBudgetCentsState(settings.monthlyBudgetCents ?? 0);
         setEmergencyMonthsState(settings.emergencyMonths ?? 6);
+        if (settings.language) {
+          setLanguageState(settings.language);
+          setI18nLanguage(settings.language);
+        } else {
+          // First login: persist current language to Firestore
+          const currentLang =
+            (i18n.language as SupportedLanguage) || "en";
+          firestoreService.updateUserSettings(user.uid, {
+            language: currentLang,
+          });
+        }
         settingsReady = true;
         checkReady();
       },
@@ -280,6 +302,13 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     setPinnedBudgetMetric: async (metric) => {
       setPinnedBudgetMetricState(metric);
       await AsyncStorage.setItem(PINNED_METRIC_KEY, metric);
+    },
+    // Language
+    language,
+    setLanguage: async (lang) => {
+      setLanguageState(lang);
+      await setI18nLanguage(lang);
+      await firestoreService.updateUserSettings(userId, { language: lang });
     },
   };
 

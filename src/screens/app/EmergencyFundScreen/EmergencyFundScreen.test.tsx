@@ -55,6 +55,7 @@ const mockDataContext = {
   expenses: mockExpenses,
   expensesLoading: false,
   ensureExpenses: jest.fn(),
+  wallets: [{ id: "w1", name: "Main Account" }],
 };
 
 jest.mock("../../../contexts/DataContext", () => ({
@@ -79,26 +80,24 @@ describe("EmergencyFundScreen", () => {
 
   it("renders title and subtitle", () => {
     render(<EmergencyFundScreen />);
-    expect(screen.getByText("Emergency fund")).toBeOnTheScreen();
-    expect(
-      screen.getByText(/Simulate how much cash you need/),
-    ).toBeOnTheScreen();
+    expect(screen.getByText("emergency.title")).toBeOnTheScreen();
+    expect(screen.getByText("emergency.description")).toBeOnTheScreen();
   });
 
   it("renders slider with default 6 months label", async () => {
     render(<EmergencyFundScreen />);
     await waitFor(() => {
       expect(screen.getByTestId("slider")).toBeOnTheScreen();
-      expect(screen.getByText("6 months")).toBeOnTheScreen();
+      expect(screen.getByText("emergency.months")).toBeOnTheScreen();
     });
   });
 
   it("renders essentials summary and target sections", async () => {
     render(<EmergencyFundScreen />);
     await waitFor(() => {
-      expect(screen.getByText("Expenses")).toBeOnTheScreen();
-      expect(screen.getByText("Monthly cost")).toBeOnTheScreen();
-      expect(screen.getByText("Your target")).toBeOnTheScreen();
+      expect(screen.getByText("emergency.expenses")).toBeOnTheScreen();
+      expect(screen.getByText("emergency.monthlyCost")).toBeOnTheScreen();
+      expect(screen.getByText("emergency.yourTarget")).toBeOnTheScreen();
     });
   });
 
@@ -119,9 +118,7 @@ describe("EmergencyFundScreen", () => {
 
     render(<EmergencyFundScreen />);
     await waitFor(() => {
-      expect(
-        screen.getByText(/No essential expenses yet/),
-      ).toBeOnTheScreen();
+      expect(screen.getByText("emergency.noEssential")).toBeOnTheScreen();
     });
   });
 });

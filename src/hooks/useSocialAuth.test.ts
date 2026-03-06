@@ -50,8 +50,8 @@ describe("useSocialAuth", () => {
     await act(() => result.current.handleGoogleAuth());
 
     expect(Alert.alert).toHaveBeenCalledWith(
-      "Existing account",
-      expect.stringContaining("already exists"),
+      "auth.existingAccountTitle",
+      "auth.existingAccountGoogle",
     );
     expect(result.current.loadingAction).toBeNull();
   });
@@ -65,7 +65,7 @@ describe("useSocialAuth", () => {
     expect(getFirebaseAuthErrorMessage).toHaveBeenCalledWith(
       "auth/internal-error",
     );
-    expect(Alert.alert).toHaveBeenCalledWith("Error", "Error: auth/internal-error");
+    expect(Alert.alert).toHaveBeenCalledWith("common.error", "Error: auth/internal-error");
   });
 
   it("does not show alert when Google Sign-In is cancelled", async () => {
@@ -100,8 +100,8 @@ describe("useSocialAuth", () => {
     await act(() => result.current.handleAppleAuth());
 
     expect(Alert.alert).toHaveBeenCalledWith(
-      "Existing account",
-      expect.stringContaining("already exists"),
+      "auth.existingAccountTitle",
+      "auth.existingAccountOther",
     );
   });
 
@@ -115,7 +115,7 @@ describe("useSocialAuth", () => {
       "auth/network-request-failed",
     );
     expect(Alert.alert).toHaveBeenCalledWith(
-      "Error",
+      "common.error",
       "Error: auth/network-request-failed",
     );
   });

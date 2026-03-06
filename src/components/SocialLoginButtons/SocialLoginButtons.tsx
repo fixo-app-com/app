@@ -1,4 +1,5 @@
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 type SocialLoginButtonsProps = {
@@ -14,12 +15,14 @@ export function SocialLoginButtons({
   loadingAction,
   isLoading,
 }: SocialLoginButtonsProps) {
+  const { t } = useTranslation();
+
   return (
     <>
       {/* Divider */}
       <View className="mb-4 flex-row items-center">
         <View className="h-px flex-1 bg-gray-300" />
-        <Text className="mx-4 text-sm text-gray-400">or</Text>
+        <Text className="mx-4 text-sm text-gray-400">{t("auth.or")}</Text>
         <View className="h-px flex-1 bg-gray-300" />
       </View>
 
@@ -39,7 +42,7 @@ export function SocialLoginButtons({
             <>
               <Ionicons name="logo-apple" size={18} color="#FFFFFF" />
               <Text className="ml-2 text-base font-semibold text-white">
-                Continue with Apple
+                {t("auth.continueWithApple")}
               </Text>
             </>
           )}
@@ -62,7 +65,7 @@ export function SocialLoginButtons({
             <>
               <Ionicons name="logo-google" size={18} color="#4285F4" />
               <Text className="ml-2 text-base font-semibold text-gray-700">
-                Continue with Google
+                {t("auth.continueWithGoogle")}
               </Text>
             </>
           )}
