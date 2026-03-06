@@ -139,20 +139,53 @@ jest.mock("@react-native-firebase/crashlytics", () => ({
 }));
 
 // Mock react-native-reanimated
-jest.mock("react-native-reanimated", () => ({
-  useSharedValue: (init: unknown) => ({ value: init }),
-  useAnimatedStyle: (fn: () => object) => fn(),
-  withTiming: (val: number) => val,
-  runOnJS: (fn: (...args: unknown[]) => void) => fn,
-  interpolate: jest.fn(),
-  default: { View: "Animated.View" },
-}));
+jest.mock("react-native-reanimated", () => {
+  const identity = (v: unknown) => v;
+  const Easing = {
+    linear: identity,
+    ease: identity,
+    quad: identity,
+    cubic: identity,
+    in: () => identity,
+    out: () => identity,
+    inOut: () => identity,
+  };
+  return {
+    useSharedValue: (init: unknown) => ({ value: init }),
+    useAnimatedStyle: (fn: () => object) => fn(),
+    withTiming: (val: number) => val,
+    runOnJS: (fn: (...args: unknown[]) => void) => fn,
+    interpolate: jest.fn(),
+    Easing,
+    default: { View: "Animated.View" },
+  };
+});
 
 // Mock react-native-gesture-handler/ReanimatedSwipeable
 jest.mock("react-native-gesture-handler/ReanimatedSwipeable", () => ({
   __esModule: true,
   default: ({ children }: { children: React.ReactNode }) => children,
 }));
+
+// Mock @react-native-async-storage/async-storage
+jest.mock("@react-native-async-storage/async-storage", () => ({
+  getItem: jest.fn(() => Promise.resolve(null)),
+  setItem: jest.fn(() => Promise.resolve()),
+  removeItem: jest.fn(() => Promise.resolve()),
+}));
+
+// Mock @gorhom/bottom-sheet
+jest.mock("@gorhom/bottom-sheet", () => {
+  const PassThrough = ({ children }: { children: React.ReactNode }) => children;
+  return {
+    __esModule: true,
+    default: PassThrough,
+    BottomSheetModal: PassThrough,
+    BottomSheetModalProvider: PassThrough,
+    BottomSheetView: PassThrough,
+    BottomSheetBackdrop: () => null,
+  };
+});
 
 // Mock react-native-screens
 jest.mock("react-native-screens", () => {

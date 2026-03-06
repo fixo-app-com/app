@@ -3,6 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { AuthProvider } from "./src/contexts/AuthContext";
 import { ErrorBoundary } from "./src/components";
 import { DataProvider } from "./src/contexts/DataContext";
@@ -15,10 +16,12 @@ export default function App() {
         <ErrorBoundary>
           <AuthProvider>
             <DataProvider>
-              <NavigationContainer>
-                <RootNavigator />
-                <StatusBar style="dark" />
-              </NavigationContainer>
+              <BottomSheetModalProvider>
+                <NavigationContainer>
+                  <RootNavigator />
+                  <StatusBar style="dark" />
+                </NavigationContainer>
+              </BottomSheetModalProvider>
             </DataProvider>
           </AuthProvider>
         </ErrorBoundary>

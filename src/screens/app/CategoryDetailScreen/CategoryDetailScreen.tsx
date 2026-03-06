@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
@@ -5,9 +6,16 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useData } from "../../../contexts/DataContext";
 import type { HomeStackParamList } from "../../../navigation/RootNavigator";
 import { roundToUnit, getDisplayAmountCents } from "../../../types/firestore";
-import { ScreenHeader, ScreenWrapper } from "../../../design-system";
+import {
+  ScreenHeader,
+  ScreenWrapper,
+  SortBottomSheet,
+  SortTrigger,
+} from "../../../design-system";
 import { CurrencyText, ExpenseList, FloatingAction } from "../../../components";
 import { useExpenses } from "../../../hooks/useExpenses";
+import { useSortPreferences } from "../../../hooks/useSortPreferences";
+import { getSortLabel } from "../../../constants/sort";
 
 type Nav = NativeStackNavigationProp<HomeStackParamList, "CategoryDetail">;
 type Route = RouteProp<HomeStackParamList, "CategoryDetail">;
@@ -21,7 +29,13 @@ export default function CategoryDetailScreen() {
   const category = categories.find((c) => c.id === categoryId);
   const categoryName = category?.name ?? route.params.categoryName;
 
-  const { expenses, loading } = useExpenses({ categoryId });
+  const { sortPrefs, setSortFor } = useSortPreferences();
+  const [sortSheetOpen, setSortSheetOpen] = useState(false);
+
+  const { expenses, loading } = useExpenses({
+    categoryId,
+    sort: sortPrefs.expenses,
+  });
 
   const totalCents = roundToUnit(
     expenses.reduce((sum, e) => sum + getDisplayAmountCents(e, viewMode), 0),
@@ -54,8 +68,8 @@ export default function CategoryDetailScreen() {
         }
       />
 
-      {/* Summary */}
-      <View className="mb-4">
+      {/* Summary + sort */}
+      <View className="mb-4 flex-row items-center justify-between">
         <Text className="text-sm text-gray-500">
           {viewMode === "yearly" ? "Yearly:" : "Monthly:"}{" "}
           <CurrencyText
@@ -63,6 +77,10 @@ export default function CategoryDetailScreen() {
             className="text-sm font-semibold text-fixo-400"
           />
         </Text>
+        <SortTrigger
+          label={getSortLabel(sortPrefs.expenses)}
+          onPress={() => setSortSheetOpen(true)}
+        />
       </View>
     </>
   );
@@ -90,6 +108,13 @@ export default function CategoryDetailScreen() {
             categoryId,
           })
         }
+      />
+
+      <SortBottomSheet
+        visible={sortSheetOpen}
+        selected={sortPrefs.expenses}
+        onSelect={(opt) => setSortFor("expenses", opt)}
+        onClose={() => setSortSheetOpen(false)}
       />
     </ScreenWrapper>
   );

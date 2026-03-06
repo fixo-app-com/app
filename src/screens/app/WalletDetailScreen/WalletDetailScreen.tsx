@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -5,9 +6,16 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useData } from "../../../contexts/DataContext";
 import type { WalletsStackParamList } from "../../../navigation/RootNavigator";
 import { roundToUnit, getDisplayAmountCents } from "../../../types/firestore";
-import { ScreenHeader, ScreenWrapper } from "../../../design-system";
+import {
+  ScreenHeader,
+  ScreenWrapper,
+  SortBottomSheet,
+  SortTrigger,
+} from "../../../design-system";
 import { CurrencyText, ExpenseList } from "../../../components";
 import { useExpenses } from "../../../hooks/useExpenses";
+import { useSortPreferences } from "../../../hooks/useSortPreferences";
+import { getSortLabel } from "../../../constants/sort";
 
 type Nav = NativeStackNavigationProp<WalletsStackParamList, "WalletDetail">;
 type Route = RouteProp<WalletsStackParamList, "WalletDetail">;
@@ -22,12 +30,13 @@ export default function WalletDetailScreen() {
   const walletName = wallet?.name ?? route.params.walletName;
   const walletIcon = wallet?.icon ?? route.params.walletIcon;
 
-  const { expenses, loading } = useExpenses({ walletId });
+  const { sortPrefs, setSortFor } = useSortPreferences();
+  const [sortSheetOpen, setSortSheetOpen] = useState(false);
 
-  const sortedExpenses = [...expenses].sort(
-    (a, b) =>
-      getDisplayAmountCents(b, viewMode) - getDisplayAmountCents(a, viewMode),
-  );
+  const { expenses, loading } = useExpenses({
+    walletId,
+    sort: sortPrefs.expenses,
+  });
 
   const totalCents = roundToUnit(
     expenses.reduce((sum, e) => sum + getDisplayAmountCents(e, viewMode), 0),
@@ -60,8 +69,8 @@ export default function WalletDetailScreen() {
         }
       />
 
-      {/* Summary */}
-      <View className="mb-4">
+      {/* Summary + sort */}
+      <View className="mb-4 flex-row items-center justify-between">
         <Text className="text-sm text-gray-500">
           {viewMode === "yearly" ? "Yearly:" : "Monthly:"}{" "}
           <CurrencyText
@@ -69,6 +78,10 @@ export default function WalletDetailScreen() {
             className="text-sm font-semibold text-fixo-400"
           />
         </Text>
+        <SortTrigger
+          label={getSortLabel(sortPrefs.expenses)}
+          onPress={() => setSortSheetOpen(true)}
+        />
       </View>
     </>
   );
@@ -76,7 +89,7 @@ export default function WalletDetailScreen() {
   return (
     <ScreenWrapper header={headerContent}>
       <ExpenseList
-        expenses={sortedExpenses}
+        expenses={expenses}
         loading={loading}
         emptyMessage={"No expenses for this wallet.\nAdd expenses from a category."}
         getSubtitle={(e) =>
@@ -89,6 +102,13 @@ export default function WalletDetailScreen() {
           })
         }
         onDelete={(id) => deleteExpense(id)}
+      />
+
+      <SortBottomSheet
+        visible={sortSheetOpen}
+        selected={sortPrefs.expenses}
+        onSelect={(opt) => setSortFor("expenses", opt)}
+        onClose={() => setSortSheetOpen(false)}
       />
     </ScreenWrapper>
   );

@@ -8,3 +8,5 @@ export { Input } from "./Input/Input";
 export { ScreenHeader } from "./ScreenHeader/ScreenHeader";
 export { ScreenWrapper } from "./ScreenWrapper/ScreenWrapper";
 export { SectionHeader } from "./SectionHeader/SectionHeader";
+export { SortBottomSheet } from "./SortBottomSheet/SortBottomSheet";
+export { SortTrigger } from "./SortTrigger/SortTrigger";

@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -17,7 +17,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useData } from "../../../contexts/DataContext";
 import type { HomeStackParamList } from "../../../navigation/RootNavigator";
 import { roundToUnit, getDisplayAmountCents } from "../../../types/firestore";
-import type { PinnedBudgetMetric } from "../../../types/firestore";
+import type { Category, PinnedBudgetMetric } from "../../../types/firestore";
 import type { ViewMode } from "../../../contexts/DataContext";
 import {
   Card,
@@ -25,6 +25,8 @@ import {
   EmptyState,
   FullScreenLoader,
   ScreenWrapper,
+  SortBottomSheet,
+  SortTrigger,
 } from "../../../design-system";
 import {
   CategoryCard,
@@ -32,6 +34,9 @@ import {
   FloatingAction,
 } from "../../../components";
 import { useExpenses } from "../../../hooks/useExpenses";
+import { useSortPreferences } from "../../../hooks/useSortPreferences";
+import { getSortLabel } from "../../../constants/sort";
+import { makeSortComparator } from "../../../utils/sort";
 
 type Nav = NativeStackNavigationProp<HomeStackParamList, "Home">;
 
@@ -306,6 +311,17 @@ export default function HomeScreen() {
   } = useData();
 
   const { expenses, loading: loadingExpenses } = useExpenses();
+  const { sortPrefs, setSortFor } = useSortPreferences();
+  const [sortSheetOpen, setSortSheetOpen] = useState(false);
+
+  const sortedCategories = useMemo(() => {
+    const comparator = makeSortComparator<Category>(
+      sortPrefs.categories,
+      (c) => getCategoryTotal(c.id),
+      (c) => c.createdAt,
+    );
+    return [...categories].sort(comparator);
+  }, [categories, sortPrefs.categories, expenses, viewMode]);
 
   const isYearly = viewMode === "yearly";
 
@@ -443,7 +459,12 @@ export default function HomeScreen() {
         />
       )}
 
-      <View className="mb-2" />
+      <View className="mb-2 flex-row justify-end">
+        <SortTrigger
+          label={getSortLabel(sortPrefs.categories)}
+          onPress={() => setSortSheetOpen(true)}
+        />
+      </View>
     </>
   );
 
@@ -453,7 +474,7 @@ export default function HomeScreen() {
         <ActivityIndicator color="#818cf8" className="mt-8" />
       ) : (
         <FlatList
-          data={categories}
+          data={sortedCategories}
           keyExtractor={(item) => item.id}
           contentContainerStyle={{ paddingBottom: 100 }}
           renderItem={({ item }) => (
@@ -480,6 +501,13 @@ export default function HomeScreen() {
       <FloatingAction
         label="Add category"
         onPress={() => navigation.navigate("AddEditCategory", {})}
+      />
+
+      <SortBottomSheet
+        visible={sortSheetOpen}
+        selected={sortPrefs.categories}
+        onSelect={(opt) => setSortFor("categories", opt)}
+        onClose={() => setSortSheetOpen(false)}
       />
     </ScreenWrapper>
   );
