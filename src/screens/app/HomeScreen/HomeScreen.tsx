@@ -321,6 +321,7 @@ export default function HomeScreen() {
       (c) => c.createdAt,
     );
     return [...categories].sort(comparator);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categories, sortPrefs.categories, expenses, viewMode]);
 
   const isYearly = viewMode === "yearly";

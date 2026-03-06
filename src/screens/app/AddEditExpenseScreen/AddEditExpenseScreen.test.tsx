@@ -68,8 +68,8 @@ describe("AddEditExpenseScreen", () => {
     expect(screen.getByText("Save expense")).toBeOnTheScreen();
   });
 
-  it("renders notes placeholder", () => {
+  it("renders notes section", () => {
     render(<AddEditExpenseScreen />);
-    expect(screen.getByPlaceholderText("Notes")).toBeOnTheScreen();
+    expect(screen.getByText("Notes")).toBeOnTheScreen();
   });
 });

@@ -79,7 +79,7 @@ describe("EmergencyFundScreen", () => {
 
   it("renders title and subtitle", () => {
     render(<EmergencyFundScreen />);
-    expect(screen.getByText("Emergency Fund")).toBeOnTheScreen();
+    expect(screen.getByText("Emergency fund")).toBeOnTheScreen();
     expect(
       screen.getByText(/Simulate how much cash you need/),
     ).toBeOnTheScreen();

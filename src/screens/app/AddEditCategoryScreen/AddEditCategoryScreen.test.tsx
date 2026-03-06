@@ -52,7 +52,7 @@ describe("AddEditCategoryScreen", () => {
 
   it("renders emoji picker", () => {
     render(<AddEditCategoryScreen />);
-    expect(screen.getByText("📦")).toBeOnTheScreen();
+    expect(screen.getByText("👨‍👩‍👧‍👦")).toBeOnTheScreen();
     expect(screen.getByText("🚗")).toBeOnTheScreen();
   });
 

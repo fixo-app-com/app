@@ -71,6 +71,7 @@ export default function WalletsScreen() {
       (w) => w.createdAt,
     );
     return [...wallets].sort(comparator);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wallets, sortPrefs.wallets, expenses, viewMode]);
 
   return (
