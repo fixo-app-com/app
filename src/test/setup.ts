@@ -221,6 +221,7 @@ jest.mock("@gorhom/bottom-sheet", () => {
     BottomSheetModalProvider: PassThrough,
     BottomSheetView: PassThrough,
     BottomSheetFlatList: PassThrough,
+    BottomSheetScrollView: PassThrough,
     BottomSheetBackdrop: () => null,
   };
 });
