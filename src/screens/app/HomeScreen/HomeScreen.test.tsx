@@ -46,7 +46,7 @@ const mockDataDefaults = {
   expenses: mockExpenses,
   expensesLoading: false,
   ensureExpenses: jest.fn(),
-  pinnedBudgetMetric: "budget" as const,
+  pinnedBudgetMetric: "budget" as "budget" | "costs" | "available",
   setPinnedBudgetMetric: mockSetPinnedBudgetMetric,
 };
 
