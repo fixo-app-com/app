@@ -41,6 +41,7 @@ export function ExpenseList({
             notes={item.notes}
             amountCents={item.amountCents}
             billingFrequency={item.billingFrequency ?? "monthly"}
+            essential={item.essential}
             onPress={() => onPress(item)}
             onLongPress={() => {}}
           />

@@ -36,7 +36,7 @@ export default function AddEditExpenseScreen() {
   const [billingFrequency, setBillingFrequency] =
     useState<BillingFrequency>("monthly");
   const [walletId, setWalletId] = useState("");
-  const [essential, setEssential] = useState(false);
+  const [essential, setEssential] = useState(!isEditing);
   const [notes, setNotes] = useState("");
   const [saving, setSaving] = useState(false);
   const [loadingExpense, setLoadingExpense] = useState(isEditing);
@@ -151,8 +151,6 @@ export default function AddEditExpenseScreen() {
 
   return (
     <ScreenWrapper scroll header={headerContent}>
-      <SectionHeader title="Details" />
-
       <View className="gap-4">
         <Input
           label="Name"
@@ -211,13 +209,16 @@ export default function AddEditExpenseScreen() {
           />
         }
       />
+      <Text className="mt-2 px-1 text-xs text-gray-400">
+        Essential expenses are fixed costs you can't avoid, like rent, insurance or subscriptions. They are used to calculate your emergency fund.
+      </Text>
 
       <SectionHeader title="Notes" />
 
       <Input
         value={notes}
         onChangeText={setNotes}
-        placeholder="Notes"
+        placeholder=""
         multiline
         maxLength={500}
         style={{ minHeight: 80 }}

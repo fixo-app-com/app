@@ -48,15 +48,17 @@ const mockExpenses = [
   },
 ];
 
+const mockDataContext = {
+  currency: "EUR",
+  emergencyMonths: 6,
+  setEmergencyMonths: jest.fn(),
+  expenses: mockExpenses,
+  expensesLoading: false,
+  ensureExpenses: jest.fn(),
+};
+
 jest.mock("../../../contexts/DataContext", () => ({
-  useData: () => ({
-    currency: "EUR",
-    emergencyMonths: 6,
-    setEmergencyMonths: jest.fn(),
-    expenses: mockExpenses,
-    expensesLoading: false,
-    ensureExpenses: jest.fn(),
-  }),
+  useData: () => mockDataContext,
 }));
 
 jest.mock("@react-native-community/slider", () => {
@@ -71,9 +73,16 @@ jest.mock("@react-native-community/slider", () => {
 });
 
 describe("EmergencyFundScreen", () => {
-  it("renders title", () => {
+  beforeEach(() => {
+    mockDataContext.expenses = mockExpenses;
+  });
+
+  it("renders title and subtitle", () => {
     render(<EmergencyFundScreen />);
-    expect(screen.getByText("Emergency")).toBeOnTheScreen();
+    expect(screen.getByText("Emergency Fund")).toBeOnTheScreen();
+    expect(
+      screen.getByText(/Simulate how much cash you need/),
+    ).toBeOnTheScreen();
   });
 
   it("renders slider with default 6 months label", async () => {
@@ -84,11 +93,35 @@ describe("EmergencyFundScreen", () => {
     });
   });
 
-  it("renders essential total and target labels", async () => {
+  it("renders essentials summary and target sections", async () => {
     render(<EmergencyFundScreen />);
     await waitFor(() => {
-      expect(screen.getByText("Monthly essential expenses")).toBeOnTheScreen();
-      expect(screen.getByText("Emergency fund target")).toBeOnTheScreen();
+      expect(screen.getByText("Expenses")).toBeOnTheScreen();
+      expect(screen.getByText("Monthly cost")).toBeOnTheScreen();
+      expect(screen.getByText("Your target")).toBeOnTheScreen();
+    });
+  });
+
+  it("renders empty state when no essential expenses", async () => {
+    mockDataContext.expenses = [
+      {
+        id: "e2",
+        categoryId: "c1",
+        name: "Netflix",
+        amountCents: 1599,
+        billingFrequency: "monthly",
+        walletId: "w1",
+        essential: false,
+        notes: "",
+        createdAt: new Date(),
+      },
+    ];
+
+    render(<EmergencyFundScreen />);
+    await waitFor(() => {
+      expect(
+        screen.getByText(/No essential expenses yet/),
+      ).toBeOnTheScreen();
     });
   });
 });

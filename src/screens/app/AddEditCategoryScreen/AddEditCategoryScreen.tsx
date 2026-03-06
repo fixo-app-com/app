@@ -20,19 +20,13 @@ type Route = RouteProp<HomeStackParamList, "AddEditCategory">;
 const EMOJI_OPTIONS = [
   // People & family
   "👨‍👩‍👧‍👦",
-  "👪",
-  "👶",
-  "👩",
   // Transport
   "🚗",
   "⛽",
-  "🚌",
-  "🚲",
   // Home & living
   "🏠",
   "🛋️",
   "🔧",
-  "🧹",
   // Education & work
   "🎓",
   "💼",
@@ -40,7 +34,6 @@ const EMOJI_OPTIONS = [
   // Health
   "🏥",
   "💊",
-  "🧑‍⚕️",
   // Food & drink
   "🍔",
   "🛒",
@@ -49,38 +42,26 @@ const EMOJI_OPTIONS = [
   // Entertainment
   "🎮",
   "🎬",
-  "🎵",
   "📺",
   // Tech & communication
   "📱",
   "💻",
-  "🌐",
   // Travel
   "✈️",
   "🏖️",
-  "🚢",
   // Pets
   "🐾",
-  "🐶",
-  "🐱",
   // Shopping & fashion
-  "👕",
-  "👟",
   "🛍️",
   // Sports & fitness
   "⚽",
   "🏋️",
-  "🏃",
   // Finance & bills
   "💡",
   "💰",
   "🏦",
-  "📈",
   // Other
   "🎁",
-  "❤️",
-  "📦",
-  "⭐",
 ];
 
 export default function AddEditCategoryScreen() {

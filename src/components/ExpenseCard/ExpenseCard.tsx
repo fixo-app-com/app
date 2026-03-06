@@ -11,6 +11,7 @@ interface ExpenseCardProps {
   notes: string;
   amountCents: number;
   billingFrequency: BillingFrequency;
+  essential?: boolean;
   onPress: () => void;
   onLongPress: () => void;
 }
@@ -21,6 +22,7 @@ export function ExpenseCard({
   notes,
   amountCents,
   billingFrequency,
+  essential,
   onPress,
   onLongPress,
 }: ExpenseCardProps) {
@@ -35,7 +37,14 @@ export function ExpenseCard({
       <View className="flex-row items-center justify-between">
         <View className="mr-4 flex-1">
           <Text className="text-base font-semibold text-gray-900">{name}</Text>
-          <Text className="mt-1 text-sm text-gray-500">{walletName}</Text>
+          <View className="mt-1 flex-row items-center">
+            <Text className="text-sm text-gray-500">{walletName}</Text>
+            {essential && (
+              <Text className="ml-2 text-sm font-medium text-amber-500">
+                Essential
+              </Text>
+            )}
+          </View>
           {notes ? (
             <Text className="mt-1 text-sm text-gray-400" numberOfLines={2}>
               {notes}
