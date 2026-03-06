@@ -10,7 +10,7 @@ interface ScreenHeaderProps {
 
 export function ScreenHeader({ title, onBack, right }: ScreenHeaderProps) {
   return (
-    <View className="mb-6 flex-row items-center justify-between">
+    <View className="mb-7 flex-row items-center justify-between">
       <View className="flex-1 flex-row items-center">
         <Pressable
           onPress={onBack}

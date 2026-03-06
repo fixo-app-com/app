@@ -21,6 +21,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       process.env.GOOGLE_SERVICES_PLIST ?? "./GoogleService-Info.plist",
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
+      CFBundleLocalizations: ["en", "it", "fr", "de", "es"],
     },
     privacyManifests: {
       NSPrivacyCollectedDataTypes: [

@@ -35,7 +35,7 @@ export function ChipGroup<T extends string>({
   return (
     <View
       className={`flex-row flex-wrap${compact ? " mb-2" : ""}`}
-      style={compact ? undefined : { gap: GAP }}
+      style={{ gap: GAP }}
     >
       {options.map((option) => {
         const isSelected = option.value === selected;
@@ -45,7 +45,7 @@ export function ChipGroup<T extends string>({
             onPress={() => onSelect(option.value)}
             className={`items-center justify-center rounded-xl ${chipPadding} ${
               isSelected ? "bg-fixo-100" : "bg-white"
-            }${compact ? " m-1" : ""}`}
+            }`}
             style={
               compact
                 ? undefined
