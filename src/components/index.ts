@@ -4,6 +4,8 @@ export { ErrorBoundary } from "./ErrorBoundary/ErrorBoundary";
 export { CategoryCard } from "./CategoryCard/CategoryCard";
 export { CurrencyText } from "./CurrencyText/CurrencyText";
 export { ExpenseCard } from "./ExpenseCard/ExpenseCard";
+export { ExpenseList } from "./ExpenseList/ExpenseList";
 export { FloatingAction } from "./FloatingAction/FloatingAction";
 export { SocialLoginButtons } from "./SocialLoginButtons/SocialLoginButtons";
+export { SwipeableRow } from "./SwipeableRow/SwipeableRow";
 export { WalletCard } from "./WalletCard/WalletCard";

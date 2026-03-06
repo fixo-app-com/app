@@ -1,19 +1,12 @@
-import {
-  ActivityIndicator,
-  Alert,
-  FlatList,
-  Pressable,
-  Text,
-  View,
-} from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useData } from "../../../contexts/DataContext";
 import type { WalletsStackParamList } from "../../../navigation/RootNavigator";
 import { roundToUnit, getDisplayAmountCents } from "../../../types/firestore";
-import { EmptyState, ScreenHeader, ScreenWrapper } from "../../../design-system";
-import { CurrencyText, ExpenseCard } from "../../../components";
+import { ScreenHeader, ScreenWrapper } from "../../../design-system";
+import { CurrencyText, ExpenseList } from "../../../components";
 import { useExpenses } from "../../../hooks/useExpenses";
 
 type Nav = NativeStackNavigationProp<WalletsStackParamList, "WalletDetail">;
@@ -31,26 +24,10 @@ export default function WalletDetailScreen() {
 
   const { expenses, loading } = useExpenses({ walletId });
 
-  function getCategoryName(categoryId: string): string {
-    return categories.find((c) => c.id === categoryId)?.name ?? "—";
-  }
-
-  function handleDeleteExpense(expenseId: string, expenseName: string) {
-    Alert.alert("Delete expense", `Delete "${expenseName}"?`, [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Delete",
-        style: "destructive",
-        onPress: async () => {
-          try {
-            await deleteExpense(expenseId);
-          } catch (error) {
-            if (__DEV__) console.error("Failed to delete expense:", error);
-          }
-        },
-      },
-    ]);
-  }
+  const sortedExpenses = [...expenses].sort(
+    (a, b) =>
+      getDisplayAmountCents(b, viewMode) - getDisplayAmountCents(a, viewMode),
+  );
 
   const totalCents = roundToUnit(
     expenses.reduce((sum, e) => sum + getDisplayAmountCents(e, viewMode), 0),
@@ -98,44 +75,21 @@ export default function WalletDetailScreen() {
 
   return (
     <ScreenWrapper header={headerContent}>
-      {/* Expenses list */}
-      {loading ? (
-        <ActivityIndicator color="#818cf8" className="mt-8" />
-      ) : (
-        <FlatList
-          data={[...expenses].sort(
-            (a, b) =>
-              getDisplayAmountCents(b, viewMode) -
-              getDisplayAmountCents(a, viewMode),
-          )}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={{ paddingBottom: 160 }}
-          renderItem={({ item }) => (
-            <ExpenseCard
-              name={item.name}
-              walletName={getCategoryName(item.categoryId)}
-              notes={item.notes}
-              amountCents={item.amountCents}
-              billingFrequency={item.billingFrequency ?? "monthly"}
-              onPress={() =>
-                navigation.navigate("AddEditExpense", {
-                  categoryId: item.categoryId,
-                  expenseId: item.id,
-                })
-              }
-              onLongPress={() => handleDeleteExpense(item.id, item.name)}
-            />
-          )}
-          ItemSeparatorComponent={() => <View className="h-3" />}
-          ListEmptyComponent={
-            <EmptyState
-              icon="receipt-outline"
-              message={"No expenses for this wallet.\nAdd expenses from a category."}
-            />
-          }
-          ListFooterComponent={<View className="h-8" />}
-        />
-      )}
+      <ExpenseList
+        expenses={sortedExpenses}
+        loading={loading}
+        emptyMessage={"No expenses for this wallet.\nAdd expenses from a category."}
+        getSubtitle={(e) =>
+          categories.find((c) => c.id === e.categoryId)?.name ?? "—"
+        }
+        onPress={(e) =>
+          navigation.navigate("AddEditExpense", {
+            categoryId: e.categoryId,
+            expenseId: e.id,
+          })
+        }
+        onDelete={(id) => deleteExpense(id)}
+      />
     </ScreenWrapper>
   );
 }

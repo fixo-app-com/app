@@ -1,19 +1,12 @@
-import {
-  ActivityIndicator,
-  Alert,
-  FlatList,
-  Pressable,
-  Text,
-  View,
-} from "react-native";
+import { Pressable, Text, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useData } from "../../../contexts/DataContext";
 import type { HomeStackParamList } from "../../../navigation/RootNavigator";
 import { roundToUnit, getDisplayAmountCents } from "../../../types/firestore";
-import { EmptyState, ScreenHeader, ScreenWrapper } from "../../../design-system";
-import { CurrencyText, ExpenseCard, FloatingAction } from "../../../components";
+import { ScreenHeader, ScreenWrapper } from "../../../design-system";
+import { CurrencyText, ExpenseList, FloatingAction } from "../../../components";
 import { useExpenses } from "../../../hooks/useExpenses";
 
 type Nav = NativeStackNavigationProp<HomeStackParamList, "CategoryDetail">;
@@ -29,27 +22,6 @@ export default function CategoryDetailScreen() {
   const categoryName = category?.name ?? route.params.categoryName;
 
   const { expenses, loading } = useExpenses({ categoryId });
-
-  function getWalletName(walletId: string): string {
-    return wallets.find((w) => w.id === walletId)?.name ?? "—";
-  }
-
-  function handleDeleteExpense(expenseId: string, expenseName: string) {
-    Alert.alert("Delete expense", `Delete "${expenseName}"?`, [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Delete",
-        style: "destructive",
-        onPress: async () => {
-          try {
-            await deleteExpense(expenseId);
-          } catch (error) {
-            if (__DEV__) console.error("Failed to delete expense:", error);
-          }
-        },
-      },
-    ]);
-  }
 
   const totalCents = roundToUnit(
     expenses.reduce((sum, e) => sum + getDisplayAmountCents(e, viewMode), 0),
@@ -97,40 +69,19 @@ export default function CategoryDetailScreen() {
 
   return (
     <ScreenWrapper header={headerContent}>
-      {/* Expenses list */}
-      {loading ? (
-        <ActivityIndicator color="#818cf8" className="mt-8" />
-      ) : (
-        <FlatList
-          data={expenses}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={{ paddingBottom: 160 }}
-          renderItem={({ item }) => (
-            <ExpenseCard
-              name={item.name}
-              walletName={getWalletName(item.walletId)}
-              notes={item.notes}
-              amountCents={item.amountCents}
-              billingFrequency={item.billingFrequency ?? "monthly"}
-              onPress={() =>
-                navigation.navigate("AddEditExpense", {
-                  categoryId,
-                  expenseId: item.id,
-                })
-              }
-              onLongPress={() => handleDeleteExpense(item.id, item.name)}
-            />
-          )}
-          ItemSeparatorComponent={() => <View className="h-3" />}
-          ListEmptyComponent={
-            <EmptyState
-              icon="receipt-outline"
-              message="No expenses in this category."
-            />
-          }
-          ListFooterComponent={<View className="h-8" />}
-        />
-      )}
+      <ExpenseList
+        expenses={expenses}
+        loading={loading}
+        emptyMessage="No expenses in this category."
+        getSubtitle={(e) => wallets.find((w) => w.id === e.walletId)?.name ?? "—"}
+        onPress={(e) =>
+          navigation.navigate("AddEditExpense", {
+            categoryId,
+            expenseId: e.id,
+          })
+        }
+        onDelete={(id) => deleteExpense(id)}
+      />
 
       <FloatingAction
         label="Add expense"
