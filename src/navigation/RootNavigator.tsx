@@ -35,6 +35,11 @@ export type HomeStackParamList = {
     categoryIcon?: string;
   };
   AddEditExpense: { categoryId: string; expenseId?: string };
+  AddEditWallet: {
+    walletId?: string;
+    walletName?: string;
+    walletIcon?: string;
+  };
 };
 
 export type WalletsStackParamList = {
@@ -113,6 +118,10 @@ function HomeStackNavigator() {
         name="AddEditExpense"
         component={AddEditExpenseScreen}
       />
+      <HomeStack.Screen
+        name="AddEditWallet"
+        component={AddEditWalletScreen}
+      />
     </HomeStack.Navigator>
   );
 }
@@ -189,8 +198,8 @@ function AppNavigator() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: BG_COLOR,
-          borderTopColor: "#e5e7eb",
+          backgroundColor: "#ffffff",
+          borderTopColor: "#e2e8f0",
           borderTopWidth: 0.5,
         },
         tabBarActiveTintColor: "#818cf8",

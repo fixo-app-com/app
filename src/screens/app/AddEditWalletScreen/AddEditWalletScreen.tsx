@@ -159,7 +159,7 @@ export default function AddEditWalletScreen() {
         >
           <BankIcon bankKey="" size={32} />
           <Text className="mt-1 text-[9px] text-gray-400" numberOfLines={1}>
-            Generic
+            Other
           </Text>
         </Pressable>
 

@@ -62,5 +62,4 @@ export interface UserSettings {
   currency: string; // ISO 4217 code, e.g. "EUR", "USD"
   monthlyBudgetCents?: number; // e.g. 250000 = €2,500.00
   emergencyMonths?: number; // slider value, default 6
-  pinnedBudgetMetric?: PinnedBudgetMetric;
 }

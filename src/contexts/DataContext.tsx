@@ -3,9 +3,9 @@ import React, {
   useCallback,
   useContext,
   useEffect,
-  useRef,
   useState,
 } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "./AuthContext";
 import type {
   Category,
@@ -14,6 +14,8 @@ import type {
   Wallet,
 } from "../types/firestore";
 import * as firestoreService from "../services/firestore";
+
+const PINNED_METRIC_KEY = "pinnedBudgetMetric";
 
 export type ViewMode = "monthly" | "yearly";
 
@@ -106,10 +108,17 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   // Emergency fund months
   const [emergencyMonths, setEmergencyMonthsState] = useState(6);
 
-  // Pinned budget metric
+  // Pinned budget metric (local-only, persisted via AsyncStorage)
   const [pinnedBudgetMetric, setPinnedBudgetMetricState] =
     useState<PinnedBudgetMetric>("budget");
-  const pendingPinnedRef = useRef<PinnedBudgetMetric | null>(null);
+
+  useEffect(() => {
+    AsyncStorage.getItem(PINNED_METRIC_KEY).then((value) => {
+      if (value === "budget" || value === "costs" || value === "available") {
+        setPinnedBudgetMetricState(value);
+      }
+    });
+  }, []);
 
   useEffect(() => {
     if (!user) {
@@ -168,13 +177,6 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         setCurrencyState(settings.currency);
         setMonthlyBudgetCentsState(settings.monthlyBudgetCents ?? 0);
         setEmergencyMonthsState(settings.emergencyMonths ?? 6);
-        const serverMetric = settings.pinnedBudgetMetric ?? "budget";
-        if (pendingPinnedRef.current === null) {
-          setPinnedBudgetMetricState(serverMetric);
-        } else if (pendingPinnedRef.current === serverMetric) {
-          // Server caught up with our optimistic write
-          pendingPinnedRef.current = null;
-        }
         settingsReady = true;
         checkReady();
       },
@@ -276,11 +278,8 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     // Pinned budget metric
     pinnedBudgetMetric,
     setPinnedBudgetMetric: async (metric) => {
-      pendingPinnedRef.current = metric;
       setPinnedBudgetMetricState(metric);
-      await firestoreService.updateUserSettings(userId, {
-        pinnedBudgetMetric: metric,
-      });
+      await AsyncStorage.setItem(PINNED_METRIC_KEY, metric);
     },
   };
 

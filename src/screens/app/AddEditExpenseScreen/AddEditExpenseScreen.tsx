@@ -35,13 +35,22 @@ export default function AddEditExpenseScreen() {
   const [amountText, setAmountText] = useState("");
   const [billingFrequency, setBillingFrequency] =
     useState<BillingFrequency>("monthly");
-  const [walletId, setWalletId] = useState("");
+  const [walletId, setWalletId] = useState(
+    wallets.length > 0 ? wallets[0].id : "",
+  );
   const [essential, setEssential] = useState(!isEditing);
   const [notes, setNotes] = useState("");
   const [saving, setSaving] = useState(false);
   const [loadingExpense, setLoadingExpense] = useState(isEditing);
 
   const { addExpense, updateExpense, deleteExpense } = useData();
+
+  // Auto-select first wallet when wallets become available (e.g. after creating one)
+  useEffect(() => {
+    if (!walletId && wallets.length > 0) {
+      setWalletId(wallets[0].id);
+    }
+  }, [wallets, walletId]);
 
   useEffect(() => {
     if (!isEditing || !user) return;
@@ -85,6 +94,22 @@ export default function AddEditExpenseScreen() {
     const amountCents = parseAmount(amountText);
     if (amountCents === null || amountCents <= 0) {
       Alert.alert("Error", "Please enter a valid amount.");
+      return;
+    }
+
+    if (!walletId) {
+      Alert.alert(
+        "Wallet required",
+        "You need at least one wallet to save an expense. Create one now?",
+        [
+          { text: "Cancel", style: "cancel" },
+          {
+            text: "Create wallet",
+            onPress: () =>
+              navigation.navigate("AddEditWallet", {}),
+          },
+        ],
+      );
       return;
     }
 
@@ -182,8 +207,13 @@ export default function AddEditExpenseScreen() {
       <SectionHeader title="Wallet" />
 
       {wallets.length === 0 ? (
-        <Text className="text-sm text-gray-400">
-          No wallets yet. Add one from the Wallets tab.
+        <Text
+          className="text-sm text-fixo-400"
+          onPress={() =>
+            navigation.navigate("AddEditWallet", {})
+          }
+        >
+          No wallets yet. Tap to create one.
         </Text>
       ) : (
         <ChipGroup
