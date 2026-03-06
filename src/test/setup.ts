@@ -138,6 +138,22 @@ jest.mock("@react-native-firebase/crashlytics", () => ({
   })),
 }));
 
+// Mock react-native-reanimated
+jest.mock("react-native-reanimated", () => ({
+  useSharedValue: (init: unknown) => ({ value: init }),
+  useAnimatedStyle: (fn: () => object) => fn(),
+  withTiming: (val: number) => val,
+  runOnJS: (fn: (...args: unknown[]) => void) => fn,
+  interpolate: jest.fn(),
+  default: { View: "Animated.View" },
+}));
+
+// Mock react-native-gesture-handler/ReanimatedSwipeable
+jest.mock("react-native-gesture-handler/ReanimatedSwipeable", () => ({
+  __esModule: true,
+  default: ({ children }: { children: React.ReactNode }) => children,
+}));
+
 // Mock react-native-screens
 jest.mock("react-native-screens", () => {
   const actual = jest.requireActual("react-native-screens");
