@@ -1,18 +1,18 @@
 import { Pressable, Text, View } from "react-native";
 
-type AuthFooterLinkProps = {
+type FooterLinkProps = {
   message: string;
   linkText: string;
   onPress: () => void;
   disabled?: boolean;
 };
 
-export function AuthFooterLink({
+export function FooterLink({
   message,
   linkText,
   onPress,
   disabled,
-}: AuthFooterLinkProps) {
+}: FooterLinkProps) {
   return (
     <View className="flex-row justify-center">
       <Text className="text-sm text-gray-400">{message}</Text>

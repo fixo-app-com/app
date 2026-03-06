@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react-native";
 import SettingsScreen from "./SettingsScreen";
+import { mockAuthContextDefaults } from "../../../test/mocks";
 
 jest.mock("expo-constants", () => ({
   __esModule: true,
@@ -8,6 +9,7 @@ jest.mock("expo-constants", () => ({
 
 jest.mock("../../../contexts/AuthContext", () => ({
   useAuth: () => ({
+    ...mockAuthContextDefaults,
     user: { email: "test@example.com", uid: "test-uid" },
   }),
 }));

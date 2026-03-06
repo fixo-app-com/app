@@ -18,8 +18,8 @@ import {
   getFirebaseAuthErrorMessage,
 } from "../../../services/auth";
 import { ENABLE_SOCIAL_LOGIN } from "../../../constants/features";
-import { Button, Input } from "../../../design-system";
-import { AuthFooterLink, SocialLoginButtons } from "../../../components";
+import { Button, FooterLink, Input } from "../../../design-system";
+import { SocialLoginButtons } from "../../../components";
 import { useSocialAuth } from "../../../hooks/useSocialAuth";
 import splashIcon from "../../../../assets/splash-icon.png";
 
@@ -155,7 +155,7 @@ export default function SignInScreen({ navigation, route }: Props) {
         )}
 
         {/* Sign up link */}
-        <AuthFooterLink
+        <FooterLink
           message={t("auth.noAccount")}
           linkText={t("auth.signUp")}
           onPress={() => navigation.navigate("SignUp")}

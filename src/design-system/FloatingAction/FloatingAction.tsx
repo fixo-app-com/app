@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { Button } from "../../design-system";
+import { Button } from "../Button/Button";
 
 interface FloatingActionProps {
   label: string;

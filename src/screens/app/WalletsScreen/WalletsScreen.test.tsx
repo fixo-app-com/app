@@ -1,11 +1,10 @@
 import { render, screen, waitFor } from "@testing-library/react-native";
 import WalletsScreen from "./WalletsScreen";
+import { mockWallets } from "../../../test/fixtures";
+import { mockCreateNavigation, mockDataContextDefaults } from "../../../test/mocks";
 
 jest.mock("@react-navigation/native", () => ({
-  useNavigation: () => ({
-    navigate: jest.fn(),
-    addListener: jest.fn(() => jest.fn()),
-  }),
+  useNavigation: () => mockCreateNavigation(),
 }));
 
 jest.mock("../../../contexts/AuthContext", () => ({
@@ -14,22 +13,9 @@ jest.mock("../../../contexts/AuthContext", () => ({
 
 jest.mock("../../../contexts/DataContext", () => ({
   useData: () => ({
-    wallets: [
-      {
-        id: "w1",
-        name: "Intesa Sanpaolo",
-        icon: "intesa-sanpaolo",
-        createdAt: new Date(),
-      },
-      { id: "w2", name: "Revolut", icon: "revolut", createdAt: new Date() },
-    ],
-    currency: "EUR",
-    viewMode: "monthly",
-    setViewMode: jest.fn(),
-    deleteWallet: jest.fn(),
+    ...mockDataContextDefaults,
+    wallets: mockWallets,
     expenses: [],
-    expensesLoading: false,
-    ensureExpenses: jest.fn(),
   }),
 }));
 

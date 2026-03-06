@@ -1,10 +1,10 @@
 import { fireEvent, render, screen } from "@testing-library/react-native";
-import { AuthFooterLink } from "./AuthFooterLink";
+import { FooterLink } from "./FooterLink";
 
-describe("AuthFooterLink", () => {
+describe("FooterLink", () => {
   it("renders message and link text", () => {
     render(
-      <AuthFooterLink
+      <FooterLink
         message="Don't have an account? "
         linkText="Sign Up"
         onPress={jest.fn()}
@@ -17,7 +17,7 @@ describe("AuthFooterLink", () => {
   it("calls onPress when link is pressed", () => {
     const onPress = jest.fn();
     render(
-      <AuthFooterLink
+      <FooterLink
         message="Already have an account? "
         linkText="Sign In"
         onPress={onPress}
@@ -30,7 +30,7 @@ describe("AuthFooterLink", () => {
   it("does not call onPress when disabled", () => {
     const onPress = jest.fn();
     render(
-      <AuthFooterLink
+      <FooterLink
         message="Already have an account? "
         linkText="Sign In"
         onPress={onPress}

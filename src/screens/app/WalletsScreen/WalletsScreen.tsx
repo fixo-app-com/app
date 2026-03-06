@@ -1,10 +1,9 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useData } from "../../../contexts/DataContext";
-import type { ViewMode } from "../../../contexts/DataContext";
 import type { WalletsStackParamList } from "../../../navigation/RootNavigator";
 import {
   roundToUnit,
@@ -12,16 +11,15 @@ import {
   type Wallet,
 } from "../../../types/firestore";
 import {
-  ChipGroup,
   EmptyState,
+  FloatingAction,
   ScreenWrapper,
   SortBottomSheet,
   SortTrigger,
 } from "../../../design-system";
-import { FloatingAction, WalletCard } from "../../../components";
+import { ViewModeToggle, WalletCard } from "../../../components";
 import { useExpenses } from "../../../hooks/useExpenses";
-import { useSortPreferences } from "../../../hooks/useSortPreferences";
-import { getSortLabelKey } from "../../../constants/sort";
+import { useSortSheet } from "../../../hooks/useSortSheet";
 import { makeSortComparator } from "../../../utils/sort";
 
 type Nav = NativeStackNavigationProp<WalletsStackParamList>;
@@ -32,8 +30,7 @@ export default function WalletsScreen() {
   const { wallets, viewMode, setViewMode } = useData();
 
   const { expenses, loading: loadingExpenses } = useExpenses();
-  const { sortPrefs, setSortFor } = useSortPreferences();
-  const [sortSheetOpen, setSortSheetOpen] = useState(false);
+  const sort = useSortSheet("wallets");
 
   function getWalletTotal(walletId: string): number {
     return roundToUnit(
@@ -49,18 +46,10 @@ export default function WalletsScreen() {
 
       {/* Monthly / Yearly toggle + sort */}
       <View className="flex-row items-center justify-between">
-        <ChipGroup
-          options={[
-            { value: "monthly" as ViewMode, label: t("common.monthly") },
-            { value: "yearly" as ViewMode, label: t("common.yearly") },
-          ]}
-          selected={viewMode}
-          onSelect={setViewMode}
-          compact
-        />
+        <ViewModeToggle selected={viewMode} onSelect={setViewMode} />
         <SortTrigger
-          label={t(getSortLabelKey(sortPrefs.wallets))}
-          onPress={() => setSortSheetOpen(true)}
+          label={sort.triggerLabel}
+          onPress={sort.open}
         />
       </View>
     </>
@@ -68,13 +57,13 @@ export default function WalletsScreen() {
 
   const sortedWallets = useMemo(() => {
     const comparator = makeSortComparator<Wallet>(
-      sortPrefs.wallets,
+      sort.selected,
       (w) => getWalletTotal(w.id),
       (w) => w.createdAt,
     );
     return [...wallets].sort(comparator);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wallets, sortPrefs.wallets, expenses, viewMode]);
+  }, [wallets, sort.selected, expenses, viewMode]);
 
   return (
     <ScreenWrapper header={headerContent}>
@@ -112,10 +101,12 @@ export default function WalletsScreen() {
       />
 
       <SortBottomSheet
-        visible={sortSheetOpen}
-        selected={sortPrefs.wallets}
-        onSelect={(opt) => setSortFor("wallets", opt)}
-        onClose={() => setSortSheetOpen(false)}
+        visible={sort.isOpen}
+        title={sort.title}
+        options={sort.options}
+        selected={sort.selected}
+        onSelect={sort.select}
+        onClose={sort.close}
       />
     </ScreenWrapper>
   );

@@ -1,15 +1,13 @@
 import { render, screen, fireEvent } from "@testing-library/react-native";
 import AddEditCategoryScreen from "./AddEditCategoryScreen";
+import { mockCreateNavigation, mockDataContextDefaults } from "../../../test/mocks";
 
 const mockGoBack = jest.fn();
-const mockRouteParams = {};
 
 jest.mock("@react-navigation/native", () => ({
-  useNavigation: () => ({
-    goBack: mockGoBack,
-  }),
+  useNavigation: () => mockCreateNavigation({ goBack: mockGoBack }),
   useRoute: () => ({
-    params: mockRouteParams,
+    params: {},
   }),
 }));
 
@@ -21,10 +19,9 @@ const mockAddCategory = jest.fn(() => Promise.resolve("new-id"));
 const mockUpdateCategory = jest.fn(() => Promise.resolve());
 jest.mock("../../../contexts/DataContext", () => ({
   useData: () => ({
+    ...mockDataContextDefaults,
     addCategory: mockAddCategory,
     updateCategory: mockUpdateCategory,
-    deleteCategory: jest.fn(),
-    deleteExpensesByCategory: jest.fn(),
   }),
 }));
 

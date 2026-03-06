@@ -12,10 +12,11 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useData } from "../../../contexts/DataContext";
 import type { WalletsStackParamList } from "../../../navigation/RootNavigator";
 import { BANKS } from "../../../constants/banks";
+import { useDeleteConfirmation } from "../../../hooks/useDeleteConfirmation";
 import { BankIcon } from "../../../components";
 import {
-  Button,
   Input,
+  SaveDeleteFooter,
   ScreenHeader,
   ScreenWrapper,
   SectionHeader,
@@ -35,6 +36,7 @@ export default function AddEditWalletScreen() {
   const route = useRoute<Route>();
   const { walletId, walletName, walletIcon } = route.params;
   const { addWallet, updateWallet, deleteWallet } = useData();
+  const { confirmDelete } = useDeleteConfirmation();
   const { width: screenWidth } = useWindowDimensions();
 
   const isEditing = !!walletId;
@@ -111,24 +113,21 @@ export default function AddEditWalletScreen() {
     }
   }
 
-  async function handleDelete() {
+  function handleDelete() {
     if (!walletId) return;
 
-    Alert.alert(t("addEditWallet.deleteTitle"), t("addEditWallet.deleteMessage", { name }), [
-      { text: t("common.cancel"), style: "cancel" },
-      {
-        text: t("common.delete"),
-        style: "destructive",
-        onPress: async () => {
-          try {
-            await deleteWallet(walletId);
-            navigation.popTo("Wallets");
-          } catch (error) {
-            if (__DEV__) console.error("Failed to delete wallet:", error);
-          }
-        },
+    confirmDelete({
+      title: t("addEditWallet.deleteTitle"),
+      message: t("addEditWallet.deleteMessage", { name }),
+      onConfirm: async () => {
+        try {
+          await deleteWallet(walletId);
+          navigation.popTo("Wallets");
+        } catch (error) {
+          if (__DEV__) console.error("Failed to delete wallet:", error);
+        }
       },
-    ]);
+    });
   }
 
   const headerContent = (
@@ -193,23 +192,13 @@ export default function AddEditWalletScreen() {
 
       <View className="flex-1" />
 
-      <View className="mt-6 pb-4">
-        <Button
-          label={isEditing ? t("addEditWallet.saveChanges") : t("addEditWallet.saveWallet")}
-          onPress={handleSave}
-          loading={saving}
-        />
-
-        {isEditing && !hasExpenses && (
-          <View className="mt-3">
-            <Button
-              label={t("addEditWallet.deleteWallet")}
-              variant="destructive"
-              onPress={handleDelete}
-            />
-          </View>
-        )}
-      </View>
+      <SaveDeleteFooter
+        saveLabel={isEditing ? t("addEditWallet.saveChanges") : t("addEditWallet.saveWallet")}
+        onSave={handleSave}
+        saving={saving}
+        deleteLabel={isEditing && !hasExpenses ? t("addEditWallet.deleteWallet") : undefined}
+        onDelete={isEditing && !hasExpenses ? handleDelete : undefined}
+      />
     </ScreenWrapper>
   );
 }

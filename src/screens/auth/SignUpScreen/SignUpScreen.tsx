@@ -15,8 +15,8 @@ import {
   getFirebaseAuthErrorMessage,
 } from "../../../services/auth";
 import { ENABLE_SOCIAL_LOGIN } from "../../../constants/features";
-import { Button, Input } from "../../../design-system";
-import { AuthFooterLink, SocialLoginButtons } from "../../../components";
+import { Button, FooterLink, Input } from "../../../design-system";
+import { SocialLoginButtons } from "../../../components";
 import { useSocialAuth } from "../../../hooks/useSocialAuth";
 import splashIcon from "../../../../assets/splash-icon.png";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -168,7 +168,7 @@ export default function SignUpScreen({ navigation }: Props) {
         )}
 
         {/* Sign in link */}
-        <AuthFooterLink
+        <FooterLink
           message={t("auth.hasAccount")}
           linkText={t("auth.signIn")}
           onPress={() => navigation.navigate("SignIn")}

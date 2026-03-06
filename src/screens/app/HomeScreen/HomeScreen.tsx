@@ -5,7 +5,6 @@ import {
   FlatList,
   NativeScrollEvent,
   NativeSyntheticEvent,
-  Pressable,
   ScrollView,
   Text,
   useWindowDimensions,
@@ -14,16 +13,13 @@ import {
 import { useTranslation } from "react-i18next";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { useData } from "../../../contexts/DataContext";
 import type { HomeStackParamList } from "../../../navigation/RootNavigator";
 import { roundToUnit, getDisplayAmountCents } from "../../../types/firestore";
-import type { Category, PinnedBudgetMetric } from "../../../types/firestore";
-import type { ViewMode } from "../../../contexts/DataContext";
+import type { Category } from "../../../types/firestore";
 import {
-  Card,
-  ChipGroup,
   EmptyState,
+  FloatingAction,
   FullScreenLoader,
   ScreenWrapper,
   SortBottomSheet,
@@ -31,259 +27,16 @@ import {
 } from "../../../design-system";
 import {
   CategoryCard,
-  CurrencyText,
-  FloatingAction,
+  ViewModeToggle,
 } from "../../../components";
 import { useExpenses } from "../../../hooks/useExpenses";
-import { useSortPreferences } from "../../../hooks/useSortPreferences";
-import { getSortLabelKey } from "../../../constants/sort";
+import { useSortSheet } from "../../../hooks/useSortSheet";
 import { makeSortComparator } from "../../../utils/sort";
+import { BudgetCard } from "./BudgetCard";
+import { BudgetChartCard } from "./BudgetChartCard";
+import { DotIndicators } from "./DotIndicators";
 
 type Nav = NativeStackNavigationProp<HomeStackParamList, "Home">;
-
-/* ---------- Metric helpers ---------- */
-
-type MetricDef = {
-  key: PinnedBudgetMetric;
-  label: string;
-  cents: number;
-  colorClass: string;
-};
-
-function BudgetCard({
-  hasBudget,
-  isYearly,
-  budgetDisplayCents,
-  totalCents,
-  availableCents,
-  pinnedMetric,
-  onPin,
-  onBudgetEdit,
-}: {
-  hasBudget: boolean;
-  isYearly: boolean;
-  budgetDisplayCents: number;
-  totalCents: number;
-  availableCents: number;
-  pinnedMetric: PinnedBudgetMetric;
-  onPin: (m: PinnedBudgetMetric) => void;
-  onBudgetEdit: () => void;
-}) {
-  const { t } = useTranslation();
-
-  const metrics: MetricDef[] = [
-    {
-      key: "budget",
-      label: isYearly ? t("home.yearlyBudget") : t("home.monthlyBudget"),
-      cents: budgetDisplayCents,
-      colorClass: "text-gray-900",
-    },
-    {
-      key: "costs",
-      label: t("home.totalCosts"),
-      cents: totalCents,
-      colorClass: "text-red-500",
-    },
-    {
-      key: "available",
-      label: t("home.leftover"),
-      cents: availableCents,
-      colorClass: availableCents >= 0 ? "text-emerald-600" : "text-red-500",
-    },
-  ];
-
-  if (!hasBudget) {
-    return (
-      <Card>
-        <Pressable
-          onPress={onBudgetEdit}
-          className="flex-row items-center justify-center py-2"
-        >
-          <Text className="text-sm font-medium text-gray-500">
-            {isYearly ? t("home.setYearlyBudget") : t("home.setMonthlyBudget")}
-          </Text>
-          <Ionicons
-            name="create-outline"
-            size={18}
-            color="#6b7280"
-            style={{ marginLeft: 6 }}
-          />
-        </Pressable>
-        <CurrencyText
-          cents={totalCents}
-          className="text-center text-3xl font-bold text-gray-900"
-        />
-      </Card>
-    );
-  }
-
-  const hero = metrics.find((m) => m.key === pinnedMetric) ?? metrics[0];
-  const secondary = metrics.filter((m) => m.key !== pinnedMetric);
-  const isHeroBudget = hero.key === "budget";
-
-  return (
-    <Card>
-      <SlideContent>
-        {/* Hero metric */}
-        <Pressable
-          onPress={isHeroBudget ? onBudgetEdit : undefined}
-          className="items-center py-1"
-          testID="hero-metric"
-        >
-          <View className="flex-row items-center">
-            <Text className="text-xs font-medium uppercase tracking-wide text-gray-400">
-              {hero.label}
-            </Text>
-            {isHeroBudget && (
-              <Ionicons
-                name="create-outline"
-                size={14}
-                color="#9ca3af"
-                style={{ marginLeft: 4 }}
-              />
-            )}
-          </View>
-          <CurrencyText
-            cents={hero.cents}
-            className={`mt-1 text-3xl font-bold ${hero.colorClass}`}
-            hideDecimals
-          />
-        </Pressable>
-
-        {/* Secondary metrics row — tap always pins */}
-        <View className="flex-row gap-3">
-          {secondary.map((m) => (
-            <Pressable
-              key={m.key}
-              onPress={() => onPin(m.key)}
-              className="flex-1 items-center rounded-xl bg-gray-50 p-3"
-              testID={`secondary-${m.key}`}
-            >
-              <Text className="text-xs font-medium text-gray-400">
-                {m.label}
-              </Text>
-              <CurrencyText
-                cents={m.cents}
-                className={`mt-0.5 text-base font-semibold ${m.colorClass}`}
-                hideDecimals
-              />
-            </Pressable>
-          ))}
-        </View>
-      </SlideContent>
-    </Card>
-  );
-}
-
-/* ---------- Slide Content Wrapper ---------- */
-
-const SLIDE_MIN_HEIGHT = 125;
-
-function SlideContent({ children }: { children: React.ReactNode }) {
-  return (
-    <View
-      style={{
-        minHeight: SLIDE_MIN_HEIGHT,
-        justifyContent: "space-between",
-      }}
-    >
-      {children}
-    </View>
-  );
-}
-
-/* ---------- Budget Chart Card ---------- */
-
-function BudgetChartCard({
-  isYearly,
-  budgetDisplayCents,
-  totalCents,
-  availableCents,
-}: {
-  isYearly: boolean;
-  budgetDisplayCents: number;
-  totalCents: number;
-  availableCents: number;
-}) {
-  const { t } = useTranslation();
-  const ratio = budgetDisplayCents > 0 ? totalCents / budgetDisplayCents : 0;
-  const pct = Math.round(ratio * 100);
-  const barWidth = Math.min(pct, 100);
-  const barColor =
-    pct <= 50 ? "bg-emerald-500" : pct <= 80 ? "bg-yellow-400" : "bg-red-500";
-
-  return (
-    <Card testID="budget-chart-card">
-      <SlideContent>
-        {/* Header: budget label + amount */}
-        <View className="flex-row items-center justify-between">
-          <Text className="text-xs font-medium uppercase tracking-wide text-gray-400">
-            {isYearly ? t("home.yearlyBudget") : t("home.monthlyBudget")}
-          </Text>
-          <CurrencyText
-            cents={budgetDisplayCents}
-            className="text-sm font-semibold text-gray-900"
-            hideDecimals
-          />
-        </View>
-
-        {/* Progress bar + percentage */}
-        <View>
-          <View className="h-4 overflow-hidden rounded-full bg-gray-200">
-            <View
-              className={`h-4 rounded-full ${barColor}`}
-              style={{ width: `${barWidth}%` }}
-              testID="budget-bar-fill"
-            />
-          </View>
-          <Text className="mt-2 text-center text-sm font-semibold text-gray-700">
-            {t("home.pctUsed", { pct })}
-          </Text>
-        </View>
-
-        {/* Costs / Leftover row */}
-        <View className="flex-row justify-between">
-          <View>
-            <Text className="text-xs font-medium text-gray-400">
-              {t("home.totalCosts")}
-            </Text>
-            <CurrencyText
-              cents={totalCents}
-              className="mt-0.5 text-sm font-semibold text-red-500"
-              hideDecimals
-            />
-          </View>
-          <View className="items-end">
-            <Text className="text-xs font-medium text-gray-400">{t("home.leftover")}</Text>
-            <CurrencyText
-              cents={availableCents}
-              className={`mt-0.5 text-sm font-semibold ${availableCents >= 0 ? "text-emerald-600" : "text-red-500"}`}
-              hideDecimals
-            />
-          </View>
-        </View>
-      </SlideContent>
-    </Card>
-  );
-}
-
-/* ---------- Dot Indicators ---------- */
-
-function DotIndicators({ count, active }: { count: number; active: number }) {
-  return (
-    <View
-      className="mt-2 flex-row items-center justify-center gap-2"
-      testID="dot-indicators"
-    >
-      {Array.from({ length: count }, (_, i) => (
-        <View
-          key={i}
-          className={`h-2 w-2 rounded-full ${i === active ? "bg-gray-800" : "bg-gray-300"}`}
-        />
-      ))}
-    </View>
-  );
-}
 
 export default function HomeScreen() {
   const { t } = useTranslation();
@@ -300,18 +53,17 @@ export default function HomeScreen() {
   } = useData();
 
   const { expenses, loading: loadingExpenses } = useExpenses();
-  const { sortPrefs, setSortFor } = useSortPreferences();
-  const [sortSheetOpen, setSortSheetOpen] = useState(false);
+  const sort = useSortSheet("categories");
 
   const sortedCategories = useMemo(() => {
     const comparator = makeSortComparator<Category>(
-      sortPrefs.categories,
+      sort.selected,
       (c) => getCategoryTotal(c.id),
       (c) => c.createdAt,
     );
     return [...categories].sort(comparator);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [categories, sortPrefs.categories, expenses, viewMode]);
+  }, [categories, sort.selected, expenses, viewMode]);
 
   const isYearly = viewMode === "yearly";
 
@@ -368,7 +120,7 @@ export default function HomeScreen() {
   }
 
   const { width: screenWidth } = useWindowDimensions();
-  const pageWidth = screenWidth; // each page = full screen width
+  const pageWidth = screenWidth;
   const [activePage, setActivePage] = useState(0);
 
   const handleScroll = useCallback(
@@ -387,16 +139,7 @@ export default function HomeScreen() {
     <>
       <Text className="mb-4 text-3xl font-bold text-gray-900">{t("home.title")}</Text>
 
-      {/* Monthly / Yearly toggle */}
-      <ChipGroup
-        options={[
-          { value: "monthly" as ViewMode, label: t("common.monthly") },
-          { value: "yearly" as ViewMode, label: t("common.yearly") },
-        ]}
-        selected={viewMode}
-        onSelect={setViewMode}
-        compact
-      />
+      <ViewModeToggle selected={viewMode} onSelect={setViewMode} />
 
       {hasBudget ? (
         <>
@@ -451,10 +194,7 @@ export default function HomeScreen() {
       )}
 
       <View className="mb-2 flex-row justify-end">
-        <SortTrigger
-          label={t(getSortLabelKey(sortPrefs.categories))}
-          onPress={() => setSortSheetOpen(true)}
-        />
+        <SortTrigger label={sort.triggerLabel} onPress={sort.open} />
       </View>
     </>
   );
@@ -495,10 +235,12 @@ export default function HomeScreen() {
       />
 
       <SortBottomSheet
-        visible={sortSheetOpen}
-        selected={sortPrefs.categories}
-        onSelect={(opt) => setSortFor("categories", opt)}
-        onClose={() => setSortSheetOpen(false)}
+        visible={sort.isOpen}
+        title={sort.title}
+        options={sort.options}
+        selected={sort.selected}
+        onSelect={sort.select}
+        onClose={sort.close}
       />
     </ScreenWrapper>
   );

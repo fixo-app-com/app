@@ -6,10 +6,11 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useData } from "../../../contexts/DataContext";
 import type { HomeStackParamList } from "../../../navigation/RootNavigator";
+import { useDeleteConfirmation } from "../../../hooks/useDeleteConfirmation";
 import {
-  Button,
   ChipGroup,
   Input,
+  SaveDeleteFooter,
   ScreenHeader,
   ScreenWrapper,
   SectionHeader,
@@ -73,6 +74,7 @@ export default function AddEditCategoryScreen() {
   const { user } = useAuth();
   const { addCategory, updateCategory, deleteCategory, deleteExpensesByCategory } =
     useData();
+  const { confirmDelete } = useDeleteConfirmation();
 
   const isEditing = !!categoryId;
 
@@ -80,29 +82,22 @@ export default function AddEditCategoryScreen() {
   const [icon, setIcon] = useState(categoryIcon ?? "\u{1F4E6}");
   const [saving, setSaving] = useState(false);
 
-  async function handleDelete() {
+  function handleDelete() {
     if (!categoryId || !user) return;
 
-    Alert.alert(
-      t("addEditCategory.deleteTitle"),
-      t("addEditCategory.deleteMessage", { name }),
-      [
-        { text: t("common.cancel"), style: "cancel" },
-        {
-          text: t("common.delete"),
-          style: "destructive",
-          onPress: async () => {
-            try {
-              await deleteExpensesByCategory(categoryId);
-              await deleteCategory(categoryId);
-              navigation.popTo("Home");
-            } catch (error) {
-              if (__DEV__) console.error("Failed to delete category:", error);
-            }
-          },
-        },
-      ],
-    );
+    confirmDelete({
+      title: t("addEditCategory.deleteTitle"),
+      message: t("addEditCategory.deleteMessage", { name }),
+      onConfirm: async () => {
+        try {
+          await deleteExpensesByCategory(categoryId);
+          await deleteCategory(categoryId);
+          navigation.popTo("Home");
+        } catch (error) {
+          if (__DEV__) console.error("Failed to delete category:", error);
+        }
+      },
+    });
   }
 
   async function handleSave() {
@@ -155,23 +150,13 @@ export default function AddEditCategoryScreen() {
 
       <View className="flex-1" />
 
-      <View className="mt-8 pb-4">
-        <Button
-          label={isEditing ? t("addEditCategory.saveChanges") : t("addEditCategory.saveCategory")}
-          onPress={handleSave}
-          loading={saving}
-        />
-
-        {isEditing && (
-          <View className="mt-3">
-            <Button
-              label={t("addEditCategory.deleteCategory")}
-              variant="destructive"
-              onPress={handleDelete}
-            />
-          </View>
-        )}
-      </View>
+      <SaveDeleteFooter
+        saveLabel={isEditing ? t("addEditCategory.saveChanges") : t("addEditCategory.saveCategory")}
+        onSave={handleSave}
+        saving={saving}
+        deleteLabel={isEditing ? t("addEditCategory.deleteCategory") : undefined}
+        onDelete={isEditing ? handleDelete : undefined}
+      />
     </ScreenWrapper>
   );
 }

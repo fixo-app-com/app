@@ -1,22 +1,12 @@
-import { useState } from "react";
-import { Pressable, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useData } from "../../../contexts/DataContext";
 import type { HomeStackParamList } from "../../../navigation/RootNavigator";
 import { roundToUnit, getDisplayAmountCents } from "../../../types/firestore";
-import {
-  ScreenHeader,
-  ScreenWrapper,
-  SortBottomSheet,
-  SortTrigger,
-} from "../../../design-system";
-import { CurrencyText, ExpenseList, FloatingAction } from "../../../components";
 import { useExpenses } from "../../../hooks/useExpenses";
-import { useSortPreferences } from "../../../hooks/useSortPreferences";
-import { getSortLabelKey } from "../../../constants/sort";
+import { useSortSheet } from "../../../hooks/useSortSheet";
+import { EntityDetailScreen } from "../shared/EntityDetailScreen";
 
 type Nav = NativeStackNavigationProp<HomeStackParamList, "CategoryDetail">;
 type Route = RouteProp<HomeStackParamList, "CategoryDetail">;
@@ -31,93 +21,35 @@ export default function CategoryDetailScreen() {
   const category = categories.find((c) => c.id === categoryId);
   const categoryName = category?.name ?? route.params.categoryName;
 
-  const { sortPrefs, setSortFor } = useSortPreferences();
-  const [sortSheetOpen, setSortSheetOpen] = useState(false);
-
-  const { expenses, loading } = useExpenses({
-    categoryId,
-    sort: sortPrefs.expenses,
-  });
+  const sort = useSortSheet("expenses");
+  const { expenses, loading } = useExpenses({ categoryId, sort: sort.selected });
 
   const totalCents = roundToUnit(
     expenses.reduce((sum, e) => sum + getDisplayAmountCents(e, viewMode), 0),
   );
 
-  const headerContent = (
-    <>
-      <ScreenHeader
-        title={category?.name ?? categoryName}
-        onBack={() => navigation.goBack()}
-        right={
-          <Pressable
-            onPress={() =>
-              navigation.navigate("AddEditCategory", {
-                categoryId,
-                categoryName: category?.name ?? categoryName,
-                categoryIcon: category?.icon,
-              })
-            }
-            className="items-center justify-center"
-            style={({ pressed }) => ({
-              opacity: pressed ? 0.6 : 1,
-              width: 44,
-              height: 44,
-            })}
-            hitSlop={8}
-          >
-            <Ionicons name="create-outline" size={22} color="#6b7280" />
-          </Pressable>
-        }
-      />
-
-      {/* Summary + sort */}
-      <View className="mb-4 flex-row items-center justify-between">
-        <Text className="text-sm text-gray-500">
-          {viewMode === "yearly" ? t("categoryDetail.yearlyPrefix") : t("categoryDetail.monthlyPrefix")}{" "}
-          <CurrencyText
-            cents={totalCents}
-            className="text-sm font-semibold text-fixo-400"
-          />
-        </Text>
-        <SortTrigger
-          label={t(getSortLabelKey(sortPrefs.expenses))}
-          onPress={() => setSortSheetOpen(true)}
-        />
-      </View>
-    </>
-  );
-
   return (
-    <ScreenWrapper header={headerContent}>
-      <ExpenseList
-        expenses={expenses}
-        loading={loading}
-        emptyMessage={t("categoryDetail.noExpenses")}
-        getSubtitle={(e) => wallets.find((w) => w.id === e.walletId)?.name ?? "\u2014"}
-        onPress={(e) =>
-          navigation.navigate("AddEditExpense", {
-            categoryId,
-            expenseId: e.id,
-          })
-        }
-        onDelete={(id) => deleteExpense(id)}
-      />
-
-      <FloatingAction
-        label={t("categoryDetail.addExpense")}
-        onPress={() =>
-          navigation.navigate("AddEditExpense", {
-            categoryId,
-          })
-        }
-      />
-
-      <SortBottomSheet
-        visible={sortSheetOpen}
-        selected={sortPrefs.expenses}
-        onSelect={(opt) => setSortFor("expenses", opt)}
-        onClose={() => setSortSheetOpen(false)}
-      />
-    </ScreenWrapper>
+    <EntityDetailScreen
+      title={categoryName}
+      onBack={() => navigation.goBack()}
+      onEdit={() =>
+        navigation.navigate("AddEditCategory", {
+          categoryId,
+          categoryName,
+          categoryIcon: category?.icon,
+        })
+      }
+      summaryPrefix={viewMode === "yearly" ? t("categoryDetail.yearlyPrefix") : t("categoryDetail.monthlyPrefix")}
+      totalCents={totalCents}
+      sort={sort}
+      expenses={expenses}
+      loading={loading}
+      emptyMessage={t("categoryDetail.noExpenses")}
+      getSubtitle={(e) => wallets.find((w) => w.id === e.walletId)?.name ?? "\u2014"}
+      onExpensePress={(e) => navigation.navigate("AddEditExpense", { categoryId, expenseId: e.id })}
+      onExpenseDelete={(id) => deleteExpense(id)}
+      addLabel={t("categoryDetail.addExpense")}
+      onAdd={() => navigation.navigate("AddEditExpense", { categoryId })}
+    />
   );
 }

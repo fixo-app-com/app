@@ -1,61 +1,20 @@
 import { render, screen, waitFor } from "@testing-library/react-native";
 import EmergencyFundScreen from "./EmergencyFundScreen";
+import { mockExpenses } from "../../../test/fixtures";
+import { mockCreateNavigation, mockDataContextDefaults } from "../../../test/mocks";
 
 jest.mock("@react-navigation/native", () => ({
-  useNavigation: () => ({
-    navigate: jest.fn(),
-    addListener: jest.fn(() => jest.fn()),
-  }),
+  useNavigation: () => mockCreateNavigation(),
 }));
 
 jest.mock("../../../contexts/AuthContext", () => ({
   useAuth: () => ({ user: { uid: "test-uid" } }),
 }));
 
-const mockExpenses = [
-  {
-    id: "e1",
-    categoryId: "c1",
-    name: "Rent",
-    amountCents: 80000,
-    billingFrequency: "monthly",
-    walletId: "w1",
-    essential: true,
-    notes: "",
-    createdAt: new Date(),
-  },
-  {
-    id: "e2",
-    categoryId: "c1",
-    name: "Netflix",
-    amountCents: 1599,
-    billingFrequency: "monthly",
-    walletId: "w1",
-    essential: false,
-    notes: "",
-    createdAt: new Date(),
-  },
-  {
-    id: "e3",
-    categoryId: "c2",
-    name: "Insurance",
-    amountCents: 120000,
-    billingFrequency: "yearly",
-    walletId: "w1",
-    essential: true,
-    notes: "",
-    createdAt: new Date(),
-  },
-];
-
 const mockDataContext = {
-  currency: "EUR",
-  emergencyMonths: 6,
-  setEmergencyMonths: jest.fn(),
+  ...mockDataContextDefaults,
   expenses: mockExpenses,
-  expensesLoading: false,
-  ensureExpenses: jest.fn(),
-  wallets: [{ id: "w1", name: "Main Account" }],
+  wallets: [{ id: "w1", name: "Main Account", icon: "intesa-sanpaolo", createdAt: new Date() }],
 };
 
 jest.mock("../../../contexts/DataContext", () => ({
@@ -108,7 +67,7 @@ describe("EmergencyFundScreen", () => {
         categoryId: "c1",
         name: "Netflix",
         amountCents: 1599,
-        billingFrequency: "monthly",
+        billingFrequency: "monthly" as const,
         walletId: "w1",
         essential: false,
         notes: "",

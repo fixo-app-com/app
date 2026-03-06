@@ -1,12 +1,10 @@
 import { render, screen, fireEvent } from "@testing-library/react-native";
 import AddEditWalletScreen from "./AddEditWalletScreen";
+import { mockCreateNavigation, mockDataContextDefaults } from "../../../test/mocks";
 
 const mockGoBack = jest.fn();
 jest.mock("@react-navigation/native", () => ({
-  useNavigation: () => ({
-    goBack: mockGoBack,
-    addListener: jest.fn(() => jest.fn()),
-  }),
+  useNavigation: () => mockCreateNavigation({ goBack: mockGoBack }),
   useRoute: () => ({
     params: {},
   }),
@@ -19,12 +17,9 @@ jest.mock("../../../contexts/AuthContext", () => ({
 const mockAddWallet = jest.fn(() => Promise.resolve("new-id"));
 jest.mock("../../../contexts/DataContext", () => ({
   useData: () => ({
+    ...mockDataContextDefaults,
     addWallet: mockAddWallet,
-    updateWallet: jest.fn(),
-    deleteWallet: jest.fn(),
     expenses: [],
-    expensesLoading: false,
-    ensureExpenses: jest.fn(),
   }),
 }));
 

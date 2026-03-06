@@ -1,10 +1,10 @@
 import { render, screen } from "@testing-library/react-native";
 import AddEditExpenseScreen from "./AddEditExpenseScreen";
+import { mockWallets } from "../../../test/fixtures";
+import { mockCreateNavigation, mockDataContextDefaults } from "../../../test/mocks";
 
 jest.mock("@react-navigation/native", () => ({
-  useNavigation: () => ({
-    goBack: jest.fn(),
-  }),
+  useNavigation: () => mockCreateNavigation(),
   useRoute: () => ({
     params: { categoryId: "cat1" },
   }),
@@ -16,18 +16,8 @@ jest.mock("../../../contexts/AuthContext", () => ({
 
 jest.mock("../../../contexts/DataContext", () => ({
   useData: () => ({
-    wallets: [
-      {
-        id: "w1",
-        name: "Intesa Sanpaolo",
-        icon: "intesa-sanpaolo",
-        createdAt: new Date(),
-      },
-    ],
-    currency: "EUR",
-    addExpense: jest.fn(),
-    updateExpense: jest.fn(),
-    deleteExpense: jest.fn(),
+    ...mockDataContextDefaults,
+    wallets: [mockWallets[0]],
   }),
 }));
 

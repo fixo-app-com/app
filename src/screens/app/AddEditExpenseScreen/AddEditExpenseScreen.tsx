@@ -6,6 +6,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useData } from "../../../contexts/DataContext";
 import { getExpenses } from "../../../services/firestore";
+import { useDeleteConfirmation } from "../../../hooks/useDeleteConfirmation";
 import type { HomeStackParamList } from "../../../navigation/RootNavigator";
 import type { BillingFrequency, Expense } from "../../../types/firestore";
 import { getCurrencySymbol } from "../../../constants/banks";
@@ -15,6 +16,7 @@ import {
   FormRow,
   FullScreenLoader,
   Input,
+  SaveDeleteFooter,
   ScreenHeader,
   ScreenWrapper,
   SectionHeader,
@@ -46,6 +48,7 @@ export default function AddEditExpenseScreen() {
   const [loadingExpense, setLoadingExpense] = useState(isEditing);
 
   const { addExpense, updateExpense, deleteExpense } = useData();
+  const { confirmDelete } = useDeleteConfirmation();
 
   // Auto-select first wallet when wallets become available (e.g. after creating one)
   useEffect(() => {
@@ -143,24 +146,21 @@ export default function AddEditExpenseScreen() {
     }
   }
 
-  async function handleDelete() {
+  function handleDelete() {
     if (!user || !expenseId) return;
 
-    Alert.alert(t("addEditExpense.deleteTitle"), t("addEditExpense.deleteMessage", { name }), [
-      { text: t("common.cancel"), style: "cancel" },
-      {
-        text: t("common.delete"),
-        style: "destructive",
-        onPress: async () => {
-          try {
-            await deleteExpense(expenseId);
-            navigation.goBack();
-          } catch (error) {
-            if (__DEV__) console.error("Failed to delete expense:", error);
-          }
-        },
+    confirmDelete({
+      title: t("addEditExpense.deleteTitle"),
+      message: t("addEditExpense.deleteMessage", { name }),
+      onConfirm: async () => {
+        try {
+          await deleteExpense(expenseId);
+          navigation.goBack();
+        } catch (error) {
+          if (__DEV__) console.error("Failed to delete expense:", error);
+        }
       },
-    ]);
+    });
   }
 
   if (loadingExpense) {
@@ -255,23 +255,13 @@ export default function AddEditExpenseScreen() {
 
       <View className="flex-1" />
 
-      <View className="mt-6 pb-4">
-        <Button
-          label={isEditing ? t("addEditExpense.saveChanges") : t("addEditExpense.saveExpense")}
-          onPress={handleSave}
-          loading={saving}
-        />
-
-        {isEditing && (
-          <View className="mt-3">
-            <Button
-              label={t("addEditExpense.deleteExpense")}
-              variant="destructive"
-              onPress={handleDelete}
-            />
-          </View>
-        )}
-      </View>
+      <SaveDeleteFooter
+        saveLabel={isEditing ? t("addEditExpense.saveChanges") : t("addEditExpense.saveExpense")}
+        onSave={handleSave}
+        saving={saving}
+        deleteLabel={isEditing ? t("addEditExpense.deleteExpense") : undefined}
+        onDelete={isEditing ? handleDelete : undefined}
+      />
     </ScreenWrapper>
   );
 }

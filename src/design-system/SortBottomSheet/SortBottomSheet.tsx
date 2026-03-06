@@ -1,25 +1,28 @@
 import { useCallback, useEffect, useRef } from "react";
 import { Pressable, Text, View } from "react-native";
-import { useTranslation } from "react-i18next";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { SORT_OPTIONS, type SortOption } from "../../constants/sort";
 import { BottomSheet } from "../BottomSheet/BottomSheet";
 
-type Props = {
+type Option<T extends string> = { value: T; label: string };
+
+type Props<T extends string> = {
   visible: boolean;
-  selected: SortOption;
-  onSelect: (option: SortOption) => void;
+  title: string;
+  options: Option<T>[];
+  selected: T;
+  onSelect: (option: T) => void;
   onClose: () => void;
 };
 
-export function SortBottomSheet({
+export function SortBottomSheet<T extends string>({
   visible,
+  title,
+  options,
   selected,
   onSelect,
   onClose,
-}: Props) {
-  const { t } = useTranslation();
+}: Props<T>) {
   const sheetRef = useRef<BottomSheetModal>(null);
 
   useEffect(() => {
@@ -31,7 +34,7 @@ export function SortBottomSheet({
   }, [visible]);
 
   const handleSelect = useCallback(
-    (option: SortOption) => {
+    (option: T) => {
       onSelect(option);
       onClose();
     },
@@ -41,12 +44,12 @@ export function SortBottomSheet({
   return (
     <BottomSheet
       ref={sheetRef}
-      title={t("sort.sortBy")}
+      title={title}
       snapPoints={["30%"]}
       onDismiss={onClose}
     >
       <View className="pb-6">
-        {SORT_OPTIONS.map((option) => {
+        {options.map((option) => {
           const isSelected = option.value === selected;
           return (
             <Pressable
@@ -60,7 +63,7 @@ export function SortBottomSheet({
               <Text
                 className={`text-base ${isSelected ? "font-semibold text-fixo-400" : "text-gray-700"}`}
               >
-                {t(option.labelKey)}
+                {option.label}
               </Text>
               {isSelected && (
                 <Ionicons name="checkmark" size={20} color="#818cf8" />

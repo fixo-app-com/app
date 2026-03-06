@@ -1,11 +1,11 @@
 import { render, screen } from "@testing-library/react-native";
 import VerifyEmailScreen from "./VerifyEmailScreen";
+import { mockAuthContextDefaults } from "../../../test/mocks";
 
-// Mock the AuthContext
 jest.mock("../../../contexts/AuthContext", () => ({
   useAuth: () => ({
+    ...mockAuthContextDefaults,
     user: { email: "test@example.com", emailVerified: false },
-    reloadUser: jest.fn(),
   }),
 }));
 
