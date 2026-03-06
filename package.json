@@ -5,8 +5,8 @@
   "scripts": {
     "start": "expo start --dev-client",
     "ios:dev": "expo run:ios",
-    "build:ios:prod:local": "npx expo run:ios --configuration Release",
     "ios:build": "expo prebuild --clean && expo run:ios",
+    "build:ios:prod:local": "npx expo run:ios --configuration Release",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx}\" \"App.tsx\"",
