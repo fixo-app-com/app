@@ -4,6 +4,7 @@
   "main": "index.ts",
   "scripts": {
     "start": "expo start --dev-client",
+    "build:ios:prod:local": "npx expo run:ios --configuration Release",
     "ios": "expo run:ios",
     "ios:build": "expo prebuild --clean && expo run:ios",
     "lint": "eslint .",
