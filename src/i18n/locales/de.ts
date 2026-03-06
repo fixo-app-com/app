@@ -190,7 +190,7 @@ const de = {
       "{{count}} Ausgaben \u00B7 {{monthlyCost}}/Mo \u00D7 {{months}} Mo",
     topExpenses: "Top-Ausgaben",
     recommendation:
-      "Die meisten Finanzberater empfehlen, 3 bis 6 Monate an wesentlichen Ausgaben zu sparen. Passe es an deine Arbeitsplatzsicherheit und deinen pers\u00F6nlichen Komfort an.",
+      "Die meisten Finanzberater empfehlen, mindestens 3 bis 6 Monate an wesentlichen Ausgaben f\u00FCr unvorhergesehene Ereignisse zu sparen. Passe es an deine Arbeitsplatzsicherheit und deinen pers\u00F6nlichen Komfort an.",
     essentialExpenses: "Wesentliche Ausgaben",
     months_one: "{{count}} Monat",
     months_other: "{{count}} Monate",

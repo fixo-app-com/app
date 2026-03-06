@@ -190,7 +190,7 @@ const fr = {
       "{{count}} d\u00E9penses \u00B7 {{monthlyCost}}/mois \u00D7 {{months}} mois",
     topExpenses: "D\u00E9penses principales",
     recommendation:
-      "La plupart des conseillers financiers recommandent d\u2019\u00E9pargner 3 \u00E0 6 mois de d\u00E9penses essentielles. Ajustez en fonction de la stabilit\u00E9 de votre emploi et de votre confort personnel.",
+      "La plupart des conseillers financiers recommandent d\u2019\u00E9pargner au moins 3 \u00E0 6 mois de d\u00E9penses essentielles pour les impr\u00E9vus. Ajustez en fonction de la stabilit\u00E9 de votre emploi et de votre confort personnel.",
     essentialExpenses: "D\u00E9penses essentielles",
     months_one: "{{count}} mois",
     months_other: "{{count}} mois",

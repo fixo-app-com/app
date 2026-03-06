@@ -187,7 +187,7 @@ const en = {
       "{{count}} expenses \u00B7 {{monthlyCost}}/mo \u00D7 {{months}} mo",
     topExpenses: "Top expenses",
     recommendation:
-      "Most financial advisors recommend saving 3 to 6 months of essential expenses. Adjust based on your job stability and personal comfort.",
+      "Most financial advisors recommend saving at least 3 to 6 months of essential expenses for unexpected events. Adjust based on your job stability and personal comfort.",
     essentialExpenses: "Essential expenses",
     months_one: "{{count}} month",
     months_other: "{{count}} months",

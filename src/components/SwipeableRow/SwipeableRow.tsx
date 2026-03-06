@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { useRef, useState } from "react";
-import { Alert, LayoutChangeEvent } from "react-native";
+import { Alert, LayoutChangeEvent, View } from "react-native";
 import ReanimatedSwipeable, {
   type SwipeableMethods,
 } from "react-native-gesture-handler/ReanimatedSwipeable";
@@ -51,6 +51,7 @@ export function SwipeableRow({
 }: SwipeableRowProps) {
   const swipeableRef = useRef<SwipeableMethods>(null);
   const [deleted, setDeleted] = useState(false);
+  const [dragging, setDragging] = useState(false);
 
   const rowHeight = useSharedValue<number>(-1);
   const opacity = useSharedValue(1);
@@ -83,6 +84,7 @@ export function SwipeableRow({
       await onDelete();
     } catch {
       setDeleted(false);
+      setDragging(false);
       opacity.value = withTiming(1, { duration: 250 });
       rowHeight.value = withTiming(rowHeight.value || 80, { duration: 300 });
       swipeableRef.current?.close();
@@ -96,13 +98,17 @@ export function SwipeableRow({
         ref={swipeableRef}
         renderRightActions={(_progress, drag) => <RightAction drag={drag} />}
         onSwipeableWillOpen={handleSwipeOpen}
+        onSwipeableOpenStartDrag={() => setDragging(true)}
+        onSwipeableClose={() => setDragging(false)}
         rightThreshold={100}
         overshootRight={true}
         overshootFriction={8}
         friction={2}
         enabled={!deleted}
       >
-        {children}
+        <View pointerEvents={dragging || deleted ? "none" : "auto"}>
+          {children}
+        </View>
       </ReanimatedSwipeable>
     </Animated.View>
   );

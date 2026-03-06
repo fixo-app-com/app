@@ -29,13 +29,11 @@ const it = {
     resetEmailSent:
       "Ti abbiamo inviato un\u2019email con un link per reimpostare la password. Controlla la tua casella di posta.",
     invalidCredentialTitle: "Email o password non validi",
-    invalidCredentialMessage:
-      "Controlla le tue credenziali e riprova.",
+    invalidCredentialMessage: "Controlla le tue credenziali e riprova.",
     tryAgain: "Riprova",
     resetPassword: "Reimposta password",
     emailSentTitle: "Email inviata",
-    emailSentMessage:
-      "Controlla la tua casella di posta per il link di reset.",
+    emailSentMessage: "Controlla la tua casella di posta per il link di reset.",
     linkGoogleBanner:
       "Accedi con la tua password per collegare il tuo account Google.",
     googleLinkedSuccess: "Account Google collegato con successo!",
@@ -64,8 +62,7 @@ const it = {
     notVerifiedTitle: "Non ancora verificata",
     notVerifiedMessage:
       "La tua email non \u00E8 ancora verificata. Controlla la casella di posta o la cartella spam e tocca il link di verifica.",
-    checkErrorMessage:
-      "Impossibile verificare lo stato. Riprova.",
+    checkErrorMessage: "Impossibile verificare lo stato. Riprova.",
   },
   authErrors: {
     "auth/invalid-email": "L\u2019indirizzo email non \u00E8 valido.",
@@ -74,13 +71,11 @@ const it = {
     "auth/wrong-password": "Password errata.",
     "auth/invalid-credential":
       "Credenziali non valide. Controlla email e password.",
-    "auth/email-already-in-use":
-      "Un account con questa email esiste gi\u00E0.",
+    "auth/email-already-in-use": "Un account con questa email esiste gi\u00E0.",
     "auth/weak-password":
       "La password \u00E8 troppo debole. Usa almeno 8 caratteri con maiuscola, numero e carattere speciale.",
     "auth/too-many-requests": "Troppi tentativi. Riprova pi\u00F9 tardi.",
-    "auth/network-request-failed":
-      "Errore di rete. Controlla la connessione.",
+    "auth/network-request-failed": "Errore di rete. Controlla la connessione.",
     "auth/account-exists-with-different-credential":
       "Un account con questa email esiste gi\u00E0. Accedi con il metodo esistente per collegare questo account.",
     "auth/requires-recent-login":
@@ -188,7 +183,7 @@ const it = {
       "{{count}} spese \u00B7 {{monthlyCost}}/mese \u00D7 {{months}} mesi",
     topExpenses: "Spese principali",
     recommendation:
-      "La maggior parte dei consulenti finanziari consiglia di risparmiare da 3 a 6 mesi di spese essenziali. Regola in base alla stabilit\u00E0 del tuo lavoro e al tuo comfort personale.",
+      "La maggior parte dei consulenti finanziari consiglia di risparmiare almeno da 3 a 6 mesi di spese essenziali per imprevisti. Regola in base alla stabilit\u00E0 del tuo lavoro e al tuo comfort personale.",
     essentialExpenses: "Spese essenziali",
     months_one: "{{count}} mese",
     months_other: "{{count}} mesi",
@@ -212,8 +207,7 @@ const it = {
       "Questo eliminer\u00E0 permanentemente il tuo account e tutti i tuoi dati. Questa azione non pu\u00F2 essere annullata.",
     deleteAccountRecentLogin:
       "Per sicurezza, esci e accedi di nuovo prima di eliminare il tuo account.",
-    deleteAccountFailed:
-      "Eliminazione account fallita. Riprova.",
+    deleteAccountFailed: "Eliminazione account fallita. Riprova.",
     version: "Fixo v{{version}}",
   },
   sort: {
@@ -234,8 +228,7 @@ const it = {
     settings: "Impostazioni",
   },
   expenseList: {
-    deleteFailed:
-      'Impossibile eliminare "{{name}}". Riprova.',
+    deleteFailed: 'Impossibile eliminare "{{name}}". Riprova.',
   },
   categoryCard: {
     expense_one: "{{count}} spesa",
