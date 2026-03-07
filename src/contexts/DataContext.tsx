@@ -18,6 +18,7 @@ import * as firestoreService from "../services/firestore";
 import i18n, { setLanguage as setI18nLanguage } from "../i18n";
 
 const PINNED_METRIC_KEY = "pinnedBudgetMetric";
+const EMERGENCY_MONTHS_KEY = "@fixo/emergency_months";
 
 export type ViewMode = "monthly" | "yearly";
 
@@ -139,6 +140,12 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         setPinnedBudgetMetricState(value);
       }
     });
+    AsyncStorage.getItem(EMERGENCY_MONTHS_KEY).then((value) => {
+      if (value !== null) {
+        const parsed = parseInt(value, 10);
+        if (!isNaN(parsed)) setEmergencyMonthsState(parsed);
+      }
+    });
   }, []);
 
   useEffect(() => {
@@ -200,7 +207,6 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       (settings) => {
         setCurrencyState(settings.currency);
         setMonthlyBudgetCentsState(settings.monthlyBudgetCents ?? 0);
-        setEmergencyMonthsState(settings.emergencyMonths ?? 6);
         setEmergencySavedCentsState(settings.emergencySavedCents ?? 0);
         setEmergencyMonthlySavingCentsState(
           settings.emergencyMonthlySavingCents ?? 0,
@@ -310,9 +316,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     emergencyMonths,
     setEmergencyMonths: async (months) => {
       setEmergencyMonthsState(months);
-      await firestoreService.updateUserSettings(userId, {
-        emergencyMonths: months,
-      });
+      await AsyncStorage.setItem(EMERGENCY_MONTHS_KEY, String(months));
     },
     emergencySavedCents,
     setEmergencySavedCents: async (cents) => {

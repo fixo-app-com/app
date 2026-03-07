@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   DEFAULT_SORT,
@@ -9,7 +9,17 @@ import {
 
 const STORAGE_KEY = "@fixo/sort_preferences";
 
-export function useSortPreferences() {
+interface SortPreferencesContextValue {
+  sortPrefs: SortPreferences;
+  setSortFor: (key: SortKey, value: SortOption) => void;
+}
+
+const SortPreferencesContext = createContext<SortPreferencesContextValue>({
+  sortPrefs: DEFAULT_SORT,
+  setSortFor: () => {},
+});
+
+export function SortPreferencesProvider({ children }: { children: React.ReactNode }) {
   const [sortPrefs, setSortPrefs] = useState<SortPreferences>(DEFAULT_SORT);
 
   useEffect(() => {
@@ -32,5 +42,13 @@ export function useSortPreferences() {
     });
   }, []);
 
-  return { sortPrefs, setSortFor };
+  return (
+    <SortPreferencesContext.Provider value={{ sortPrefs, setSortFor }}>
+      {children}
+    </SortPreferencesContext.Provider>
+  );
+}
+
+export function useSortPreferences(): SortPreferencesContextValue {
+  return useContext(SortPreferencesContext);
 }

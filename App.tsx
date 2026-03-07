@@ -10,6 +10,7 @@ import i18n, { initLanguage } from "./src/i18n";
 import { AuthProvider } from "./src/contexts/AuthContext";
 import { ErrorBoundary } from "./src/components";
 import { DataProvider } from "./src/contexts/DataContext";
+import { SortPreferencesProvider } from "./src/contexts/SortPreferencesContext";
 import RootNavigator from "./src/navigation/RootNavigator";
 
 export default function App() {
@@ -23,14 +24,16 @@ export default function App() {
         <I18nextProvider i18n={i18n}>
           <ErrorBoundary>
             <AuthProvider>
-              <DataProvider>
-                <BottomSheetModalProvider>
-                  <NavigationContainer>
-                    <RootNavigator />
-                    <StatusBar style="dark" />
-                  </NavigationContainer>
-                </BottomSheetModalProvider>
-              </DataProvider>
+              <SortPreferencesProvider>
+                <DataProvider>
+                  <BottomSheetModalProvider>
+                    <NavigationContainer>
+                      <RootNavigator />
+                      <StatusBar style="dark" />
+                    </NavigationContainer>
+                  </BottomSheetModalProvider>
+                </DataProvider>
+              </SortPreferencesProvider>
             </AuthProvider>
           </ErrorBoundary>
         </I18nextProvider>

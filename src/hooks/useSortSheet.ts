@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useSortPreferences } from "./useSortPreferences";
+import { useSortPreferences } from "../contexts/SortPreferencesContext";
 import {
   getSortLabelKey,
   SORT_OPTIONS,

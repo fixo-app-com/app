@@ -7,6 +7,7 @@ import { useAuth } from "../../../contexts/AuthContext";
 import { useData } from "../../../contexts/DataContext";
 import { getExpenses } from "../../../services/firestore";
 import { useDeleteConfirmation } from "../../../hooks/useDeleteConfirmation";
+import { useStoreReview } from "../../../hooks/useStoreReview";
 import type { HomeStackParamList } from "../../../navigation/RootNavigator";
 import type { BillingFrequency, Expense } from "../../../types/firestore";
 import { getCurrencySymbol } from "../../../constants/banks";
@@ -50,6 +51,7 @@ export default function AddEditExpenseScreen() {
 
   const { addExpense, updateExpense, deleteExpense } = useData();
   const { confirmDelete } = useDeleteConfirmation();
+  const { promptIfEligible } = useStoreReview();
 
   // Auto-select first wallet when wallets become available (e.g. after creating one)
   useEffect(() => {
@@ -137,6 +139,7 @@ export default function AddEditExpenseScreen() {
         await updateExpense(expenseId, data);
       } else {
         await addExpense(data);
+        promptIfEligible();
       }
       navigation.goBack();
     } catch (error) {
