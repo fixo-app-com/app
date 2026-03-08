@@ -16,11 +16,15 @@ import { useExpenses } from "../../../hooks/useExpenses";
 import { BudgetCard } from "./BudgetCard";
 import { DonutChart } from "./DonutChart";
 import type { DonutSegment } from "./DonutChart";
+import { TopExpensesCard } from "./TopExpensesCard";
+import { WalletBreakdownCard } from "./WalletBreakdownCard";
+import { EssentialSplitCard } from "./EssentialSplitCard";
 
 export default function HomeScreen() {
   const { t } = useTranslation();
   const {
     categories,
+    wallets,
     monthlyBudgetCents,
     setMonthlyBudget,
     viewMode,
@@ -133,6 +137,14 @@ export default function HomeScreen() {
             />
           </View>
         )}
+
+        <TopExpensesCard expenses={expenses} viewMode={viewMode} />
+        <WalletBreakdownCard
+          wallets={wallets}
+          expenses={expenses}
+          viewMode={viewMode}
+        />
+        <EssentialSplitCard expenses={expenses} viewMode={viewMode} />
       </View>
     </ScreenWrapper>
   );

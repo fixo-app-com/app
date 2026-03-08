@@ -70,6 +70,10 @@ export function DonutChart({
   const selected = segments.find((s) => s.id === selectedId);
   const centerLabel = selected ? selected.name : allLabel;
   const centerCents = selected ? selected.totalCents : totalCents;
+  const centerPct =
+    selected && totalCents > 0
+      ? Math.round((selected.totalCents / totalCents) * 100)
+      : null;
 
   if (containerWidth === 0) {
     return (
@@ -149,6 +153,11 @@ export function DonutChart({
               className="text-center text-lg font-bold text-gray-900"
               hideDecimals
             />
+            {centerPct !== null && (
+              <Text className="text-center text-xs font-semibold text-gray-400">
+                {centerPct}%
+              </Text>
+            )}
           </Pressable>
         </View>
       </View>

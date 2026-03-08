@@ -46,8 +46,6 @@ export const mockDataContextDefaults = {
   deleteExpensesByCategory: jest.fn(() => Promise.resolve()),
   emergencyMonths: 6,
   setEmergencyMonths: jest.fn(() => Promise.resolve()),
-  emergencySavedCents: 0,
-  setEmergencySavedCents: jest.fn(() => Promise.resolve()),
   emergencyMonthlySavingCents: 0,
   setEmergencyMonthlySavingCents: jest.fn(() => Promise.resolve()),
   pinnedBudgetMetric: "budget" as "budget" | "costs" | "available",

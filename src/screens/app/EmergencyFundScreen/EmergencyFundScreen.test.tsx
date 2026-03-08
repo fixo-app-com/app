@@ -64,7 +64,7 @@ describe("EmergencyFundScreen", () => {
   it("renders essentials summary and target sections", async () => {
     render(<EmergencyFundScreen />);
     await waitFor(() => {
-      expect(screen.getByText("emergency.expenses")).toBeOnTheScreen();
+      expect(screen.getByText("emergency.essentialExpenses")).toBeOnTheScreen();
       expect(screen.getByText("emergency.monthlyCost")).toBeOnTheScreen();
       expect(screen.getByText("emergency.yourTarget")).toBeOnTheScreen();
       expect(screen.getByText("emergency.targetDetail")).toBeOnTheScreen();
@@ -89,15 +89,6 @@ describe("EmergencyFundScreen", () => {
     render(<EmergencyFundScreen />);
     await waitFor(() => {
       expect(screen.getByText("emergency.noEssential")).toBeOnTheScreen();
-    });
-  });
-
-  it("renders top expenses sorted by amount", async () => {
-    render(<EmergencyFundScreen />);
-    await waitFor(() => {
-      expect(screen.getByText("emergency.topExpenses")).toBeOnTheScreen();
-      expect(screen.getAllByText("Rent").length).toBeGreaterThanOrEqual(1);
-      expect(screen.getAllByText("Insurance").length).toBeGreaterThanOrEqual(1);
     });
   });
 

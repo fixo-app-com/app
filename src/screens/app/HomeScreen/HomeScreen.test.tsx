@@ -111,4 +111,20 @@ describe("HomeScreen", () => {
     render(<HomeScreen />);
     expect(screen.queryByTestId("donut-chart")).toBeNull();
   });
+
+  it("renders top expenses widget when expenses exist", () => {
+    render(<HomeScreen />);
+    expect(screen.getByTestId("top-expenses")).toBeOnTheScreen();
+  });
+
+  it("renders wallet breakdown widget when wallets have spend", () => {
+    render(<HomeScreen />);
+    expect(screen.getByTestId("wallet-breakdown")).toBeOnTheScreen();
+  });
+
+  it("renders essential split widget when expenses exist", () => {
+    render(<HomeScreen />);
+    expect(screen.getByTestId("essential-split")).toBeOnTheScreen();
+  });
+
 });

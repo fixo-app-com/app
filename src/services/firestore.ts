@@ -228,7 +228,6 @@ export async function deleteAllUserData(userId: string): Promise<void> {
 const DEFAULT_SETTINGS: UserSettings = {
   currency: "EUR",
   monthlyBudgetCents: 0,
-  emergencySavedCents: 0,
   emergencyMonthlySavingCents: 0,
   language: undefined,
 };
@@ -247,8 +246,6 @@ export function subscribeUserSettings(
           currency: data?.currency ?? DEFAULT_SETTINGS.currency,
           monthlyBudgetCents:
             data?.monthlyBudgetCents ?? DEFAULT_SETTINGS.monthlyBudgetCents,
-          emergencySavedCents:
-            data?.emergencySavedCents ?? DEFAULT_SETTINGS.emergencySavedCents,
           emergencyMonthlySavingCents:
             data?.emergencyMonthlySavingCents ??
             DEFAULT_SETTINGS.emergencyMonthlySavingCents,

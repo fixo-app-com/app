@@ -82,7 +82,6 @@ export type SupportedLanguage = "en" | "it" | "fr" | "de" | "es";
 export interface UserSettings {
   currency: string; // ISO 4217 code, e.g. "EUR", "USD"
   monthlyBudgetCents?: number; // e.g. 250000 = €2,500.00
-  emergencySavedCents?: number; // how much user has saved
   emergencyMonthlySavingCents?: number; // monthly saving rate (for projection)
   language?: SupportedLanguage;
 }

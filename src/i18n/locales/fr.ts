@@ -104,6 +104,11 @@ const fr = {
     allCategories: "Toutes",
     budget: "Budget",
     breakdown: "R\u00E9partition",
+    topExpenses: "D\u00E9penses principales",
+    walletBreakdown: "Portefeuilles",
+    essentialCosts: "Priorit\u00E9 d\u00E9penses",
+    nonEssential: "Non essentiels",
+    essential: "Essentiels",
   },
   categories: {
     title: "Cat\u00E9gories",

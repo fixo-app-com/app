@@ -111,18 +111,6 @@ export default function EmergencyFundScreen() {
   const monthlyEssentialCents = roundToUnit(yearlyEssentialCents / 12);
   const targetCents = roundToUnit((yearlyEssentialCents / 12) * selectedMonths);
 
-  const topEssentials = useMemo(
-    () =>
-      [...essentialExpenses]
-        .sort(
-          (a, b) =>
-            getDisplayAmountCents(b, "monthly") -
-            getDisplayAmountCents(a, "monthly"),
-        )
-        .slice(0, 3),
-    [essentialExpenses],
-  );
-
   const headerContent = (
     <View>
       <Text className="text-3xl font-bold text-gray-900 mb-3">
@@ -163,8 +151,8 @@ export default function EmergencyFundScreen() {
                     style={{ marginLeft: 4 }}
                   />
                 </View>
-                <Text className="text-xs text-gray-400">
-                  {t("emergency.expenses")}
+                <Text className="text-xs font-medium text-amber-500">
+                  {t("emergency.essentialExpenses")}
                 </Text>
               </Pressable>
               <View className="w-px self-stretch bg-gray-200" />
@@ -227,36 +215,6 @@ export default function EmergencyFundScreen() {
               {t("emergency.recommendation")}
             </Text>
           </View>
-
-          {/* Top 3 Expenses */}
-          {topEssentials.length > 0 && (
-            <View>
-              <SectionHeader title={t("emergency.topExpenses")} />
-              <Card>
-                {topEssentials.map((item, index) => {
-                  const isFirst = index === 0;
-                  const isLast = index === topEssentials.length - 1;
-                  return (
-                    <View key={item.id}>
-                      {index > 0 && <View className="h-px bg-gray-100" />}
-                      <View
-                        className={`flex-row items-center justify-between ${isFirst ? "pb-3" : isLast ? "pt-3" : "py-3"}`}
-                      >
-                        <Text className="flex-1 text-sm font-medium text-gray-900">
-                          {item.name}
-                        </Text>
-                        <CurrencyText
-                          cents={getDisplayAmountCents(item, "monthly")}
-                          className="text-sm font-semibold text-gray-900"
-                          suffixFormat
-                        />
-                      </View>
-                    </View>
-                  );
-                })}
-              </Card>
-            </View>
-          )}
         </View>
       )}
       <BottomSheet ref={detailSheetRef} snapPoints={["50%"]}>

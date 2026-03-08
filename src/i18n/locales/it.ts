@@ -97,6 +97,11 @@ const it = {
     allCategories: "Tutte",
     budget: "Budget",
     breakdown: "Ripartizione",
+    topExpenses: "Spese principali",
+    walletBreakdown: "Portafogli",
+    essentialCosts: "Priorit\u00E0 spese",
+    nonEssential: "Non essenziali",
+    essential: "Essenziali",
   },
   categories: {
     title: "Categorie",

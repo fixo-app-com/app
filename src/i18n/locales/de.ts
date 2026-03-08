@@ -103,6 +103,11 @@ const de = {
     allCategories: "Alle",
     budget: "Budget",
     breakdown: "Aufschl\u00FCsselung",
+    topExpenses: "Top-Ausgaben",
+    walletBreakdown: "Konten",
+    essentialCosts: "Ausgabenpriorit\u00E4t",
+    nonEssential: "Nicht wesentlich",
+    essential: "Wesentlich",
   },
   categories: {
     title: "Kategorien",
