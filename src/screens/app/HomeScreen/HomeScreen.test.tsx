@@ -126,5 +126,4 @@ describe("HomeScreen", () => {
     render(<HomeScreen />);
     expect(screen.getByTestId("essential-split")).toBeOnTheScreen();
   });
-
 });
