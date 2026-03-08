@@ -5,7 +5,7 @@ import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useData } from "../../../contexts/DataContext";
-import type { HomeStackParamList } from "../../../navigation/RootNavigator";
+import type { CategoriesStackParamList } from "../../../navigation/RootNavigator";
 import { useDeleteConfirmation } from "../../../hooks/useDeleteConfirmation";
 import {
   ChipGroup,
@@ -16,8 +16,11 @@ import {
   SectionHeader,
 } from "../../../design-system";
 
-type Nav = NativeStackNavigationProp<HomeStackParamList, "AddEditCategory">;
-type Route = RouteProp<HomeStackParamList, "AddEditCategory">;
+type Nav = NativeStackNavigationProp<
+  CategoriesStackParamList,
+  "AddEditCategory"
+>;
+type Route = RouteProp<CategoriesStackParamList, "AddEditCategory">;
 
 const EMOJI_OPTIONS = [
   // People & family
@@ -72,8 +75,12 @@ export default function AddEditCategoryScreen() {
   const route = useRoute<Route>();
   const { categoryId, categoryName, categoryIcon } = route.params ?? {};
   const { user } = useAuth();
-  const { addCategory, updateCategory, deleteCategory, deleteExpensesByCategory } =
-    useData();
+  const {
+    addCategory,
+    updateCategory,
+    deleteCategory,
+    deleteExpensesByCategory,
+  } = useData();
   const { confirmDelete } = useDeleteConfirmation();
 
   const isEditing = !!categoryId;
@@ -92,7 +99,7 @@ export default function AddEditCategoryScreen() {
         try {
           await deleteExpensesByCategory(categoryId);
           await deleteCategory(categoryId);
-          navigation.popTo("Home");
+          navigation.popTo("Categories");
         } catch (error) {
           if (__DEV__) console.error("Failed to delete category:", error);
         }
@@ -125,7 +132,11 @@ export default function AddEditCategoryScreen() {
 
   const headerContent = (
     <ScreenHeader
-      title={isEditing ? t("addEditCategory.editTitle") : t("addEditCategory.newTitle")}
+      title={
+        isEditing
+          ? t("addEditCategory.editTitle")
+          : t("addEditCategory.newTitle")
+      }
       onBack={() => navigation.goBack()}
     />
   );
@@ -151,10 +162,16 @@ export default function AddEditCategoryScreen() {
       <View className="flex-1" />
 
       <SaveDeleteFooter
-        saveLabel={isEditing ? t("addEditCategory.saveChanges") : t("addEditCategory.saveCategory")}
+        saveLabel={
+          isEditing
+            ? t("addEditCategory.saveChanges")
+            : t("addEditCategory.saveCategory")
+        }
         onSave={handleSave}
         saving={saving}
-        deleteLabel={isEditing ? t("addEditCategory.deleteCategory") : undefined}
+        deleteLabel={
+          isEditing ? t("addEditCategory.deleteCategory") : undefined
+        }
         onDelete={isEditing ? handleDelete : undefined}
       />
     </ScreenWrapper>

@@ -17,7 +17,8 @@ const fr = {
     forgotPassword: "Mot de passe oubli\u00E9 ?",
     noAccount: "Pas de compte ? ",
     hasAccount: "D\u00E9j\u00E0 un compte ? ",
-    enterEmailAndPassword: "Veuillez entrer votre e-mail et votre mot de passe.",
+    enterEmailAndPassword:
+      "Veuillez entrer votre e-mail et votre mot de passe.",
     fillAllFields: "Veuillez remplir tous les champs.",
     meetPasswordRequirements:
       "Veuillez respecter toutes les exigences du mot de passe.",
@@ -61,12 +62,12 @@ const fr = {
     resendButton: "Renvoyer l\u2019e-mail de v\u00E9rification",
     signOut: "Se d\u00E9connecter",
     emailSentTitle: "E-mail envoy\u00E9",
-    emailSentMessage: "Un nouvel e-mail de v\u00E9rification a \u00E9t\u00E9 envoy\u00E9.",
+    emailSentMessage:
+      "Un nouvel e-mail de v\u00E9rification a \u00E9t\u00E9 envoy\u00E9.",
     notVerifiedTitle: "Pas encore v\u00E9rifi\u00E9",
     notVerifiedMessage:
       "Votre e-mail n\u2019est pas encore v\u00E9rifi\u00E9. V\u00E9rifiez votre bo\u00EEte de r\u00E9ception ou le dossier spam et appuyez sur le lien de v\u00E9rification.",
-    checkErrorMessage:
-      "Impossible de v\u00E9rifier le statut. R\u00E9essayez.",
+    checkErrorMessage: "Impossible de v\u00E9rifier le statut. R\u00E9essayez.",
   },
   authErrors: {
     "auth/invalid-email": "L\u2019adresse e-mail n\u2019est pas valide.",
@@ -79,8 +80,7 @@ const fr = {
       "Un compte avec cet e-mail existe d\u00E9j\u00E0.",
     "auth/weak-password":
       "Le mot de passe est trop faible. Utilisez au moins 8 caract\u00E8res avec majuscule, chiffre et caract\u00E8re sp\u00E9cial.",
-    "auth/too-many-requests":
-      "Trop de tentatives. R\u00E9essayez plus tard.",
+    "auth/too-many-requests": "Trop de tentatives. R\u00E9essayez plus tard.",
     "auth/network-request-failed":
       "Erreur r\u00E9seau. V\u00E9rifiez votre connexion.",
     "auth/account-exists-with-different-credential":
@@ -101,6 +101,12 @@ const fr = {
     enterBudget: "Entrez votre budget {{period}} total",
     noCategories: "Aucune cat\u00E9gorie pour le moment.",
     addCategory: "Ajouter une cat\u00E9gorie",
+    allCategories: "Toutes",
+    breakdown: "R\u00E9partition",
+  },
+  categories: {
+    title: "Cat\u00E9gories",
+    noCategories: "Aucune cat\u00E9gorie.",
   },
   wallets: {
     title: "Portefeuilles",
@@ -233,12 +239,12 @@ const fr = {
   tabs: {
     home: "Accueil",
     wallets: "Portefeuilles",
+    categories: "Cat\u00E9gories",
     emergency: "Urgence",
     settings: "Param\u00E8tres",
   },
   expenseList: {
-    deleteFailed:
-      'Impossible de supprimer "{{name}}". R\u00E9essayez.',
+    deleteFailed: 'Impossible de supprimer "{{name}}". R\u00E9essayez.',
   },
   categoryCard: {
     expense_one: "{{count}} d\u00E9pense",

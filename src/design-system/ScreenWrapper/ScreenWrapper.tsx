@@ -22,7 +22,10 @@ export function ScreenWrapper({
   return (
     <View className="flex-1 bg-gray-100">
       {/* Fixed header area — never scrolls */}
-      <View style={{ paddingTop: insets.top + 8 }} className="bg-gray-100 px-4">
+      <View
+        style={{ paddingTop: insets.top + 8 }}
+        className="bg-gray-100 px-4 pb-2"
+      >
         {header}
       </View>
 
@@ -34,7 +37,10 @@ export function ScreenWrapper({
         >
           <ScrollView
             className="flex-1 px-4"
-            contentContainerStyle={{ flexGrow: 1, paddingBottom: bottomPadding }}
+            contentContainerStyle={{
+              flexGrow: 1,
+              paddingBottom: bottomPadding,
+            }}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
           >
@@ -42,10 +48,7 @@ export function ScreenWrapper({
           </ScrollView>
         </KeyboardAvoidingView>
       ) : (
-        <View
-          className="flex-1 px-4"
-          style={{ paddingBottom: bottomPadding }}
-        >
+        <View className="flex-1 px-4" style={{ paddingBottom: bottomPadding }}>
           {children}
         </View>
       )}

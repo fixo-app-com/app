@@ -28,14 +28,12 @@ const en = {
     resetEmailSent:
       "We sent you an email with a link to reset your password. Check your inbox.",
     invalidCredentialTitle: "Invalid email or password",
-    invalidCredentialMessage:
-      "Please check your credentials and try again.",
+    invalidCredentialMessage: "Please check your credentials and try again.",
     tryAgain: "Try again",
     resetPassword: "Reset password",
     emailSentTitle: "Email sent",
     emailSentMessage: "Check your inbox for a password reset link.",
-    linkGoogleBanner:
-      "Sign in with your password to link your Google account.",
+    linkGoogleBanner: "Sign in with your password to link your Google account.",
     googleLinkedSuccess: "Google account linked successfully!",
     passwordRuleLength: "At least 8 characters",
     passwordRuleUppercase: "One uppercase letter",
@@ -62,8 +60,7 @@ const en = {
     notVerifiedTitle: "Not verified yet",
     notVerifiedMessage:
       "Your email is not verified yet. Please check your inbox or spam folder and tap the verification link.",
-    checkErrorMessage:
-      "Could not check verification status. Try again.",
+    checkErrorMessage: "Could not check verification status. Try again.",
   },
   authErrors: {
     "auth/invalid-email": "The email address is not valid.",
@@ -72,14 +69,11 @@ const en = {
     "auth/wrong-password": "Incorrect password.",
     "auth/invalid-credential":
       "Invalid credentials. Check your email and password.",
-    "auth/email-already-in-use":
-      "An account with this email already exists.",
+    "auth/email-already-in-use": "An account with this email already exists.",
     "auth/weak-password":
       "Password is too weak. Use at least 8 characters with uppercase, number, and special character.",
-    "auth/too-many-requests":
-      "Too many attempts. Please try again later.",
-    "auth/network-request-failed":
-      "Network error. Check your connection.",
+    "auth/too-many-requests": "Too many attempts. Please try again later.",
+    "auth/network-request-failed": "Network error. Check your connection.",
     "auth/account-exists-with-different-credential":
       "An account with this email already exists. Sign in with your existing method to link this account.",
     "auth/requires-recent-login":
@@ -98,6 +92,12 @@ const en = {
     enterBudget: "Enter your total {{period}} budget",
     noCategories: "No categories yet.",
     addCategory: "Add category",
+    allCategories: "All",
+    breakdown: "Breakdown",
+  },
+  categories: {
+    title: "Categories",
+    noCategories: "No categories yet.",
   },
   wallets: {
     title: "Wallets",
@@ -113,8 +113,7 @@ const en = {
   walletDetail: {
     yearlyPrefix: "Yearly:",
     monthlyPrefix: "Monthly:",
-    noExpenses:
-      "No expenses for this wallet.\nAdd expenses from a category.",
+    noExpenses: "No expenses for this wallet.\nAdd expenses from a category.",
   },
   addEditCategory: {
     editTitle: "Edit category",
@@ -228,6 +227,7 @@ const en = {
   tabs: {
     home: "Home",
     wallets: "Wallets",
+    categories: "Categories",
     emergency: "Emergency",
     settings: "Settings",
   },

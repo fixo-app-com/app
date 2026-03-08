@@ -49,7 +49,11 @@ export default function SignInScreen({ navigation, route }: Props) {
     setLoadingAction("email");
     try {
       if (pendingGoogleIdToken) {
-        await linkGoogleToEmailAccount(email.trim(), password, pendingGoogleIdToken);
+        await linkGoogleToEmailAccount(
+          email.trim(),
+          password,
+          pendingGoogleIdToken,
+        );
         Alert.alert(t("common.success"), t("auth.googleLinkedSuccess"));
       } else {
         await signInWithEmail(email.trim(), password);
@@ -136,12 +140,18 @@ export default function SignInScreen({ navigation, route }: Props) {
           className="mb-6 self-end"
           disabled={isLoading}
         >
-          <Text className="text-sm text-fixo-500">{t("auth.forgotPassword")}</Text>
+          <Text className="text-sm text-fixo-500">
+            {t("auth.forgotPassword")}
+          </Text>
         </Pressable>
 
         {/* Sign in button */}
         <View className={ENABLE_SOCIAL_LOGIN ? "mb-4" : "mb-8"}>
-          <Button label={t("auth.signIn")} onPress={handleSignIn} loading={loadingAction === "email"} />
+          <Button
+            label={t("auth.signIn")}
+            onPress={handleSignIn}
+            loading={loadingAction === "email"}
+          />
         </View>
 
         {/* Social login */}

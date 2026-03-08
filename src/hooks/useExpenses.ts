@@ -13,7 +13,12 @@ export function useExpenses(filter?: {
   expenses: Expense[];
   loading: boolean;
 } {
-  const { expenses: allExpenses, expensesLoading, ensureExpenses, viewMode } = useData();
+  const {
+    expenses: allExpenses,
+    expensesLoading,
+    ensureExpenses,
+    viewMode,
+  } = useData();
 
   useEffect(() => {
     ensureExpenses();
@@ -34,7 +39,13 @@ export function useExpenses(filter?: {
       (e) => e.createdAt,
     );
     return [...result].sort(comparator);
-  }, [allExpenses, filter?.categoryId, filter?.walletId, filter?.sort, viewMode]);
+  }, [
+    allExpenses,
+    filter?.categoryId,
+    filter?.walletId,
+    filter?.sort,
+    viewMode,
+  ]);
 
   return {
     expenses: filtered,

@@ -65,7 +65,10 @@ describe("useSocialAuth", () => {
     expect(getFirebaseAuthErrorMessage).toHaveBeenCalledWith(
       "auth/internal-error",
     );
-    expect(Alert.alert).toHaveBeenCalledWith("common.error", "Error: auth/internal-error");
+    expect(Alert.alert).toHaveBeenCalledWith(
+      "common.error",
+      "Error: auth/internal-error",
+    );
   });
 
   it("does not show alert when Google Sign-In is cancelled", async () => {
@@ -106,7 +109,9 @@ describe("useSocialAuth", () => {
   });
 
   it("shows generic error alert for Apple auth failure", async () => {
-    mockSignInWithApple.mockRejectedValue({ code: "auth/network-request-failed" });
+    mockSignInWithApple.mockRejectedValue({
+      code: "auth/network-request-failed",
+    });
     const { result } = renderHook(() => useSocialAuth());
 
     await act(() => result.current.handleAppleAuth());

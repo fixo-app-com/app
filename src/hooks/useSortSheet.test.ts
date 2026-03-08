@@ -9,7 +9,9 @@ function wrapper({ children }: { children: React.ReactNode }) {
 
 describe("useSortSheet", () => {
   it("returns initial closed state", () => {
-    const { result } = renderHook(() => useSortSheet("categories"), { wrapper });
+    const { result } = renderHook(() => useSortSheet("categories"), {
+      wrapper,
+    });
     expect(result.current.isOpen).toBe(false);
     expect(result.current.selected).toBe("newest");
     expect(result.current.title).toBe("sort.sortBy");
@@ -17,7 +19,9 @@ describe("useSortSheet", () => {
   });
 
   it("opens and closes", () => {
-    const { result } = renderHook(() => useSortSheet("categories"), { wrapper });
+    const { result } = renderHook(() => useSortSheet("categories"), {
+      wrapper,
+    });
     act(() => result.current.open());
     expect(result.current.isOpen).toBe(true);
     act(() => result.current.close());

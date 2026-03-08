@@ -26,7 +26,10 @@ describe("useDeleteConfirmation", () => {
       "Are you sure?",
       expect.arrayContaining([
         expect.objectContaining({ text: "common.cancel", style: "cancel" }),
-        expect.objectContaining({ text: "common.delete", style: "destructive" }),
+        expect.objectContaining({
+          text: "common.delete",
+          style: "destructive",
+        }),
       ]),
     );
   });

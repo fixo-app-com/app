@@ -1,7 +1,10 @@
 import { render, screen, waitFor } from "@testing-library/react-native";
 import EmergencyFundScreen from "./EmergencyFundScreen";
 import { mockExpenses } from "../../../test/fixtures";
-import { mockCreateNavigation, mockDataContextDefaults } from "../../../test/mocks";
+import {
+  mockCreateNavigation,
+  mockDataContextDefaults,
+} from "../../../test/mocks";
 
 jest.mock("@react-navigation/native", () => ({
   useNavigation: () => mockCreateNavigation(),
@@ -14,7 +17,14 @@ jest.mock("../../../contexts/AuthContext", () => ({
 const mockDataContext = {
   ...mockDataContextDefaults,
   expenses: mockExpenses,
-  wallets: [{ id: "w1", name: "Main Account", icon: "intesa-sanpaolo", createdAt: new Date() }],
+  wallets: [
+    {
+      id: "w1",
+      name: "Main Account",
+      icon: "intesa-sanpaolo",
+      createdAt: new Date(),
+    },
+  ],
 };
 
 jest.mock("../../../contexts/DataContext", () => ({

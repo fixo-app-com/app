@@ -1,7 +1,10 @@
 import { renderHook, act, waitFor } from "@testing-library/react-native";
 import React from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useSortPreferences, SortPreferencesProvider } from "../contexts/SortPreferencesContext";
+import {
+  useSortPreferences,
+  SortPreferencesProvider,
+} from "../contexts/SortPreferencesContext";
 import { DEFAULT_SORT } from "../constants/sort";
 
 function wrapper({ children }: { children: React.ReactNode }) {

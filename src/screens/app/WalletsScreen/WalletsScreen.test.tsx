@@ -1,7 +1,10 @@
 import { render, screen, waitFor } from "@testing-library/react-native";
 import WalletsScreen from "./WalletsScreen";
 import { mockWallets } from "../../../test/fixtures";
-import { mockCreateNavigation, mockDataContextDefaults } from "../../../test/mocks";
+import {
+  mockCreateNavigation,
+  mockDataContextDefaults,
+} from "../../../test/mocks";
 
 jest.mock("@react-navigation/native", () => ({
   useNavigation: () => mockCreateNavigation(),
@@ -30,7 +33,7 @@ describe("WalletsScreen", () => {
 
   it("renders add wallet button", () => {
     render(<WalletsScreen />);
-    expect(screen.getByText("wallets.addWallet")).toBeOnTheScreen();
+    expect(screen.getByLabelText("Add")).toBeOnTheScreen();
   });
 
   it("renders monthly/yearly toggle chips", () => {

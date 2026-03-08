@@ -12,7 +12,10 @@ export function useStoreReview() {
       const count = (raw ? parseInt(raw, 10) : 0) + 1;
       await AsyncStorage.setItem(STORAGE_KEY, String(count));
 
-      if (THRESHOLDS.includes(count) && (await StoreReview.isAvailableAsync())) {
+      if (
+        THRESHOLDS.includes(count) &&
+        (await StoreReview.isAvailableAsync())
+      ) {
         await StoreReview.requestReview();
       }
     } catch {

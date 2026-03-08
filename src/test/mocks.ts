@@ -1,4 +1,9 @@
-import { mockUser, mockCategories, mockWallets, mockExpenses } from "./fixtures";
+import {
+  mockUser,
+  mockCategories,
+  mockWallets,
+  mockExpenses,
+} from "./fixtures";
 
 type NavigationOverrides = {
   navigate?: jest.Mock;

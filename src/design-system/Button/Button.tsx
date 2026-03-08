@@ -23,7 +23,8 @@ const variantStyles = {
     text: "text-base font-semibold text-red-500",
   },
   outline: {
-    container: "self-start items-center rounded-lg border border-fixo-300 px-4 py-2",
+    container:
+      "self-start items-center rounded-lg border border-fixo-300 px-4 py-2",
     text: "text-sm font-medium text-fixo-500",
   },
 };
@@ -47,7 +48,13 @@ export function Button({
     >
       {loading ? (
         <ActivityIndicator
-          color={variant === "destructive" ? colors.red[500] : variant === "outline" ? colors.fixo[400] : colors.white}
+          color={
+            variant === "destructive"
+              ? colors.red[500]
+              : variant === "outline"
+                ? colors.fixo[400]
+                : colors.white
+          }
           size="small"
         />
       ) : (

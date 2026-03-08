@@ -132,7 +132,9 @@ export default function AddEditWalletScreen() {
 
   const headerContent = (
     <ScreenHeader
-      title={isEditing ? t("addEditWallet.editTitle") : t("addEditWallet.newTitle")}
+      title={
+        isEditing ? t("addEditWallet.editTitle") : t("addEditWallet.newTitle")
+      }
       onBack={() => navigation.goBack()}
     />
   );
@@ -179,10 +181,7 @@ export default function AddEditWalletScreen() {
               }}
             >
               <BankIcon bankKey={bank.key} size={32} />
-              <Text
-                className="mt-1 text-[9px] text-gray-400"
-                numberOfLines={1}
-              >
+              <Text className="mt-1 text-[9px] text-gray-400" numberOfLines={1}>
                 {bank.name}
               </Text>
             </Pressable>
@@ -193,10 +192,18 @@ export default function AddEditWalletScreen() {
       <View className="flex-1" />
 
       <SaveDeleteFooter
-        saveLabel={isEditing ? t("addEditWallet.saveChanges") : t("addEditWallet.saveWallet")}
+        saveLabel={
+          isEditing
+            ? t("addEditWallet.saveChanges")
+            : t("addEditWallet.saveWallet")
+        }
         onSave={handleSave}
         saving={saving}
-        deleteLabel={isEditing && !hasExpenses ? t("addEditWallet.deleteWallet") : undefined}
+        deleteLabel={
+          isEditing && !hasExpenses
+            ? t("addEditWallet.deleteWallet")
+            : undefined
+        }
         onDelete={isEditing && !hasExpenses ? handleDelete : undefined}
       />
     </ScreenWrapper>

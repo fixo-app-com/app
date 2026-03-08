@@ -35,4 +35,28 @@ describe("BudgetCard", () => {
     fireEvent.press(screen.getByTestId("secondary-costs"));
     expect(onPin).toHaveBeenCalledWith("costs");
   });
+
+  it("renders budget bar with percentage when budget is set", () => {
+    render(<BudgetCard {...baseProps} />);
+    expect(screen.getByTestId("budget-bar")).toBeOnTheScreen();
+    expect(screen.getByTestId("budget-bar-fill")).toBeOnTheScreen();
+    expect(screen.getByText("home.pctUsed")).toBeOnTheScreen();
+  });
+
+  it("does not render budget bar when no budget", () => {
+    render(<BudgetCard {...baseProps} hasBudget={false} />);
+    expect(screen.queryByTestId("budget-bar")).toBeNull();
+  });
+
+  it("shows yearly label when isYearly and no budget", () => {
+    render(<BudgetCard {...baseProps} hasBudget={false} isYearly={true} />);
+    expect(screen.getByText("home.setYearlyBudget")).toBeOnTheScreen();
+  });
+
+  it("calls onBudgetEdit when hero budget is pressed", () => {
+    const onBudgetEdit = jest.fn();
+    render(<BudgetCard {...baseProps} onBudgetEdit={onBudgetEdit} />);
+    fireEvent.press(screen.getByTestId("hero-metric"));
+    expect(onBudgetEdit).toHaveBeenCalled();
+  });
 });

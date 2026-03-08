@@ -41,7 +41,10 @@ export default function SignUpScreen({ navigation }: Props) {
     { label: t("auth.passwordRuleLength"), met: password.length >= 8 },
     { label: t("auth.passwordRuleUppercase"), met: /[A-Z]/.test(password) },
     { label: t("auth.passwordRuleNumber"), met: /[0-9]/.test(password) },
-    { label: t("auth.passwordRuleSpecial"), met: /[^A-Za-z0-9]/.test(password) },
+    {
+      label: t("auth.passwordRuleSpecial"),
+      met: /[^A-Za-z0-9]/.test(password),
+    },
   ];
   const allRulesMet = passwordRules.every((r) => r.met);
 

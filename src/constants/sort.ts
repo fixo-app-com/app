@@ -19,5 +19,7 @@ export const SORT_OPTIONS: { value: SortOption; labelKey: SortLabelKey }[] = [
 ];
 
 export function getSortLabelKey(option: SortOption): SortLabelKey {
-  return SORT_OPTIONS.find((o) => o.value === option)?.labelKey ?? "sort.newest";
+  return (
+    SORT_OPTIONS.find((o) => o.value === option)?.labelKey ?? "sort.newest"
+  );
 }

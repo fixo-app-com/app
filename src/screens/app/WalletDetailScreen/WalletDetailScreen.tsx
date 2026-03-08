@@ -32,16 +32,31 @@ export default function WalletDetailScreen() {
       title={walletName}
       onBack={() => navigation.goBack()}
       onEdit={() =>
-        navigation.navigate("AddEditWallet", { walletId, walletName, walletIcon })
+        navigation.navigate("AddEditWallet", {
+          walletId,
+          walletName,
+          walletIcon,
+        })
       }
-      summaryPrefix={viewMode === "yearly" ? t("walletDetail.yearlyPrefix") : t("walletDetail.monthlyPrefix")}
+      summaryPrefix={
+        viewMode === "yearly"
+          ? t("walletDetail.yearlyPrefix")
+          : t("walletDetail.monthlyPrefix")
+      }
       totalCents={totalCents}
       sort={sort}
       expenses={expenses}
       loading={loading}
       emptyMessage={t("walletDetail.noExpenses")}
-      getSubtitle={(e) => categories.find((c) => c.id === e.categoryId)?.name ?? "\u2014"}
-      onExpensePress={(e) => navigation.navigate("AddEditExpense", { categoryId: e.categoryId, expenseId: e.id })}
+      getSubtitle={(e) =>
+        categories.find((c) => c.id === e.categoryId)?.name ?? "\u2014"
+      }
+      onExpensePress={(e) =>
+        navigation.navigate("AddEditExpense", {
+          categoryId: e.categoryId,
+          expenseId: e.id,
+        })
+      }
       onExpenseDelete={(id) => deleteExpense(id)}
     />
   );

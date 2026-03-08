@@ -226,6 +226,19 @@ jest.mock("@gorhom/bottom-sheet", () => {
   };
 });
 
+// Mock react-native-svg
+jest.mock("react-native-svg", () => ({
+  __esModule: true,
+  default: "Svg",
+  Svg: "Svg",
+  Path: "Path",
+  G: "G",
+  Circle: "Circle",
+  Rect: "Rect",
+  Text: "SvgText",
+  Line: "Line",
+}));
+
 // Mock react-native-screens
 jest.mock("react-native-screens", () => {
   const actual = jest.requireActual("react-native-screens");

@@ -2,15 +2,15 @@ import { fireEvent, render, screen } from "@testing-library/react-native";
 import { FloatingAction } from "./FloatingAction";
 
 describe("FloatingAction", () => {
-  it("renders label", () => {
-    render(<FloatingAction label="Add item" onPress={jest.fn()} />);
-    expect(screen.getByText("Add item")).toBeOnTheScreen();
+  it("renders the add icon", () => {
+    render(<FloatingAction onPress={jest.fn()} />);
+    expect(screen.getByLabelText("Add")).toBeOnTheScreen();
   });
 
   it("calls onPress when tapped", () => {
     const onPress = jest.fn();
-    render(<FloatingAction label="Add item" onPress={onPress} />);
-    fireEvent.press(screen.getByText("Add item"));
+    render(<FloatingAction onPress={onPress} />);
+    fireEvent.press(screen.getByLabelText("Add"));
     expect(onPress).toHaveBeenCalledTimes(1);
   });
 });

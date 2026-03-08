@@ -1,7 +1,10 @@
 import { render, screen } from "@testing-library/react-native";
 import AddEditExpenseScreen from "./AddEditExpenseScreen";
 import { mockWallets } from "../../../test/fixtures";
-import { mockCreateNavigation, mockDataContextDefaults } from "../../../test/mocks";
+import {
+  mockCreateNavigation,
+  mockDataContextDefaults,
+} from "../../../test/mocks";
 
 jest.mock("@react-navigation/native", () => ({
   useNavigation: () => mockCreateNavigation(),
@@ -40,7 +43,9 @@ describe("AddEditExpenseScreen", () => {
 
   it("renders amount input", () => {
     render(<AddEditExpenseScreen />);
-    expect(screen.getByPlaceholderText("addEditExpense.amountPlaceholder")).toBeOnTheScreen();
+    expect(
+      screen.getByPlaceholderText("addEditExpense.amountPlaceholder"),
+    ).toBeOnTheScreen();
   });
 
   it("renders wallet picker", () => {

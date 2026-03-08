@@ -47,19 +47,13 @@ describe("EntityDetailScreen", () => {
     expect(screen.getByText("No expenses")).toBeOnTheScreen();
   });
 
-  it("renders add button when addLabel and onAdd provided", () => {
-    render(
-      <EntityDetailScreen
-        {...baseProps}
-        addLabel="Add expense"
-        onAdd={jest.fn()}
-      />,
-    );
-    expect(screen.getByText("Add expense")).toBeOnTheScreen();
+  it("renders add button when onAdd provided", () => {
+    render(<EntityDetailScreen {...baseProps} onAdd={jest.fn()} />);
+    expect(screen.getByLabelText("Add")).toBeOnTheScreen();
   });
 
-  it("does not render add button when addLabel not provided", () => {
+  it("does not render add button when onAdd not provided", () => {
     render(<EntityDetailScreen {...baseProps} />);
-    expect(screen.queryByText("Add expense")).toBeNull();
+    expect(screen.queryByLabelText("Add")).toBeNull();
   });
 });

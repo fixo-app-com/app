@@ -4,7 +4,11 @@ import { useTranslation } from "react-i18next";
 import Slider from "@react-native-community/slider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { sumDisplayCents, roundToUnit, getDisplayAmountCents } from "../../../types/firestore";
+import {
+  sumDisplayCents,
+  roundToUnit,
+  getDisplayAmountCents,
+} from "../../../types/firestore";
 import type { Expense } from "../../../types/firestore";
 import { getCurrencySymbol } from "../../../constants/banks";
 import { colors } from "../../../constants/colors";
@@ -124,7 +128,7 @@ export default function EmergencyFundScreen() {
       <Text className="text-3xl font-bold text-gray-900 mb-3">
         {t("emergency.title")}
       </Text>
-      <Text className="mb-4 mt-1 text-sm text-gray-500">
+      <Text className="mt-1 mb-3 text-sm text-gray-500">
         {t("emergency.description")}
       </Text>
     </View>
@@ -159,7 +163,9 @@ export default function EmergencyFundScreen() {
                     style={{ marginLeft: 4 }}
                   />
                 </View>
-                <Text className="text-xs text-gray-400">{t("emergency.expenses")}</Text>
+                <Text className="text-xs text-gray-400">
+                  {t("emergency.expenses")}
+                </Text>
               </Pressable>
               <View className="w-px self-stretch bg-gray-200" />
               <View className="flex-1 items-center">
@@ -168,7 +174,9 @@ export default function EmergencyFundScreen() {
                   className="text-2xl font-bold text-gray-900"
                   suffixFormat
                 />
-                <Text className="text-xs text-gray-400">{t("emergency.monthlyCost")}</Text>
+                <Text className="text-xs text-gray-400">
+                  {t("emergency.monthlyCost")}
+                </Text>
               </View>
             </View>
           </Card>

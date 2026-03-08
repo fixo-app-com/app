@@ -1,4 +1,10 @@
-import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   DEFAULT_SORT,
@@ -19,7 +25,11 @@ const SortPreferencesContext = createContext<SortPreferencesContextValue>({
   setSortFor: () => {},
 });
 
-export function SortPreferencesProvider({ children }: { children: React.ReactNode }) {
+export function SortPreferencesProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [sortPrefs, setSortPrefs] = useState<SortPreferences>(DEFAULT_SORT);
 
   useEffect(() => {

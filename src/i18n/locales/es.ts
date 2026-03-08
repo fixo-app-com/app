@@ -76,14 +76,12 @@ const es = {
     "auth/wrong-password": "Contrase\u00F1a incorrecta.",
     "auth/invalid-credential":
       "Credenciales inv\u00E1lidas. Verifica tu correo y contrase\u00F1a.",
-    "auth/email-already-in-use":
-      "Ya existe una cuenta con este correo.",
+    "auth/email-already-in-use": "Ya existe una cuenta con este correo.",
     "auth/weak-password":
       "La contrase\u00F1a es muy d\u00E9bil. Usa al menos 8 caracteres con may\u00FAscula, n\u00FAmero y car\u00E1cter especial.",
     "auth/too-many-requests":
       "Demasiados intentos. Int\u00E9ntalo m\u00E1s tarde.",
-    "auth/network-request-failed":
-      "Error de red. Verifica tu conexi\u00F3n.",
+    "auth/network-request-failed": "Error de red. Verifica tu conexi\u00F3n.",
     "auth/account-exists-with-different-credential":
       "Ya existe una cuenta con este correo. Inicia sesi\u00F3n con tu m\u00E9todo existente para vincular esta cuenta.",
     "auth/requires-recent-login":
@@ -102,6 +100,12 @@ const es = {
     enterBudget: "Ingresa tu presupuesto {{period}} total",
     noCategories: "A\u00FAn no hay categor\u00EDas.",
     addCategory: "Agregar categor\u00EDa",
+    allCategories: "Todas",
+    breakdown: "Desglose",
+  },
+  categories: {
+    title: "Categor\u00EDas",
+    noCategories: "No hay categor\u00EDas.",
   },
   wallets: {
     title: "Billeteras",
@@ -234,12 +238,12 @@ const es = {
   tabs: {
     home: "Inicio",
     wallets: "Billeteras",
+    categories: "Categor\u00EDas",
     emergency: "Emergencia",
     settings: "Ajustes",
   },
   expenseList: {
-    deleteFailed:
-      'No se pudo eliminar "{{name}}". Int\u00E9ntalo de nuevo.',
+    deleteFailed: 'No se pudo eliminar "{{name}}". Int\u00E9ntalo de nuevo.',
   },
   categoryCard: {
     expense_one: "{{count}} gasto",

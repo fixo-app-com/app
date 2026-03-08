@@ -94,6 +94,12 @@ const it = {
     enterBudget: "Inserisci il tuo budget {{period}} totale",
     noCategories: "Nessuna categoria ancora.",
     addCategory: "Aggiungi categoria",
+    allCategories: "Tutte",
+    breakdown: "Ripartizione",
+  },
+  categories: {
+    title: "Categorie",
+    noCategories: "Nessuna categoria.",
   },
   wallets: {
     title: "Portafogli",
@@ -224,6 +230,7 @@ const it = {
   tabs: {
     home: "Home",
     wallets: "Portafogli",
+    categories: "Categorie",
     emergency: "Emergenza",
     settings: "Impostazioni",
   },

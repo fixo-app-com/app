@@ -8,7 +8,7 @@ import { useData } from "../../../contexts/DataContext";
 import { getExpenses } from "../../../services/firestore";
 import { useDeleteConfirmation } from "../../../hooks/useDeleteConfirmation";
 import { useStoreReview } from "../../../hooks/useStoreReview";
-import type { HomeStackParamList } from "../../../navigation/RootNavigator";
+import type { CategoriesStackParamList } from "../../../navigation/RootNavigator";
 import type { BillingFrequency, Expense } from "../../../types/firestore";
 import { getCurrencySymbol } from "../../../constants/banks";
 import { colors } from "../../../constants/colors";
@@ -24,8 +24,11 @@ import {
   SectionHeader,
 } from "../../../design-system";
 
-type Nav = NativeStackNavigationProp<HomeStackParamList, "AddEditExpense">;
-type Route = RouteProp<HomeStackParamList, "AddEditExpense">;
+type Nav = NativeStackNavigationProp<
+  CategoriesStackParamList,
+  "AddEditExpense"
+>;
+type Route = RouteProp<CategoriesStackParamList, "AddEditExpense">;
 
 export default function AddEditExpenseScreen() {
   const { t } = useTranslation();
@@ -113,8 +116,7 @@ export default function AddEditExpenseScreen() {
           { text: t("common.cancel"), style: "cancel" },
           {
             text: t("addEditExpense.createWallet"),
-            onPress: () =>
-              navigation.navigate("AddEditWallet", {}),
+            onPress: () => navigation.navigate("AddEditWallet", {}),
           },
         ],
       );
@@ -175,7 +177,9 @@ export default function AddEditExpenseScreen() {
 
   const headerContent = (
     <ScreenHeader
-      title={isEditing ? t("addEditExpense.editTitle") : t("addEditExpense.newTitle")}
+      title={
+        isEditing ? t("addEditExpense.editTitle") : t("addEditExpense.newTitle")
+      }
       onBack={() => navigation.goBack()}
     />
   );
@@ -201,7 +205,10 @@ export default function AddEditExpenseScreen() {
 
         <ChipGroup
           options={[
-            { value: "monthly" as BillingFrequency, label: t("common.monthly") },
+            {
+              value: "monthly" as BillingFrequency,
+              label: t("common.monthly"),
+            },
             { value: "yearly" as BillingFrequency, label: t("common.yearly") },
           ]}
           selected={billingFrequency}
@@ -260,7 +267,11 @@ export default function AddEditExpenseScreen() {
       <View className="flex-1" />
 
       <SaveDeleteFooter
-        saveLabel={isEditing ? t("addEditExpense.saveChanges") : t("addEditExpense.saveExpense")}
+        saveLabel={
+          isEditing
+            ? t("addEditExpense.saveChanges")
+            : t("addEditExpense.saveExpense")
+        }
         onSave={handleSave}
         saving={saving}
         deleteLabel={isEditing ? t("addEditExpense.deleteExpense") : undefined}

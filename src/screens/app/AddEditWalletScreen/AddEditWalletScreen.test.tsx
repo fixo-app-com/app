@@ -1,6 +1,9 @@
 import { render, screen, fireEvent } from "@testing-library/react-native";
 import AddEditWalletScreen from "./AddEditWalletScreen";
-import { mockCreateNavigation, mockDataContextDefaults } from "../../../test/mocks";
+import {
+  mockCreateNavigation,
+  mockDataContextDefaults,
+} from "../../../test/mocks";
 
 const mockGoBack = jest.fn();
 jest.mock("@react-navigation/native", () => ({

@@ -11,6 +11,7 @@ import SignUpScreen from "../screens/auth/SignUpScreen/SignUpScreen";
 import ForgotPasswordScreen from "../screens/auth/ForgotPasswordScreen/ForgotPasswordScreen";
 import VerifyEmailScreen from "../screens/auth/VerifyEmailScreen/VerifyEmailScreen";
 import HomeScreen from "../screens/app/HomeScreen/HomeScreen";
+import CategoriesScreen from "../screens/app/CategoriesScreen/CategoriesScreen";
 import CategoryDetailScreen from "../screens/app/CategoryDetailScreen/CategoryDetailScreen";
 import AddEditCategoryScreen from "../screens/app/AddEditCategoryScreen/AddEditCategoryScreen";
 import AddEditExpenseScreen from "../screens/app/AddEditExpenseScreen/AddEditExpenseScreen";
@@ -30,6 +31,10 @@ export type AuthStackParamList = {
 
 export type HomeStackParamList = {
   Home: undefined;
+};
+
+export type CategoriesStackParamList = {
+  Categories: undefined;
   CategoryDetail: { categoryId: string; categoryName: string };
   AddEditCategory: {
     categoryId?: string;
@@ -65,6 +70,7 @@ export type SettingsStackParamList = {
 
 export type TabParamList = {
   HomeTab: undefined;
+  CategoriesTab: undefined;
   WalletsTab: undefined;
   EmergencyTab: undefined;
   SettingsTab: undefined;
@@ -74,6 +80,7 @@ export type TabParamList = {
 
 const AuthStack = createNativeStackNavigator<AuthStackParamList>();
 const HomeStack = createNativeStackNavigator<HomeStackParamList>();
+const CategoriesStack = createNativeStackNavigator<CategoriesStackParamList>();
 const WalletsStack = createNativeStackNavigator<WalletsStackParamList>();
 const EmergencyStack = createNativeStackNavigator<EmergencyStackParamList>();
 const SettingsStack = createNativeStackNavigator<SettingsStackParamList>();
@@ -108,23 +115,31 @@ function HomeStackNavigator() {
   return (
     <HomeStack.Navigator screenOptions={stackOptions}>
       <HomeStack.Screen name="Home" component={HomeScreen} />
-      <HomeStack.Screen
+    </HomeStack.Navigator>
+  );
+}
+
+function CategoriesStackNavigator() {
+  return (
+    <CategoriesStack.Navigator screenOptions={stackOptions}>
+      <CategoriesStack.Screen name="Categories" component={CategoriesScreen} />
+      <CategoriesStack.Screen
         name="CategoryDetail"
         component={CategoryDetailScreen}
       />
-      <HomeStack.Screen
+      <CategoriesStack.Screen
         name="AddEditCategory"
         component={AddEditCategoryScreen}
       />
-      <HomeStack.Screen
+      <CategoriesStack.Screen
         name="AddEditExpense"
         component={AddEditExpenseScreen}
       />
-      <HomeStack.Screen
+      <CategoriesStack.Screen
         name="AddEditWallet"
         component={AddEditWalletScreen}
       />
-    </HomeStack.Navigator>
+    </CategoriesStack.Navigator>
   );
 }
 
@@ -166,6 +181,7 @@ function SettingsStackNavigator() {
 
 const TAB_ICONS: Record<string, { outline: string; filled: string }> = {
   Home: { outline: "home-outline", filled: "home" },
+  Categories: { outline: "grid-outline", filled: "grid" },
   Wallets: { outline: "wallet-outline", filled: "wallet" },
   Emergency: {
     outline: "shield-checkmark-outline",
@@ -218,6 +234,14 @@ function AppNavigator() {
         options={{
           tabBarLabel: t("tabs.home"),
           tabBarIcon: (props) => <TabIcon {...props} label="Home" />,
+        }}
+      />
+      <Tab.Screen
+        name="CategoriesTab"
+        component={CategoriesStackNavigator}
+        options={{
+          tabBarLabel: t("tabs.categories"),
+          tabBarIcon: (props) => <TabIcon {...props} label="Categories" />,
         }}
       />
       <Tab.Screen

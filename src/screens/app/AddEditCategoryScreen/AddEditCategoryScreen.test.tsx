@@ -1,6 +1,9 @@
 import { render, screen, fireEvent } from "@testing-library/react-native";
 import AddEditCategoryScreen from "./AddEditCategoryScreen";
-import { mockCreateNavigation, mockDataContextDefaults } from "../../../test/mocks";
+import {
+  mockCreateNavigation,
+  mockDataContextDefaults,
+} from "../../../test/mocks";
 
 const mockGoBack = jest.fn();
 
@@ -55,7 +58,9 @@ describe("AddEditCategoryScreen", () => {
 
   it("calls addCategory and navigates back on save", async () => {
     render(<AddEditCategoryScreen />);
-    const input = screen.getByPlaceholderText("addEditCategory.namePlaceholder");
+    const input = screen.getByPlaceholderText(
+      "addEditCategory.namePlaceholder",
+    );
     fireEvent.changeText(input, "Test Category");
     fireEvent.press(screen.getByText("addEditCategory.saveCategory"));
 

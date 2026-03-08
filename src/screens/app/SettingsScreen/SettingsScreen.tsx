@@ -8,10 +8,7 @@ import { useData } from "../../../contexts/DataContext";
 import { signOut, deleteAccount } from "../../../services/auth";
 import { CURRENCIES } from "../../../constants/banks";
 import type { SupportedLanguage } from "../../../types/firestore";
-import {
-  SUPPORTED_LANGUAGES,
-  LANGUAGE_LABELS,
-} from "../../../i18n";
+import { SUPPORTED_LANGUAGES, LANGUAGE_LABELS } from "../../../i18n";
 import {
   Button,
   ChipGroup,
@@ -57,7 +54,9 @@ export default function SettingsScreen() {
   }
 
   const headerContent = (
-    <Text className="mb-6 text-3xl font-bold text-gray-900">{t("settings.title")}</Text>
+    <Text className="mb-6 text-3xl font-bold text-gray-900">
+      {t("settings.title")}
+    </Text>
   );
 
   return (
@@ -69,7 +68,9 @@ export default function SettingsScreen() {
         first
         last
         right={
-          <Text className="text-base text-gray-500">{user?.email ?? "\u2014"}</Text>
+          <Text className="text-base text-gray-500">
+            {user?.email ?? "\u2014"}
+          </Text>
         }
       />
 
@@ -120,7 +121,11 @@ export default function SettingsScreen() {
       <View className="flex-1" />
 
       <View className="mt-6 pb-4">
-        <Button label={t("settings.signOut")} variant="secondary" onPress={() => signOut()} />
+        <Button
+          label={t("settings.signOut")}
+          variant="secondary"
+          onPress={() => signOut()}
+        />
 
         <View className="mt-3">
           <Button

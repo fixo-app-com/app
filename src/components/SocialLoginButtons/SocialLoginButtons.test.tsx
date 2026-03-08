@@ -26,7 +26,9 @@ describe("SocialLoginButtons", () => {
 
   it("calls onApplePress when Apple button is pressed", () => {
     const onApplePress = jest.fn();
-    render(<SocialLoginButtons {...defaultProps} onApplePress={onApplePress} />);
+    render(
+      <SocialLoginButtons {...defaultProps} onApplePress={onApplePress} />,
+    );
     fireEvent.press(screen.getByText("auth.continueWithApple"));
     expect(onApplePress).toHaveBeenCalledTimes(1);
   });

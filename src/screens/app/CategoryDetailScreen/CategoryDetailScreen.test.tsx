@@ -1,13 +1,17 @@
 import { render, screen } from "@testing-library/react-native";
 import CategoryDetailScreen from "./CategoryDetailScreen";
 import { mockWallets } from "../../../test/fixtures";
-import { mockCreateNavigation, mockDataContextDefaults } from "../../../test/mocks";
+import {
+  mockCreateNavigation,
+  mockDataContextDefaults,
+} from "../../../test/mocks";
 
 const mockNavigate = jest.fn();
 const mockGoBack = jest.fn();
 
 jest.mock("@react-navigation/native", () => ({
-  useNavigation: () => mockCreateNavigation({ navigate: mockNavigate, goBack: mockGoBack }),
+  useNavigation: () =>
+    mockCreateNavigation({ navigate: mockNavigate, goBack: mockGoBack }),
   useRoute: () => ({
     params: { categoryId: "cat1", categoryName: "Famiglia" },
   }),
@@ -36,6 +40,6 @@ describe("CategoryDetailScreen", () => {
 
   it("renders add expense button", () => {
     render(<CategoryDetailScreen />);
-    expect(screen.getByText("categoryDetail.addExpense")).toBeOnTheScreen();
+    expect(screen.getByLabelText("Add")).toBeOnTheScreen();
   });
 });

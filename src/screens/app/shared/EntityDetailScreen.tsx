@@ -24,7 +24,6 @@ type Props = {
   getSubtitle: (expense: Expense) => string;
   onExpensePress: (expense: Expense) => void;
   onExpenseDelete: (expenseId: string) => Promise<void>;
-  addLabel?: string;
   onAdd?: () => void;
 };
 
@@ -41,7 +40,6 @@ export function EntityDetailScreen({
   getSubtitle,
   onExpensePress,
   onExpenseDelete,
-  addLabel,
   onAdd,
 }: Props) {
   const headerContent = (
@@ -50,7 +48,11 @@ export function EntityDetailScreen({
         title={title}
         onBack={onBack}
         right={
-          <IconButton name="create-outline" onPress={onEdit} accessibilityLabel="Edit" />
+          <IconButton
+            name="create-outline"
+            onPress={onEdit}
+            accessibilityLabel="Edit"
+          />
         }
       />
 
@@ -78,9 +80,7 @@ export function EntityDetailScreen({
         onDelete={onExpenseDelete}
       />
 
-      {addLabel && onAdd && (
-        <FloatingAction label={addLabel} onPress={onAdd} />
-      )}
+      {onAdd && <FloatingAction onPress={onAdd} />}
 
       <SortBottomSheet
         visible={sort.isOpen}

@@ -216,8 +216,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
           setI18nLanguage(settings.language);
         } else {
           // First login: persist current language to Firestore
-          const currentLang =
-            (i18n.language as SupportedLanguage) || "en";
+          const currentLang = (i18n.language as SupportedLanguage) || "en";
           firestoreService.updateUserSettings(user.uid, {
             language: currentLang,
           });

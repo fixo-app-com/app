@@ -12,17 +12,33 @@ type MetricDef = {
   colorClass: string;
 };
 
-const SLIDE_MIN_HEIGHT = 125;
+function BudgetBar({
+  budgetDisplayCents,
+  totalCents,
+}: {
+  budgetDisplayCents: number;
+  totalCents: number;
+}) {
+  const { t } = useTranslation();
+  const ratio = budgetDisplayCents > 0 ? totalCents / budgetDisplayCents : 0;
+  const pct = Math.round(ratio * 100);
+  const barWidth = Math.min(pct, 100);
 
-export function SlideContent({ children }: { children: React.ReactNode }) {
+  const barColor =
+    pct <= 50 ? "bg-emerald-500" : pct <= 80 ? "bg-yellow-400" : "bg-red-500";
+
   return (
-    <View
-      style={{
-        minHeight: SLIDE_MIN_HEIGHT,
-        justifyContent: "space-between",
-      }}
-    >
-      {children}
+    <View className="mt-8" testID="budget-bar">
+      <View className="h-3 overflow-hidden rounded-full bg-gray-200">
+        <View
+          className={`h-3 rounded-full ${barColor}`}
+          style={{ width: `${barWidth}%` }}
+          testID="budget-bar-fill"
+        />
+      </View>
+      <Text className="mt-1.5 text-center text-xs font-semibold text-gray-500">
+        {t("home.pctUsed", { pct })}
+      </Text>
     </View>
   );
 }
@@ -100,52 +116,53 @@ export function BudgetCard({
 
   return (
     <Card>
-      <SlideContent>
-        <Pressable
-          onPress={isHeroBudget ? onBudgetEdit : undefined}
-          className="items-center py-1"
-          testID="hero-metric"
-        >
-          <View className="flex-row items-center">
-            <Text className="text-xs font-medium uppercase tracking-wide text-gray-400">
-              {hero.label}
-            </Text>
-            {isHeroBudget && (
-              <Ionicons
-                name="create-outline"
-                size={14}
-                color="#9ca3af"
-                style={{ marginLeft: 4 }}
-              />
-            )}
-          </View>
-          <CurrencyText
-            cents={hero.cents}
-            className={`mt-1 text-3xl font-bold ${hero.colorClass}`}
-            hideDecimals
-          />
-        </Pressable>
-
-        <View className="flex-row gap-3">
-          {secondary.map((m) => (
-            <Pressable
-              key={m.key}
-              onPress={() => onPin(m.key)}
-              className="flex-1 items-center rounded-xl bg-gray-50 p-3"
-              testID={`secondary-${m.key}`}
-            >
-              <Text className="text-xs font-medium text-gray-400">
-                {m.label}
-              </Text>
-              <CurrencyText
-                cents={m.cents}
-                className={`mt-0.5 text-base font-semibold ${m.colorClass}`}
-                hideDecimals
-              />
-            </Pressable>
-          ))}
+      <Pressable
+        onPress={isHeroBudget ? onBudgetEdit : undefined}
+        className="items-center py-1"
+        testID="hero-metric"
+      >
+        <View className="flex-row items-center">
+          <Text className="text-xs font-medium uppercase tracking-wide text-gray-400">
+            {hero.label}
+          </Text>
+          {isHeroBudget && (
+            <Ionicons
+              name="create-outline"
+              size={14}
+              color="#9ca3af"
+              style={{ marginLeft: 4 }}
+            />
+          )}
         </View>
-      </SlideContent>
+        <CurrencyText
+          cents={hero.cents}
+          className={`mt-1 text-3xl font-bold ${hero.colorClass}`}
+          hideDecimals
+        />
+      </Pressable>
+
+      <View className="mt-3 flex-row gap-3">
+        {secondary.map((m) => (
+          <Pressable
+            key={m.key}
+            onPress={() => onPin(m.key)}
+            className="flex-1 items-center rounded-xl bg-gray-50 p-3"
+            testID={`secondary-${m.key}`}
+          >
+            <Text className="text-xs font-medium text-gray-400">{m.label}</Text>
+            <CurrencyText
+              cents={m.cents}
+              className={`mt-0.5 text-base font-semibold ${m.colorClass}`}
+              hideDecimals
+            />
+          </Pressable>
+        ))}
+      </View>
+
+      <BudgetBar
+        budgetDisplayCents={budgetDisplayCents}
+        totalCents={totalCents}
+      />
     </Card>
   );
 }

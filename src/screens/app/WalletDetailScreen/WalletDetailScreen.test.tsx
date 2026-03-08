@@ -1,14 +1,21 @@
 import { render, screen } from "@testing-library/react-native";
 import WalletDetailScreen from "./WalletDetailScreen";
 import { mockCategories, mockWallets } from "../../../test/fixtures";
-import { mockCreateNavigation, mockDataContextDefaults } from "../../../test/mocks";
+import {
+  mockCreateNavigation,
+  mockDataContextDefaults,
+} from "../../../test/mocks";
 
 const mockGoBack = jest.fn();
 
 jest.mock("@react-navigation/native", () => ({
   useNavigation: () => mockCreateNavigation({ goBack: mockGoBack }),
   useRoute: () => ({
-    params: { walletId: "w1", walletName: "Intesa Sanpaolo", walletIcon: "intesa-sanpaolo" },
+    params: {
+      walletId: "w1",
+      walletName: "Intesa Sanpaolo",
+      walletIcon: "intesa-sanpaolo",
+    },
   }),
 }));
 

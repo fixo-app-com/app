@@ -29,5 +29,14 @@ export function useSortSheet(key: SortKey) {
     label: t(o.labelKey),
   }));
 
-  return { isOpen, open, close, selected, select, triggerLabel, title, options };
+  return {
+    isOpen,
+    open,
+    close,
+    selected,
+    select,
+    triggerLabel,
+    title,
+    options,
+  };
 }

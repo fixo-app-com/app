@@ -1,14 +1,9 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react-native";
+import { fireEvent, render, screen } from "@testing-library/react-native";
 import HomeScreen from "./HomeScreen";
 import { mockCategories, mockExpenses } from "../../../test/fixtures";
-import { mockCreateNavigation, mockDataContextDefaults } from "../../../test/mocks";
+import { mockDataContextDefaults } from "../../../test/mocks";
 
-const mockNavigate = jest.fn();
 const mockSetPinnedBudgetMetric = jest.fn();
-
-jest.mock("@react-navigation/native", () => ({
-  useNavigation: () => mockCreateNavigation({ navigate: mockNavigate }),
-}));
 
 jest.mock("../../../contexts/AuthContext", () => ({
   useAuth: () => ({ user: { uid: "test-uid" } }),
@@ -44,14 +39,6 @@ describe("HomeScreen", () => {
     expect(screen.getByText("common.yearly")).toBeOnTheScreen();
   });
 
-  it("renders categories", async () => {
-    render(<HomeScreen />);
-    await waitFor(() => {
-      expect(screen.getByText("Subscriptions")).toBeOnTheScreen();
-      expect(screen.getByText("Food")).toBeOnTheScreen();
-    });
-  });
-
   it("shows set-budget prompt when no budget is set", () => {
     render(<HomeScreen />);
     expect(screen.getByText("home.setMonthlyBudget")).toBeOnTheScreen();
@@ -61,8 +48,12 @@ describe("HomeScreen", () => {
     mockDataOverrides = { monthlyBudgetCents: 250000 };
     render(<HomeScreen />);
     expect(screen.getByTestId("hero-metric")).toBeOnTheScreen();
-    expect(screen.getAllByText("home.totalCosts").length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText("home.leftover").length).toBeGreaterThanOrEqual(1);
+    expect(
+      screen.getAllByText("home.totalCosts").length,
+    ).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText("home.leftover").length).toBeGreaterThanOrEqual(
+      1,
+    );
   });
 
   it("tapping secondary metric calls setPinnedBudgetMetric", () => {
@@ -92,24 +83,32 @@ describe("HomeScreen", () => {
     expect(mockSetPinnedBudgetMetric).toHaveBeenCalledWith("budget");
   });
 
-  it("renders chart card when budget is set", () => {
+  it("renders budget bar when budget is set", () => {
     mockDataOverrides = { monthlyBudgetCents: 250000 };
     render(<HomeScreen />);
-    expect(screen.getByTestId("budget-chart-card")).toBeOnTheScreen();
-    expect(screen.getByText("home.pctUsed")).toBeOnTheScreen();
+    expect(screen.getByTestId("budget-bar")).toBeOnTheScreen();
   });
 
-  it("renders dot indicators when budget is set", () => {
-    mockDataOverrides = { monthlyBudgetCents: 250000 };
-    render(<HomeScreen />);
-    expect(screen.getByTestId("dot-indicators")).toBeOnTheScreen();
-  });
-
-  it("does not render slider or chart when no budget is set", () => {
+  it("does not render budget bar when no budget is set", () => {
     mockDataOverrides = { monthlyBudgetCents: 0 };
     render(<HomeScreen />);
-    expect(screen.queryByTestId("budget-slider")).toBeNull();
-    expect(screen.queryByTestId("budget-chart-card")).toBeNull();
-    expect(screen.queryByTestId("dot-indicators")).toBeNull();
+    expect(screen.queryByTestId("budget-bar")).toBeNull();
+  });
+
+  it("renders donut chart when expenses exist", () => {
+    render(<HomeScreen />);
+    expect(screen.getByTestId("donut-chart")).toBeOnTheScreen();
+  });
+
+  it("does not render donut chart when no expenses", () => {
+    mockDataOverrides = { expenses: [] };
+    render(<HomeScreen />);
+    expect(screen.queryByTestId("donut-chart")).toBeNull();
+  });
+
+  it("does not render donut chart when categories have no expenses", () => {
+    mockDataOverrides = { categories: mockCategories, expenses: [] };
+    render(<HomeScreen />);
+    expect(screen.queryByTestId("donut-chart")).toBeNull();
   });
 });

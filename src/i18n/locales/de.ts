@@ -19,8 +19,7 @@ const de = {
     hasAccount: "Bereits ein Konto? ",
     enterEmailAndPassword: "Bitte E-Mail und Passwort eingeben.",
     fillAllFields: "Bitte alle Felder ausf\u00FCllen.",
-    meetPasswordRequirements:
-      "Bitte alle Passwortanforderungen erf\u00FCllen.",
+    meetPasswordRequirements: "Bitte alle Passwortanforderungen erf\u00FCllen.",
     passwordsDoNotMatch: "Passw\u00F6rter stimmen nicht \u00FCberein.",
     sendResetLink: "Link senden",
     backToLogin: "Zur\u00FCck zur Anmeldung",
@@ -101,6 +100,12 @@ const de = {
     enterBudget: "Gib dein gesamtes {{period}} Budget ein",
     noCategories: "Noch keine Kategorien.",
     addCategory: "Kategorie hinzuf\u00FCgen",
+    allCategories: "Alle",
+    breakdown: "Aufschl\u00FCsselung",
+  },
+  categories: {
+    title: "Kategorien",
+    noCategories: "Keine Kategorien.",
   },
   wallets: {
     title: "Konten",
@@ -233,6 +238,7 @@ const de = {
   tabs: {
     home: "Start",
     wallets: "Konten",
+    categories: "Kategorien",
     emergency: "Notfall",
     settings: "Einstellungen",
   },

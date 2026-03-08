@@ -21,7 +21,11 @@ export function SaveDeleteFooter({
       <Button label={saveLabel} onPress={onSave} loading={saving} />
       {deleteLabel && onDelete && (
         <View className="mt-3">
-          <Button label={deleteLabel} variant="destructive" onPress={onDelete} />
+          <Button
+            label={deleteLabel}
+            variant="destructive"
+            onPress={onDelete}
+          />
         </View>
       )}
     </View>

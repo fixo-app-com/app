@@ -2,14 +2,17 @@ import { useTranslation } from "react-i18next";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useData } from "../../../contexts/DataContext";
-import type { HomeStackParamList } from "../../../navigation/RootNavigator";
+import type { CategoriesStackParamList } from "../../../navigation/RootNavigator";
 import { computeTotalCents } from "../../../types/firestore";
 import { useExpenses } from "../../../hooks/useExpenses";
 import { useSortSheet } from "../../../hooks/useSortSheet";
 import { EntityDetailScreen } from "../shared/EntityDetailScreen";
 
-type Nav = NativeStackNavigationProp<HomeStackParamList, "CategoryDetail">;
-type Route = RouteProp<HomeStackParamList, "CategoryDetail">;
+type Nav = NativeStackNavigationProp<
+  CategoriesStackParamList,
+  "CategoryDetail"
+>;
+type Route = RouteProp<CategoriesStackParamList, "CategoryDetail">;
 
 export default function CategoryDetailScreen() {
   const { t } = useTranslation();
@@ -22,7 +25,10 @@ export default function CategoryDetailScreen() {
   const categoryName = category?.name ?? route.params.categoryName;
 
   const sort = useSortSheet("expenses");
-  const { expenses, loading } = useExpenses({ categoryId, sort: sort.selected });
+  const { expenses, loading } = useExpenses({
+    categoryId,
+    sort: sort.selected,
+  });
 
   const totalCents = computeTotalCents(expenses, viewMode);
 
@@ -37,16 +43,23 @@ export default function CategoryDetailScreen() {
           categoryIcon: category?.icon,
         })
       }
-      summaryPrefix={viewMode === "yearly" ? t("categoryDetail.yearlyPrefix") : t("categoryDetail.monthlyPrefix")}
+      summaryPrefix={
+        viewMode === "yearly"
+          ? t("categoryDetail.yearlyPrefix")
+          : t("categoryDetail.monthlyPrefix")
+      }
       totalCents={totalCents}
       sort={sort}
       expenses={expenses}
       loading={loading}
       emptyMessage={t("categoryDetail.noExpenses")}
-      getSubtitle={(e) => wallets.find((w) => w.id === e.walletId)?.name ?? "\u2014"}
-      onExpensePress={(e) => navigation.navigate("AddEditExpense", { categoryId, expenseId: e.id })}
+      getSubtitle={(e) =>
+        wallets.find((w) => w.id === e.walletId)?.name ?? "\u2014"
+      }
+      onExpensePress={(e) =>
+        navigation.navigate("AddEditExpense", { categoryId, expenseId: e.id })
+      }
       onExpenseDelete={(id) => deleteExpense(id)}
-      addLabel={t("categoryDetail.addExpense")}
       onAdd={() => navigation.navigate("AddEditExpense", { categoryId })}
     />
   );

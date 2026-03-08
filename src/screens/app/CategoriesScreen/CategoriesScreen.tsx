@@ -4,7 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useData } from "../../../contexts/DataContext";
 import { colors } from "../../../constants/colors";
-import type { WalletsStackParamList } from "../../../navigation/RootNavigator";
+import type { CategoriesStackParamList } from "../../../navigation/RootNavigator";
 import {
   EmptyState,
   FloatingAction,
@@ -12,35 +12,33 @@ import {
   SortBottomSheet,
   SortTrigger,
 } from "../../../design-system";
-import { ListSpacer, ViewModeToggle, WalletCard } from "../../../components";
+import { CategoryCard, ListSpacer, ViewModeToggle } from "../../../components";
 import { useExpenses } from "../../../hooks/useExpenses";
 import { useSortSheet } from "../../../hooks/useSortSheet";
 import { useEntityList } from "../../../hooks/useEntityList";
 
-type Nav = NativeStackNavigationProp<WalletsStackParamList>;
+type Nav = NativeStackNavigationProp<CategoriesStackParamList>;
 
-export default function WalletsScreen() {
+export default function CategoriesScreen() {
   const { t } = useTranslation();
   const navigation = useNavigation<Nav>();
-  const { wallets, viewMode, setViewMode } = useData();
+  const { categories, viewMode, setViewMode } = useData();
 
   const { expenses, loading: loadingExpenses } = useExpenses();
-  const sort = useSortSheet("wallets");
-  const { sorted: sortedWallets, getTotal: getWalletTotal } = useEntityList(
-    wallets,
-    expenses,
-    viewMode,
-    sort.selected,
-    "walletId",
-  );
+  const sort = useSortSheet("categories");
+  const { sorted: sortedCategories, getTotal: getCategoryTotal } =
+    useEntityList(categories, expenses, viewMode, sort.selected, "categoryId");
+
+  function getCategoryCount(categoryId: string): number {
+    return expenses.filter((e) => e.categoryId === categoryId).length;
+  }
 
   const headerContent = (
     <>
       <Text className="mb-4 text-3xl font-bold text-gray-900">
-        {t("wallets.title")}
+        {t("categories.title")}
       </Text>
 
-      {/* Monthly / Yearly toggle + sort */}
       <View className="flex-row items-center justify-between">
         <ViewModeToggle selected={viewMode} onSelect={setViewMode} />
         <SortTrigger label={sort.triggerLabel} onPress={sort.open} />
@@ -54,19 +52,19 @@ export default function WalletsScreen() {
         <ActivityIndicator color={colors.fixo[400]} className="mt-8" />
       ) : (
         <FlatList
-          data={sortedWallets}
+          data={sortedCategories}
           keyExtractor={(item) => item.id}
           contentContainerStyle={{ paddingBottom: 100 }}
           renderItem={({ item }) => (
-            <WalletCard
+            <CategoryCard
+              icon={item.icon}
               name={item.name}
-              icon={item.icon ?? ""}
-              totalCents={getWalletTotal(item.id)}
+              expenseCount={getCategoryCount(item.id)}
+              totalCents={getCategoryTotal(item.id)}
               onPress={() =>
-                navigation.navigate("WalletDetail", {
-                  walletId: item.id,
-                  walletName: item.name,
-                  walletIcon: item.icon,
+                navigation.navigate("CategoryDetail", {
+                  categoryId: item.id,
+                  categoryName: item.name,
                 })
               }
             />
@@ -74,15 +72,15 @@ export default function WalletsScreen() {
           ItemSeparatorComponent={ListSpacer}
           ListEmptyComponent={
             <EmptyState
-              icon="wallet-outline"
-              message={t("wallets.noWallets")}
+              icon="grid-outline"
+              message={t("categories.noCategories")}
             />
           }
         />
       )}
 
       <FloatingAction
-        onPress={() => navigation.navigate("AddEditWallet", {})}
+        onPress={() => navigation.navigate("AddEditCategory", {})}
       />
 
       <SortBottomSheet

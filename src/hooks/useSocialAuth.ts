@@ -54,7 +54,10 @@ export function useSocialAuth() {
         );
         return;
       }
-      Alert.alert(i18n.t("common.error"), getFirebaseAuthErrorMessage(errorCode));
+      Alert.alert(
+        i18n.t("common.error"),
+        getFirebaseAuthErrorMessage(errorCode),
+      );
     } finally {
       setLoadingAction(null);
     }

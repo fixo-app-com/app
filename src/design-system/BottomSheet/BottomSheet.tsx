@@ -54,7 +54,9 @@ export const BottomSheet = forwardRef<BottomSheetModal, Props>(
         backgroundStyle={{ borderTopLeftRadius: 20, borderTopRightRadius: 20 }}
         handleIndicatorStyle={{ backgroundColor: "#d1d5db", width: 40 }}
       >
-        <BottomSheetScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 32 }}>
+        <BottomSheetScrollView
+          contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 32 }}
+        >
           <View
             className={`mb-3 flex-row items-center ${title ? "justify-between" : "justify-end"}`}
           >

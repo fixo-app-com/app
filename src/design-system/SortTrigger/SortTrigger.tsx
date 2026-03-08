@@ -15,7 +15,12 @@ export function SortTrigger({ label, onPress }: Props) {
       testID="sort-trigger"
     >
       <Text className="text-sm text-gray-500">{label}</Text>
-      <Ionicons name="swap-vertical-outline" size={16} color="#6b7280" style={{ marginLeft: 4 }} />
+      <Ionicons
+        name="swap-vertical-outline"
+        size={16}
+        color="#6b7280"
+        style={{ marginLeft: 4 }}
+      />
     </Pressable>
   );
 }

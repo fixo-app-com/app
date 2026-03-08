@@ -26,9 +26,7 @@ export function ChipGroup<T extends string>({
 
   let itemSize: number | undefined;
   if (!compact) {
-    const columns = Math.floor(
-      (containerWidth + GAP) / (itemBaseWidth + GAP),
-    );
+    const columns = Math.floor((containerWidth + GAP) / (itemBaseWidth + GAP));
     itemSize = (containerWidth - (columns - 1) * GAP) / columns;
   }
 
@@ -46,11 +44,7 @@ export function ChipGroup<T extends string>({
             className={`items-center justify-center rounded-xl ${chipPadding} ${
               isSelected ? "bg-fixo-100" : "bg-white"
             }`}
-            style={
-              compact
-                ? undefined
-                : { width: itemSize, height: itemSize }
-            }
+            style={compact ? undefined : { width: itemSize, height: itemSize }}
           >
             <Text
               className={`${textSize} ${isSelected ? "text-fixo-600" : "text-gray-500"}`}

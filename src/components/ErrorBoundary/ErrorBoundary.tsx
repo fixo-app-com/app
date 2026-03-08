@@ -36,7 +36,11 @@ export class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         <View className="flex-1 items-center justify-center bg-gray-100 px-8">
-          <Ionicons name="alert-circle-outline" size={64} color={colors.fixo[400]} />
+          <Ionicons
+            name="alert-circle-outline"
+            size={64}
+            color={colors.fixo[400]}
+          />
           <Text className="mt-4 text-xl font-semibold text-gray-900">
             {i18n.t("errorBoundary.title")}
           </Text>
@@ -44,7 +48,10 @@ export class ErrorBoundary extends Component<Props, State> {
             {i18n.t("errorBoundary.message")}
           </Text>
           <View className="mt-8 w-full">
-            <Button label={i18n.t("errorBoundary.restart")} onPress={this.handleRestart} />
+            <Button
+              label={i18n.t("errorBoundary.restart")}
+              onPress={this.handleRestart}
+            />
           </View>
         </View>
       );
