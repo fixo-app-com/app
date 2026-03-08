@@ -9,11 +9,11 @@ import type { CategoriesStackParamList } from "../../../navigation/RootNavigator
 import { useDeleteConfirmation } from "../../../hooks/useDeleteConfirmation";
 import {
   ChipGroup,
+  FormLabel,
   Input,
   SaveDeleteFooter,
   ScreenHeader,
   ScreenWrapper,
-  SectionHeader,
 } from "../../../design-system";
 
 type Nav = NativeStackNavigationProp<
@@ -143,21 +143,27 @@ export default function AddEditCategoryScreen() {
 
   return (
     <ScreenWrapper scroll header={headerContent}>
-      <Input
-        label={t("addEditCategory.nameLabel")}
-        value={name}
-        onChangeText={setName}
-        placeholder={t("addEditCategory.namePlaceholder")}
-        maxLength={50}
-      />
+      <View className="mb-4">
+        <FormLabel title={t("addEditCategory.nameLabel")} />
+        <Input
+          value={name}
+          onChangeText={setName}
+          placeholder={t("addEditCategory.namePlaceholder")}
+          maxLength={50}
+        />
+      </View>
 
-      <SectionHeader title={t("addEditCategory.iconSection")} />
-
-      <ChipGroup
-        options={EMOJI_OPTIONS.map((emoji) => ({ value: emoji, label: emoji }))}
-        selected={icon}
-        onSelect={setIcon}
-      />
+      <View className="mb-4">
+        <FormLabel title={t("addEditCategory.iconSection")} />
+        <ChipGroup
+          options={EMOJI_OPTIONS.map((emoji) => ({
+            value: emoji,
+            label: emoji,
+          }))}
+          selected={icon}
+          onSelect={setIcon}
+        />
+      </View>
 
       <View className="flex-1" />
 

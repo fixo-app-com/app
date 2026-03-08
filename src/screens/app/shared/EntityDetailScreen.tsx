@@ -56,7 +56,7 @@ export function EntityDetailScreen({
         }
       />
 
-      <View className="mb-4 flex-row items-center justify-between">
+      <View className="mt-5 flex-row items-center justify-between">
         <Text className="text-sm text-gray-500">
           {summaryPrefix}{" "}
           <CurrencyText

@@ -15,11 +15,11 @@ import { BANKS } from "../../../constants/banks";
 import { useDeleteConfirmation } from "../../../hooks/useDeleteConfirmation";
 import { BankIcon } from "../../../components";
 import {
+  FormLabel,
   Input,
   SaveDeleteFooter,
   ScreenHeader,
   ScreenWrapper,
-  SectionHeader,
 } from "../../../design-system";
 import { useExpenses } from "../../../hooks/useExpenses";
 
@@ -141,52 +141,58 @@ export default function AddEditWalletScreen() {
 
   return (
     <ScreenWrapper scroll header={headerContent}>
-      <Input
-        label={t("addEditWallet.nameLabel")}
-        value={name}
-        onChangeText={handleNameChange}
-        placeholder={t("addEditWallet.namePlaceholder")}
-        maxLength={50}
-      />
+      <View className="mb-4">
+        <FormLabel title={t("addEditWallet.nameLabel")} />
+        <Input
+          value={name}
+          onChangeText={handleNameChange}
+          placeholder={t("addEditWallet.namePlaceholder")}
+          maxLength={50}
+        />
+      </View>
 
-      <SectionHeader title={t("addEditWallet.bankIconSection")} />
+      <View className="mb-4">
+        <FormLabel title={t("addEditWallet.bankIconSection")} />
+        <View className="flex-row flex-wrap" style={{ gap: ITEM_GAP }}>
+          {/* Generic / no icon option */}
+          <Pressable
+            onPress={handleGenericSelect}
+            className={`items-center justify-center rounded-xl p-2 ${
+              icon === "" ? "bg-fixo-100" : "bg-white"
+            }`}
+            style={{ width: itemWidth, height: itemWidth }}
+          >
+            <BankIcon bankKey="" size={32} />
+            <Text className="mt-1 text-[9px] text-gray-400" numberOfLines={1}>
+              {t("addEditWallet.other")}
+            </Text>
+          </Pressable>
 
-      <View className="flex-row flex-wrap" style={{ gap: ITEM_GAP }}>
-        {/* Generic / no icon option */}
-        <Pressable
-          onPress={handleGenericSelect}
-          className={`items-center justify-center rounded-xl p-2 ${
-            icon === "" ? "bg-fixo-100" : "bg-white"
-          }`}
-          style={{ width: itemWidth, height: itemWidth }}
-        >
-          <BankIcon bankKey="" size={32} />
-          <Text className="mt-1 text-[9px] text-gray-400" numberOfLines={1}>
-            {t("addEditWallet.other")}
-          </Text>
-        </Pressable>
-
-        {filteredBanks.map((bank) => {
-          const isSelected = icon === bank.key;
-          return (
-            <Pressable
-              key={bank.key}
-              onPress={() => handleBankSelect(bank.key, bank.name)}
-              className={`items-center justify-center rounded-xl p-2 ${
-                isSelected ? "bg-fixo-100" : "bg-white"
-              }`}
-              style={{
-                width: itemWidth,
-                height: itemWidth,
-              }}
-            >
-              <BankIcon bankKey={bank.key} size={32} />
-              <Text className="mt-1 text-[9px] text-gray-400" numberOfLines={1}>
-                {bank.name}
-              </Text>
-            </Pressable>
-          );
-        })}
+          {filteredBanks.map((bank) => {
+            const isSelected = icon === bank.key;
+            return (
+              <Pressable
+                key={bank.key}
+                onPress={() => handleBankSelect(bank.key, bank.name)}
+                className={`items-center justify-center rounded-xl p-2 ${
+                  isSelected ? "bg-fixo-100" : "bg-white"
+                }`}
+                style={{
+                  width: itemWidth,
+                  height: itemWidth,
+                }}
+              >
+                <BankIcon bankKey={bank.key} size={32} />
+                <Text
+                  className="mt-1 text-[9px] text-gray-400"
+                  numberOfLines={1}
+                >
+                  {bank.name}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
       </View>
 
       <View className="flex-1" />

@@ -15,13 +15,13 @@ import { colors } from "../../../constants/colors";
 import {
   Button,
   ChipGroup,
+  FormLabel,
   FormRow,
   FullScreenLoader,
   Input,
   SaveDeleteFooter,
   ScreenHeader,
   ScreenWrapper,
-  SectionHeader,
 } from "../../../design-system";
 
 type Nav = NativeStackNavigationProp<
@@ -186,83 +186,94 @@ export default function AddEditExpenseScreen() {
 
   return (
     <ScreenWrapper scroll header={headerContent}>
-      <View className="gap-4">
+      <View className="mb-4">
+        <FormLabel title={t("addEditExpense.nameLabel")} />
         <Input
-          label={t("addEditExpense.nameLabel")}
           value={name}
           onChangeText={setName}
           placeholder={t("addEditExpense.namePlaceholder")}
           maxLength={100}
         />
+      </View>
 
+      <View className="mb-4">
+        <FormLabel
+          title={t("addEditExpense.amountLabel", { symbol: currencySymbol })}
+        />
         <Input
-          label={t("addEditExpense.amountLabel", { symbol: currencySymbol })}
           value={amountText}
           onChangeText={setAmountText}
           placeholder={t("addEditExpense.amountPlaceholder")}
           keyboardType="decimal-pad"
         />
-
-        <ChipGroup
-          options={[
-            {
-              value: "monthly" as BillingFrequency,
-              label: t("common.monthly"),
-            },
-            { value: "yearly" as BillingFrequency, label: t("common.yearly") },
-          ]}
-          selected={billingFrequency}
-          onSelect={setBillingFrequency}
-          compact
-        />
+        <View className="mt-2">
+          <ChipGroup
+            options={[
+              {
+                value: "monthly" as BillingFrequency,
+                label: t("common.monthly"),
+              },
+              {
+                value: "yearly" as BillingFrequency,
+                label: t("common.yearly"),
+              },
+            ]}
+            selected={billingFrequency}
+            onSelect={setBillingFrequency}
+            compact
+          />
+        </View>
       </View>
 
-      <SectionHeader title={t("addEditExpense.walletSection")} />
-
-      {wallets.length === 0 ? (
-        <Button
-          label={t("addEditExpense.createWallet")}
-          variant="outline"
-          onPress={() => navigation.navigate("AddEditWallet", {})}
-        />
-      ) : (
-        <ChipGroup
-          options={wallets.map((w) => ({ value: w.id, label: w.name }))}
-          selected={walletId}
-          onSelect={setWalletId}
-          compact
-        />
-      )}
-
-      <SectionHeader title={t("addEditExpense.optionsSection")} />
-
-      <FormRow
-        label={t("addEditExpense.essentialLabel")}
-        first
-        last
-        right={
-          <Switch
-            value={essential}
-            onValueChange={setEssential}
-            trackColor={{ false: colors.gray[200], true: colors.fixo[400] }}
-            thumbColor={colors.white}
+      <View className="mb-4">
+        <FormLabel title={t("addEditExpense.walletSection")} />
+        {wallets.length === 0 ? (
+          <Button
+            label={t("addEditExpense.createWallet")}
+            variant="outline"
+            onPress={() => navigation.navigate("AddEditWallet", {})}
           />
-        }
-      />
-      <Text className="mt-2 text-xs text-gray-400">
-        {t("addEditExpense.essentialHint")}
-      </Text>
+        ) : (
+          <ChipGroup
+            options={wallets.map((w) => ({ value: w.id, label: w.name }))}
+            selected={walletId}
+            onSelect={setWalletId}
+            compact
+          />
+        )}
+      </View>
 
-      <SectionHeader title={t("addEditExpense.notesSection")} />
+      <View className="mb-4">
+        <FormLabel title={t("addEditExpense.optionsSection")} />
+        <FormRow
+          label={t("addEditExpense.essentialLabel")}
+          first
+          last
+          right={
+            <Switch
+              value={essential}
+              onValueChange={setEssential}
+              trackColor={{ false: colors.gray[200], true: colors.fixo[400] }}
+              thumbColor={colors.white}
+            />
+          }
+        />
+        <Text className="mt-2 text-xs text-gray-400">
+          {t("addEditExpense.essentialHint")}
+        </Text>
+      </View>
 
-      <Input
-        value={notes}
-        onChangeText={setNotes}
-        placeholder=""
-        multiline
-        maxLength={500}
-        style={{ minHeight: 80 }}
-      />
+      <View className="mb-4">
+        <FormLabel title={t("addEditExpense.notesSection")} />
+        <Input
+          value={notes}
+          onChangeText={setNotes}
+          placeholder=""
+          multiline
+          maxLength={500}
+          style={{ minHeight: 80 }}
+        />
+      </View>
 
       <View className="flex-1" />
 

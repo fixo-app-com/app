@@ -13,7 +13,6 @@ import {
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 interface InputProps {
-  label?: string;
   value: string;
   onChangeText: (text: string) => void;
   placeholder?: string;
@@ -44,7 +43,6 @@ const baseInputStyle = {
 };
 
 export function Input({
-  label,
   value,
   onChangeText,
   placeholder,
@@ -84,9 +82,6 @@ export function Input({
 
   return (
     <View>
-      {label ? (
-        <Text className="mb-2 text-sm text-gray-500">{label}</Text>
-      ) : null}
       <View className="flex-row items-center rounded-xl bg-white">
         {isPassword ? (
           <View style={styles.passwordContainer}>

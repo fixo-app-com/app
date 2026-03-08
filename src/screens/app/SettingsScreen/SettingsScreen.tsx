@@ -12,9 +12,9 @@ import { SUPPORTED_LANGUAGES, LANGUAGE_LABELS } from "../../../i18n";
 import {
   Button,
   ChipGroup,
+  FormLabel,
   FormRow,
   ScreenWrapper,
-  SectionHeader,
 } from "../../../design-system";
 
 export default function SettingsScreen() {
@@ -61,7 +61,7 @@ export default function SettingsScreen() {
 
   return (
     <ScreenWrapper scroll header={headerContent}>
-      <SectionHeader title={t("settings.account")} />
+      <FormLabel title={t("settings.account")} />
 
       <FormRow
         label={t("settings.email")}
@@ -74,7 +74,7 @@ export default function SettingsScreen() {
         }
       />
 
-      <SectionHeader title={t("settings.currency")} />
+      <FormLabel title={t("settings.currency")} />
 
       <ChipGroup
         options={CURRENCIES.map((c) => ({
@@ -86,7 +86,7 @@ export default function SettingsScreen() {
         compact
       />
 
-      <SectionHeader title={t("settings.language")} />
+      <FormLabel title={t("settings.language")} />
 
       <ChipGroup
         options={SUPPORTED_LANGUAGES.map((lang) => ({
@@ -98,7 +98,7 @@ export default function SettingsScreen() {
         compact
       />
 
-      <SectionHeader title={t("settings.legal")} />
+      <FormLabel title={t("settings.legal")} />
 
       <FormRow
         label={t("settings.privacyPolicy")}

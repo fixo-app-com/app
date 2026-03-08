@@ -16,7 +16,7 @@ export function ScreenHeader({ title, onBack, right }: ScreenHeaderProps) {
           onPress={onBack}
           accessibilityRole="button"
           accessibilityLabel="Go back"
-          className="mr-2 justify-center"
+          className="-ml-1.5 mr-2 justify-center"
           style={({ pressed }) => ({
             opacity: pressed ? 0.6 : 1,
             height: 44,

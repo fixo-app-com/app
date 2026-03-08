@@ -5,6 +5,7 @@ export { ChipGroup } from "./ChipGroup/ChipGroup";
 export { EmptyState } from "./EmptyState/EmptyState";
 export { FloatingAction } from "./FloatingAction/FloatingAction";
 export { FooterLink } from "./FooterLink/FooterLink";
+export { FormLabel } from "./FormLabel/FormLabel";
 export { FormRow } from "./FormRow/FormRow";
 export { FullScreenLoader } from "./FullScreenLoader/FullScreenLoader";
 export { IconButton } from "./IconButton/IconButton";
