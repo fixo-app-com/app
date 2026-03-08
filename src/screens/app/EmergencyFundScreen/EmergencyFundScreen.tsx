@@ -25,6 +25,11 @@ import { useData } from "../../../contexts/DataContext";
 
 const SNAP_POINTS: number[] = [3, 6, 12, 18, 24, 36, 48, 60];
 
+const PRIORITY_COLOR: Record<string, string> = {
+  essential: "text-amber-500",
+  reducible: "text-blue-500",
+};
+
 function useFormatPeriod() {
   const { t } = useTranslation();
   return (months: number): string => {
@@ -83,6 +88,14 @@ export default function EmergencyFundScreen() {
     return map;
   }, [wallets]);
 
+  const priorityLabel = useMemo<Record<string, string>>(
+    () => ({
+      essential: t("home.essential"),
+      reducible: t("home.reducible"),
+    }),
+    [t],
+  );
+
   const renderExpenseRow = useCallback(
     ({ item }: { item: Expense }) => {
       const displayCents = getDisplayAmountCents(item, "monthly");
@@ -92,9 +105,17 @@ export default function EmergencyFundScreen() {
             <Text className="text-base font-semibold text-gray-900">
               {item.name}
             </Text>
-            <Text className="mt-0.5 text-sm text-gray-500">
-              {walletNameMap[item.walletId] ?? "\u2014"}
-            </Text>
+            <View className="mt-0.5 flex-row items-center">
+              <Text className="text-sm text-gray-500">
+                {walletNameMap[item.walletId] ?? "\u2014"}
+              </Text>
+              <Text className="mx-2 text-sm text-gray-400">•</Text>
+              <Text
+                className={`text-sm font-medium ${PRIORITY_COLOR[item.priority] ?? "text-gray-400"}`}
+              >
+                {priorityLabel[item.priority] ?? item.priority}
+              </Text>
+            </View>
           </View>
           <CurrencyText
             cents={displayCents}
@@ -103,7 +124,7 @@ export default function EmergencyFundScreen() {
         </View>
       );
     },
-    [walletNameMap],
+    [walletNameMap, priorityLabel],
   );
 
   const essentialExpenses = expenses.filter((e) => e.priority !== "optional");

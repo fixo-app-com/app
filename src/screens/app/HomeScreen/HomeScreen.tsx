@@ -1,9 +1,13 @@
-import { useRef, useState } from "react";
-import { Alert, Text, View } from "react-native";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { Alert, Pressable, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { useNavigation } from "@react-navigation/native";
 import type { NavigationProp } from "@react-navigation/native";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import DraggableFlatList, {
+  OpacityDecorator,
+} from "react-native-draggable-flatlist";
+import type { RenderItemParams } from "react-native-draggable-flatlist";
 import { useData } from "../../../contexts/DataContext";
 import {
   roundToUnit,
@@ -33,11 +37,17 @@ import { PriorityExpensesSheet } from "./PriorityExpensesSheet";
 import { FixedCostRatioCard } from "./FixedCostRatioCard";
 import { DailyBudgetCard } from "./DailyBudgetCard";
 import { EmergencyFundMiniCard } from "./EmergencyFundMiniCard";
+import { useWidgetOrder } from "./useWidgetOrder";
+import type { WidgetKey } from "./types";
 
 const METRIC_EXPLAINER_KEYS: Record<string, string> = {
   costs: "home.costsExplainer",
   available: "home.availableExplainer",
 };
+
+type WidgetItem = { key: WidgetKey };
+
+const ItemSeparator = () => <View style={{ height: 24 }} />;
 
 export default function HomeScreen() {
   const { t } = useTranslation();
@@ -53,6 +63,7 @@ export default function HomeScreen() {
   } = useData();
 
   const { expenses } = useExpenses();
+  const { order, saveOrder, loaded } = useWidgetOrder();
 
   const [selectedPriority, setSelectedPriority] =
     useState<ExpensePriority>("essential");
@@ -155,6 +166,148 @@ export default function HomeScreen() {
 
   const donutTotal = donutSegments.reduce((sum, s) => sum + s.totalCents, 0);
 
+  // Widget registry: maps each key to visibility + render function
+  const registry: Record<WidgetKey, { isVisible: boolean; render: () => React.ReactNode }> = {
+    overview: {
+      isVisible: true,
+      render: () => (
+        <View>
+          <SectionHeader title={t("home.overview")} />
+          <BudgetCard
+            hasIncome={hasIncome}
+            isYearly={isYearly}
+            incomeDisplayCents={incomeDisplayCents}
+            totalCents={totalCents}
+            availableCents={availableCents}
+            pinnedMetric={pinnedBudgetMetric}
+            onPin={setPinnedBudgetMetric}
+            onIncomeEdit={handleIncomeEdit}
+            onMetricInfo={handleMetricInfo}
+          />
+        </View>
+      ),
+    },
+    fixedCosts: {
+      isVisible: hasIncome && expenses.length > 0,
+      render: () => (
+        <FixedCostRatioCard
+          totalCents={totalCents}
+          incomeDisplayCents={incomeDisplayCents}
+        />
+      ),
+    },
+    dailyBudget: {
+      isVisible: hasIncome && expenses.length > 0,
+      render: () => (
+        <DailyBudgetCard
+          availableCents={availableCents}
+          incomeDisplayCents={incomeDisplayCents}
+          isYearly={isYearly}
+        />
+      ),
+    },
+    emergencyFund: {
+      isVisible: hasIncome,
+      render: () => (
+        <EmergencyFundMiniCard
+          expenses={expenses}
+          availableMonthlyCents={availableMonthlyCents}
+          onPress={() => navigation.navigate("EmergencyTab")}
+        />
+      ),
+    },
+    breakdown: {
+      isVisible: donutSegments.length > 0,
+      render: () => (
+        <View>
+          <SectionHeader title={t("home.breakdown")} />
+          <DonutChart
+            segments={donutSegments}
+            totalCents={donutTotal}
+            allLabel={t("home.allCategories")}
+          />
+        </View>
+      ),
+    },
+    topExpenses: {
+      isVisible: true,
+      render: () => <TopExpensesCard expenses={expenses} viewMode={viewMode} />,
+    },
+    wallets: {
+      isVisible: true,
+      render: () => (
+        <WalletBreakdownCard
+          wallets={wallets}
+          expenses={expenses}
+          viewMode={viewMode}
+        />
+      ),
+    },
+    essentialSplit: {
+      isVisible: true,
+      render: () => (
+        <EssentialSplitCard
+          expenses={expenses}
+          viewMode={viewMode}
+          onPriorityPress={handlePriorityPress}
+        />
+      ),
+    },
+  };
+
+  // Build visible items from user's saved order
+  const visibleItems: WidgetItem[] = useMemo(
+    () =>
+      order
+        .filter((key) => registry[key].isVisible)
+        .map((key) => ({ key })),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [order, hasIncome, expenses.length, donutSegments.length],
+  );
+
+  const handleDragEnd = useCallback(
+    ({ data }: { data: WidgetItem[] }) => {
+      // Force overview to stay first
+      const reordered = data.map((d) => d.key);
+      const overviewIdx = reordered.indexOf("overview");
+      if (overviewIdx > 0) {
+        reordered.splice(overviewIdx, 1);
+        reordered.unshift("overview");
+      }
+
+      // Rebuild full order: reordered visible keys + hidden keys appended
+      const visibleSet = new Set(reordered);
+      const hidden = order.filter((k) => !visibleSet.has(k));
+      saveOrder([...reordered, ...hidden]);
+    },
+    [order, saveOrder],
+  );
+
+  const renderWidget = useCallback(
+    ({ item, drag, isActive }: RenderItemParams<WidgetItem>) => {
+      const isPinned = item.key === "overview";
+      return (
+        <OpacityDecorator activeOpacity={0.9}>
+          <Pressable
+            onLongPress={isPinned ? undefined : drag}
+            delayLongPress={200}
+            style={isActive ? { opacity: 0.9 } : undefined}
+          >
+            {registry[item.key].render()}
+          </Pressable>
+        </OpacityDecorator>
+      );
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      hasIncome, isYearly, incomeDisplayCents, totalCents, availableCents,
+      pinnedBudgetMetric, expenses, donutSegments, donutTotal,
+      wallets, viewMode, categories,
+    ],
+  );
+
+  const keyExtractor = useCallback((item: WidgetItem) => item.key, []);
+
   if (dataLoading) {
     return <FullScreenLoader />;
   }
@@ -170,79 +323,16 @@ export default function HomeScreen() {
 
   return (
     <>
-      <ScreenWrapper scroll header={headerContent}>
-        <View className="gap-6 pb-8">
-          {/* 1. Overview (BudgetCard) */}
-          <View>
-            <SectionHeader title={t("home.overview")} />
-            <BudgetCard
-              hasIncome={hasIncome}
-              isYearly={isYearly}
-              incomeDisplayCents={incomeDisplayCents}
-              totalCents={totalCents}
-              availableCents={availableCents}
-              pinnedMetric={pinnedBudgetMetric}
-              onPin={setPinnedBudgetMetric}
-              onIncomeEdit={handleIncomeEdit}
-              onMetricInfo={handleMetricInfo}
-            />
-          </View>
-
-          {/* 2. Fixed costs */}
-          {hasIncome && expenses.length > 0 && (
-            <FixedCostRatioCard
-              totalCents={totalCents}
-              incomeDisplayCents={incomeDisplayCents}
-            />
-          )}
-
-          {/* 3. Daily budget */}
-          {hasIncome && expenses.length > 0 && (
-            <DailyBudgetCard
-              availableCents={availableCents}
-              incomeDisplayCents={incomeDisplayCents}
-              isYearly={isYearly}
-            />
-          )}
-
-          {/* 4. Emergency fund teaser */}
-          {hasIncome && (
-            <EmergencyFundMiniCard
-              expenses={expenses}
-              availableMonthlyCents={availableMonthlyCents}
-              onPress={() => navigation.navigate("EmergencyTab")}
-            />
-          )}
-
-          {/* 5. Breakdown (Donut) */}
-          {donutSegments.length > 0 && (
-            <View>
-              <SectionHeader title={t("home.breakdown")} />
-              <DonutChart
-                segments={donutSegments}
-                totalCents={donutTotal}
-                allLabel={t("home.allCategories")}
-              />
-            </View>
-          )}
-
-          {/* 6. Top expenses */}
-          <TopExpensesCard expenses={expenses} viewMode={viewMode} />
-
-          {/* 7. Wallets */}
-          <WalletBreakdownCard
-            wallets={wallets}
-            expenses={expenses}
-            viewMode={viewMode}
-          />
-
-          {/* 8. Expense priority */}
-          <EssentialSplitCard
-            expenses={expenses}
-            viewMode={viewMode}
-            onPriorityPress={handlePriorityPress}
-          />
-        </View>
+      <ScreenWrapper header={headerContent}>
+        <DraggableFlatList
+          data={visibleItems}
+          keyExtractor={keyExtractor}
+          renderItem={renderWidget}
+          onDragEnd={handleDragEnd}
+          ItemSeparatorComponent={ItemSeparator}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 32 }}
+        />
       </ScreenWrapper>
       <PriorityExpensesSheet
         ref={prioritySheetRef}
