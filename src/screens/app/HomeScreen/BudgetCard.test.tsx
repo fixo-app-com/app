@@ -54,13 +54,6 @@ describe("BudgetCard", () => {
     expect(onIncomeEdit).not.toHaveBeenCalled();
   });
 
-  it("renders budget bar when income is set", () => {
-    render(<BudgetCard {...baseProps} />);
-    expect(screen.getByTestId("budget-bar")).toBeOnTheScreen();
-    expect(screen.getByTestId("budget-bar-fill")).toBeOnTheScreen();
-    expect(screen.getByText("home.pctUsed")).toBeOnTheScreen();
-  });
-
   // --- State: No income ---
 
   it("shows set-budget prompt when no income is set", () => {
@@ -71,11 +64,6 @@ describe("BudgetCard", () => {
   it("shows yearly label for prompt when isYearly and no income", () => {
     render(<BudgetCard {...baseProps} hasIncome={false} isYearly={true} />);
     expect(screen.getByText("home.setYearlyIncome")).toBeOnTheScreen();
-  });
-
-  it("does not render budget bar when no income is set", () => {
-    render(<BudgetCard {...baseProps} hasIncome={false} />);
-    expect(screen.queryByTestId("budget-bar")).toBeNull();
   });
 
   it("does not render hero or secondary metrics when no income", () => {

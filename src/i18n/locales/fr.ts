@@ -102,7 +102,7 @@ const fr = {
     noCategories: "Aucune cat\u00E9gorie pour le moment.",
     addCategory: "Ajouter une cat\u00E9gorie",
     allCategories: "Toutes",
-    income: "Revenu",
+    overview: "Vue d'ensemble",
     breakdown: "R\u00E9partition",
     topExpenses: "D\u00E9penses principales",
     walletBreakdown: "Portefeuilles",
@@ -115,6 +115,19 @@ const fr = {
       "Le total de toutes vos dépenses fixes récurrentes, comme les abonnements, factures et mensualités.",
     availableExplainer:
       "Ce qui reste de votre revenu apr\u00E8s toutes les d\u00E9penses fixes. Utilisez-le pour les d\u00E9penses variables (sorties, restaurants, vacances, shopping), pour renforcer votre fonds d\u2019urgence ou pour des investissements financiers.",
+    fixedCosts: "Co\u00FBts fixes",
+    ofIncomeFixed: "de votre revenu va aux d\u00E9penses fixes",
+    idealUnder: "Id\u00E9al : sous 50%",
+    dailyBudget: "Budget quotidien",
+    perDay: "/jour",
+    fromAvailable: "sur {{amount}} disponibles",
+    costsExceedIncome: "Vos co\u00FBts fixes d\u00E9passent vos revenus",
+    emergencyFund: "Fonds d\u2019urgence",
+    emergencyTarget: "Objectif",
+    monthsToReach: "~{{count}} mois \u00E0 {{amount}}/mois",
+    yearsToReach: "10+ ans",
+    setSavingsRate:
+      "D\u00E9finissez un taux d\u2019\u00E9pargne pour suivre vos progr\u00E8s",
   },
   categories: {
     title: "Cat\u00E9gories",

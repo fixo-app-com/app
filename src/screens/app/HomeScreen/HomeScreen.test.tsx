@@ -3,6 +3,10 @@ import HomeScreen from "./HomeScreen";
 import { mockCategories, mockExpenses } from "../../../test/fixtures";
 import { mockDataContextDefaults } from "../../../test/mocks";
 
+jest.mock("@react-navigation/native", () => ({
+  useNavigation: () => ({ navigate: jest.fn() }),
+}));
+
 jest.mock("./PriorityExpensesSheet", () => ({
   PriorityExpensesSheet: () => null,
 }));
@@ -55,18 +59,6 @@ describe("HomeScreen", () => {
     expect(screen.getAllByText("home.available").length).toBeGreaterThanOrEqual(
       1,
     );
-  });
-
-  it("renders budget bar when income is set", () => {
-    mockDataOverrides = { monthlyIncomeCents: 250000 };
-    render(<HomeScreen />);
-    expect(screen.getByTestId("budget-bar")).toBeOnTheScreen();
-  });
-
-  it("does not render budget bar when no income is set", () => {
-    mockDataOverrides = { monthlyIncomeCents: 0 };
-    render(<HomeScreen />);
-    expect(screen.queryByTestId("budget-bar")).toBeNull();
   });
 
   it("renders donut chart when expenses exist", () => {

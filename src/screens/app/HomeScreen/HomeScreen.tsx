@@ -1,6 +1,8 @@
 import { useRef, useState } from "react";
 import { Alert, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
+import { useNavigation } from "@react-navigation/native";
+import type { NavigationProp } from "@react-navigation/native";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useData } from "../../../contexts/DataContext";
 import {
@@ -20,6 +22,7 @@ import {
 } from "../../../design-system";
 import { ViewModeToggle } from "../../../components";
 import { useExpenses } from "../../../hooks/useExpenses";
+import type { TabParamList } from "../../../navigation/RootNavigator";
 import { BudgetCard } from "./BudgetCard";
 import { DonutChart } from "./DonutChart";
 import type { DonutSegment } from "./DonutChart";
@@ -27,6 +30,9 @@ import { TopExpensesCard } from "./TopExpensesCard";
 import { WalletBreakdownCard } from "./WalletBreakdownCard";
 import { EssentialSplitCard } from "./EssentialSplitCard";
 import { PriorityExpensesSheet } from "./PriorityExpensesSheet";
+import { FixedCostRatioCard } from "./FixedCostRatioCard";
+import { DailyBudgetCard } from "./DailyBudgetCard";
+import { EmergencyFundMiniCard } from "./EmergencyFundMiniCard";
 
 const METRIC_EXPLAINER_KEYS: Record<string, string> = {
   costs: "home.costsExplainer",
@@ -35,6 +41,7 @@ const METRIC_EXPLAINER_KEYS: Record<string, string> = {
 
 export default function HomeScreen() {
   const { t } = useTranslation();
+  const navigation = useNavigation<NavigationProp<TabParamList>>();
   const {
     categories,
     wallets,
@@ -90,6 +97,11 @@ export default function HomeScreen() {
     : monthlyIncomeCents;
   const availableCents = incomeDisplayCents - rawTotalCents;
   const hasIncome = monthlyIncomeCents > 0;
+
+  // Monthly available for emergency fund time estimate
+  const availableMonthlyCents = isYearly
+    ? Math.round(availableCents / 12)
+    : availableCents;
 
   function handleIncomeEdit() {
     const displayCents = isYearly
@@ -160,8 +172,9 @@ export default function HomeScreen() {
     <>
       <ScreenWrapper scroll header={headerContent}>
         <View className="gap-6 pb-8">
+          {/* 1. Overview (BudgetCard) */}
           <View>
-            <SectionHeader title={t("home.income")} />
+            <SectionHeader title={t("home.overview")} />
             <BudgetCard
               hasIncome={hasIncome}
               isYearly={isYearly}
@@ -175,6 +188,33 @@ export default function HomeScreen() {
             />
           </View>
 
+          {/* 2. Fixed costs */}
+          {hasIncome && expenses.length > 0 && (
+            <FixedCostRatioCard
+              totalCents={totalCents}
+              incomeDisplayCents={incomeDisplayCents}
+            />
+          )}
+
+          {/* 3. Daily budget */}
+          {hasIncome && expenses.length > 0 && (
+            <DailyBudgetCard
+              availableCents={availableCents}
+              incomeDisplayCents={incomeDisplayCents}
+              isYearly={isYearly}
+            />
+          )}
+
+          {/* 4. Emergency fund teaser */}
+          {hasIncome && (
+            <EmergencyFundMiniCard
+              expenses={expenses}
+              availableMonthlyCents={availableMonthlyCents}
+              onPress={() => navigation.navigate("EmergencyTab")}
+            />
+          )}
+
+          {/* 5. Breakdown (Donut) */}
           {donutSegments.length > 0 && (
             <View>
               <SectionHeader title={t("home.breakdown")} />
@@ -186,12 +226,17 @@ export default function HomeScreen() {
             </View>
           )}
 
+          {/* 6. Top expenses */}
           <TopExpensesCard expenses={expenses} viewMode={viewMode} />
+
+          {/* 7. Wallets */}
           <WalletBreakdownCard
             wallets={wallets}
             expenses={expenses}
             viewMode={viewMode}
           />
+
+          {/* 8. Expense priority */}
           <EssentialSplitCard
             expenses={expenses}
             viewMode={viewMode}

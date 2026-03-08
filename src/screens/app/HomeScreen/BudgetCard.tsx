@@ -14,38 +14,6 @@ type MetricDef = {
 
 const EXPLAINABLE_METRICS: PinnedBudgetMetric[] = ["costs", "available"];
 
-function BudgetBar({
-  incomeDisplayCents,
-  totalCents,
-}: {
-  incomeDisplayCents: number;
-  totalCents: number;
-}) {
-  const { t } = useTranslation();
-  const ratio = incomeDisplayCents > 0 ? totalCents / incomeDisplayCents : 0;
-  const rawPct = Math.round(ratio * 100);
-  const pct = Math.min(rawPct, 100);
-  const barWidth = pct;
-
-  const barColor =
-    pct <= 50 ? "bg-emerald-500" : pct <= 80 ? "bg-yellow-400" : "bg-red-500";
-
-  return (
-    <View className="mt-8" testID="budget-bar">
-      <View className="h-3 overflow-hidden rounded-full bg-gray-200">
-        <View
-          className={`h-3 rounded-full ${barColor}`}
-          style={{ width: `${barWidth}%` }}
-          testID="budget-bar-fill"
-        />
-      </View>
-      <Text className="mt-1.5 text-center text-xs font-semibold text-gray-500">
-        {t("home.pctUsed", { pct })}
-      </Text>
-    </View>
-  );
-}
-
 export function BudgetCard({
   hasIncome,
   isYearly,
@@ -183,11 +151,6 @@ export function BudgetCard({
           </Pressable>
         ))}
       </View>
-
-      <BudgetBar
-        incomeDisplayCents={incomeDisplayCents}
-        totalCents={totalCents}
-      />
     </Card>
   );
 }
