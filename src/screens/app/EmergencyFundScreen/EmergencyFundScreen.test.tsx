@@ -80,7 +80,7 @@ describe("EmergencyFundScreen", () => {
         amountCents: 1599,
         billingFrequency: "monthly" as const,
         walletId: "w1",
-        essential: false,
+        priority: "optional" as const,
         notes: "",
         createdAt: new Date(),
       },

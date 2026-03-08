@@ -106,7 +106,7 @@ export default function EmergencyFundScreen() {
     [walletNameMap],
   );
 
-  const essentialExpenses = expenses.filter((e) => e.essential);
+  const essentialExpenses = expenses.filter((e) => e.priority !== "optional");
   const yearlyEssentialCents = sumDisplayCents(essentialExpenses, "yearly");
   const monthlyEssentialCents = roundToUnit(yearlyEssentialCents / 12);
   const targetCents = roundToUnit((yearlyEssentialCents / 12) * selectedMonths);
@@ -151,7 +151,7 @@ export default function EmergencyFundScreen() {
                     style={{ marginLeft: 4 }}
                   />
                 </View>
-                <Text className="text-xs font-medium text-amber-500">
+                <Text className="text-xs font-medium text-gray-400">
                   {t("emergency.essentialExpenses")}
                 </Text>
               </Pressable>
@@ -218,6 +218,9 @@ export default function EmergencyFundScreen() {
         </View>
       )}
       <BottomSheet ref={detailSheetRef} snapPoints={["50%"]}>
+        <Text className="mb-3 text-sm text-gray-400">
+          {t("emergency.coveredDescription")}
+        </Text>
         <View>
           {essentialExpenses.map((item, index) => (
             <View key={item.id}>

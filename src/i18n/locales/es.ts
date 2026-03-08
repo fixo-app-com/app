@@ -106,8 +106,10 @@ const es = {
     topExpenses: "Gastos principales",
     walletBreakdown: "Billeteras",
     essentialCosts: "Prioridad gastos",
-    nonEssential: "No esenciales",
     essential: "Esenciales",
+    reducible: "Reducibles",
+    optional: "Opcionales",
+    noExpensesForPriority: "No hay gastos con esta prioridad.",
   },
   categories: {
     title: "Categor\u00EDas",
@@ -154,10 +156,16 @@ const es = {
     amountPlaceholder: "12,99",
     walletSection: "Billetera",
     noWallets: "No hay billeteras. Toca para crear una.",
-    optionsSection: "Opciones",
-    essentialLabel: "Gasto esencial",
-    essentialHint:
-      "Los gastos esenciales son costos fijos inevitables como alquiler, seguro o suscripciones. Se usan para calcular tu fondo de emergencia.",
+    priorityLabel: "Prioridad",
+    priorityEssential: "Esencial",
+    priorityReducible: "Reducible",
+    priorityOptional: "Opcional",
+    priorityHintEssential:
+      "No puedes prescindir de él, como alquiler o facturas.",
+    priorityHintReducible:
+      "Lo necesitas, pero podrías gastar menos.",
+    priorityHintOptional:
+      "Un extra del que podrías prescindir.",
     notesSection: "Notas",
     saveChanges: "Guardar cambios",
     saveExpense: "Guardar gasto",
@@ -190,9 +198,9 @@ const es = {
   emergency: {
     title: "Fondo de emergencia",
     description:
-      "Simula cu\u00E1nto dinero necesitas para cubrir tus gastos esenciales si tus ingresos se detienen.",
+      "Simula cuánto dinero necesitas para cubrir tus gastos si tus ingresos se detienen.",
     noEssential:
-      "A\u00FAn no hay gastos esenciales. Marca un gasto como esencial para empezar a calcular tu fondo de emergencia.",
+      "Aún no hay gastos esenciales o reducibles. Marca un gasto como esencial o reducible para empezar a calcular tu fondo de emergencia.",
     expenses: "Gastos",
     monthlyCost: "Costo mensual",
     coveragePeriod: "Per\u00EDodo de cobertura",
@@ -202,7 +210,8 @@ const es = {
     topExpenses: "Gastos principales",
     recommendation:
       "La mayor\u00EDa de los asesores financieros recomiendan ahorrar al menos de 3 a 6 meses de gastos esenciales para imprevistos. Ajusta seg\u00FAn la estabilidad de tu empleo y tu comodidad personal.",
-    essentialExpenses: "Gastos esenciales",
+    coveredDescription: "Estos son tus gastos esenciales y reducibles, usados para calcular tu fondo de emergencia.",
+    essentialExpenses: "Gastos cubiertos",
     months_one: "{{count}} mes",
     months_other: "{{count}} meses",
     years_one: "{{count}} a\u00F1o",
@@ -257,6 +266,8 @@ const es = {
   },
   expenseCard: {
     essential: "Esencial",
+    reducible: "Reducible",
+    optional: "Opcional",
   },
 } as const;
 

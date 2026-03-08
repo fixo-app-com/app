@@ -98,8 +98,10 @@ const en = {
     topExpenses: "Top expenses",
     walletBreakdown: "Wallets",
     essentialCosts: "Expense priority",
-    nonEssential: "Non-essential",
     essential: "Essential",
+    reducible: "Reducible",
+    optional: "Optional",
+    noExpensesForPriority: "No expenses with this priority.",
   },
   categories: {
     title: "Categories",
@@ -145,10 +147,16 @@ const en = {
     amountPlaceholder: "12.99",
     walletSection: "Wallet",
     noWallets: "No wallets yet. Tap to create one.",
-    optionsSection: "Options",
-    essentialLabel: "Essential expense",
-    essentialHint:
-      "Essential expenses are fixed costs you can't avoid, like rent, insurance or subscriptions. They are used to calculate your emergency fund.",
+    priorityLabel: "Priority",
+    priorityEssential: "Essential",
+    priorityReducible: "Reducible",
+    priorityOptional: "Optional",
+    priorityHintEssential:
+      "You can't do without it, like rent or bills.",
+    priorityHintReducible:
+      "You need it, but you could spend less.",
+    priorityHintOptional:
+      "An extra you could give up.",
     notesSection: "Notes",
     saveChanges: "Save changes",
     saveExpense: "Save expense",
@@ -181,9 +189,9 @@ const en = {
   emergency: {
     title: "Emergency fund",
     description:
-      "Simulate how much cash you need to cover your essential expenses if your income stops.",
+      "Simulate how much cash you need to cover your expenses if your income stops.",
     noEssential:
-      "No essential expenses yet. Mark an expense as essential to start calculating your emergency fund.",
+      "No essential or reducible expenses yet. Mark an expense as essential or reducible to start calculating your emergency fund.",
     expenses: "Expenses",
     monthlyCost: "Monthly cost",
     coveragePeriod: "Coverage period",
@@ -193,7 +201,8 @@ const en = {
     topExpenses: "Top expenses",
     recommendation:
       "Most financial advisors recommend saving at least 3 to 6 months of essential expenses for unexpected events. Adjust based on your job stability and personal comfort.",
-    essentialExpenses: "Essential expenses",
+    coveredDescription: "These are your essential and reducible expenses, used to calculate your emergency fund.",
+    essentialExpenses: "Covered expenses",
     months_one: "{{count}} month",
     months_other: "{{count}} months",
     years_one: "{{count}} year",
@@ -246,6 +255,8 @@ const en = {
   },
   expenseCard: {
     essential: "Essential",
+    reducible: "Reducible",
+    optional: "Optional",
   },
 } as const;
 

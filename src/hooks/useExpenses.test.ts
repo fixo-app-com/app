@@ -38,9 +38,9 @@ describe("useExpenses", () => {
   it("applies custom sort option price_desc", () => {
     const { result } = renderHook(() => useExpenses({ sort: "price_desc" }));
     const names = result.current.expenses.map((e) => e.name);
-    // In monthly mode: Rent=80000, Netflix=1299, Insurance=10000 (120000/12)
-    // price_desc → Rent, Insurance, Netflix
-    expect(names).toEqual(["Rent", "Insurance", "Netflix"]);
+    // In monthly mode: Rent=80000, Insurance=10000 (120000/12), Gym=3500, Netflix=1299
+    // price_desc → Rent, Insurance, Gym, Netflix
+    expect(names).toEqual(["Rent", "Insurance", "Gym", "Netflix"]);
   });
 
   it("returns loading true when expensesLoading and expenses is null", () => {

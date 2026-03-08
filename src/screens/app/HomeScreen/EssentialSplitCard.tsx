@@ -1,7 +1,7 @@
 import { useMemo } from "react";
-import { Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
-import type { Expense } from "../../../types/firestore";
+import type { Expense, ExpensePriority } from "../../../types/firestore";
 import { getDisplayAmountCents, roundToUnit } from "../../../types/firestore";
 import { Card, SectionHeader } from "../../../design-system";
 import { CurrencyText } from "../../../components";
@@ -10,28 +10,38 @@ import type { ViewMode } from "../../../contexts/DataContext";
 interface EssentialSplitCardProps {
   expenses: Expense[];
   viewMode: ViewMode;
+  onPriorityPress: (priority: ExpensePriority) => void;
 }
 
 export function EssentialSplitCard({
   expenses,
   viewMode,
+  onPriorityPress,
 }: EssentialSplitCardProps) {
   const { t } = useTranslation();
 
-  const { essentialCents, nonEssentialCents } = useMemo(() => {
+  const { essentialCents, reducibleCents, optionalCents } = useMemo(() => {
     let essential = 0;
-    let nonEssential = 0;
+    let reducible = 0;
+    let optional = 0;
     for (const e of expenses) {
       const amount = getDisplayAmountCents(e, viewMode);
-      if (e.essential) {
-        essential += amount;
-      } else {
-        nonEssential += amount;
+      switch (e.priority) {
+        case "essential":
+          essential += amount;
+          break;
+        case "reducible":
+          reducible += amount;
+          break;
+        default:
+          optional += amount;
+          break;
       }
     }
     return {
       essentialCents: roundToUnit(essential),
-      nonEssentialCents: roundToUnit(nonEssential),
+      reducibleCents: roundToUnit(reducible),
+      optionalCents: roundToUnit(optional),
     };
   }, [expenses, viewMode]);
 
@@ -42,27 +52,50 @@ export function EssentialSplitCard({
       <SectionHeader title={t("home.essentialCosts")} />
       <Card>
         <View className="flex-row items-center">
-          <View className="flex-1 items-center">
+          <Pressable
+            className="flex-1 items-center"
+            onPress={() => onPriorityPress("essential")}
+            style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+          >
             <CurrencyText
               cents={essentialCents}
-              className="text-2xl font-bold text-gray-900"
+              className="text-xl font-bold text-gray-900"
               suffixFormat
             />
             <Text className="text-xs text-amber-500">
               {t("home.essential")}
             </Text>
-          </View>
+          </Pressable>
           <View className="w-px self-stretch bg-gray-200" />
-          <View className="flex-1 items-center">
+          <Pressable
+            className="flex-1 items-center"
+            onPress={() => onPriorityPress("reducible")}
+            style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+          >
             <CurrencyText
-              cents={nonEssentialCents}
-              className="text-2xl font-bold text-gray-900"
+              cents={reducibleCents}
+              className="text-xl font-bold text-gray-900"
               suffixFormat
             />
-            <Text className="text-xs text-gray-400">
-              {t("home.nonEssential")}
+            <Text className="text-xs text-blue-500">
+              {t("home.reducible")}
             </Text>
-          </View>
+          </Pressable>
+          <View className="w-px self-stretch bg-gray-200" />
+          <Pressable
+            className="flex-1 items-center"
+            onPress={() => onPriorityPress("optional")}
+            style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+          >
+            <CurrencyText
+              cents={optionalCents}
+              className="text-xl font-bold text-gray-900"
+              suffixFormat
+            />
+            <Text className="text-xs text-green-500">
+              {t("home.optional")}
+            </Text>
+          </Pressable>
         </View>
       </Card>
     </View>

@@ -106,8 +106,10 @@ const de = {
     topExpenses: "Top-Ausgaben",
     walletBreakdown: "Konten",
     essentialCosts: "Ausgabenpriorit\u00E4t",
-    nonEssential: "Nicht wesentlich",
     essential: "Wesentlich",
+    reducible: "Reduzierbar",
+    optional: "Optional",
+    noExpensesForPriority: "Keine Ausgaben mit dieser Priorität.",
   },
   categories: {
     title: "Kategorien",
@@ -154,10 +156,16 @@ const de = {
     amountPlaceholder: "12,99",
     walletSection: "Konto",
     noWallets: "Noch keine Konten. Tippen zum Erstellen.",
-    optionsSection: "Optionen",
-    essentialLabel: "Wesentliche Ausgabe",
-    essentialHint:
-      "Wesentliche Ausgaben sind feste Kosten wie Miete, Versicherung oder Abonnements. Sie werden zur Berechnung deines Notfallfonds verwendet.",
+    priorityLabel: "Priorität",
+    priorityEssential: "Wesentlich",
+    priorityReducible: "Reduzierbar",
+    priorityOptional: "Optional",
+    priorityHintEssential:
+      "Unverzichtbar, wie Miete oder Rechnungen.",
+    priorityHintReducible:
+      "Du brauchst es, könntest aber weniger ausgeben.",
+    priorityHintOptional:
+      "Ein Extra, auf das du verzichten könntest.",
     notesSection: "Notizen",
     saveChanges: "\u00C4nderungen speichern",
     saveExpense: "Ausgabe speichern",
@@ -190,9 +198,9 @@ const de = {
   emergency: {
     title: "Notfallfonds",
     description:
-      "Simuliere, wie viel Geld du brauchst, um deine wesentlichen Ausgaben zu decken, wenn dein Einkommen wegf\u00E4llt.",
+      "Simuliere, wie viel Geld du brauchst, um deine Ausgaben zu decken, wenn dein Einkommen wegfällt.",
     noEssential:
-      "Noch keine wesentlichen Ausgaben. Markiere eine Ausgabe als wesentlich, um deinen Notfallfonds zu berechnen.",
+      "Noch keine wesentlichen oder reduzierbaren Ausgaben. Markiere eine Ausgabe als wesentlich oder reduzierbar, um deinen Notfallfonds zu berechnen.",
     expenses: "Ausgaben",
     monthlyCost: "Monatliche Kosten",
     coveragePeriod: "Abdeckungszeitraum",
@@ -202,7 +210,8 @@ const de = {
     topExpenses: "Top-Ausgaben",
     recommendation:
       "Die meisten Finanzberater empfehlen, mindestens 3 bis 6 Monate an wesentlichen Ausgaben f\u00FCr unvorhergesehene Ereignisse zu sparen. Passe es an deine Arbeitsplatzsicherheit und deinen pers\u00F6nlichen Komfort an.",
-    essentialExpenses: "Wesentliche Ausgaben",
+    coveredDescription: "Dies sind deine wesentlichen und reduzierbaren Ausgaben, die zur Berechnung deines Notfallfonds verwendet werden.",
+    essentialExpenses: "Abgedeckte Ausgaben",
     months_one: "{{count}} Monat",
     months_other: "{{count}} Monate",
     years_one: "{{count}} Jahr",
@@ -258,6 +267,8 @@ const de = {
   },
   expenseCard: {
     essential: "Wesentlich",
+    reducible: "Reduzierbar",
+    optional: "Optional",
   },
 } as const;
 

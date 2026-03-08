@@ -1,11 +1,14 @@
+import { useRef, useState } from "react";
 import { Alert, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useData } from "../../../contexts/DataContext";
 import {
   roundToUnit,
   getDisplayAmountCents,
   sumDisplayCents,
 } from "../../../types/firestore";
+import type { ExpensePriority } from "../../../types/firestore";
 import {
   FullScreenLoader,
   ScreenWrapper,
@@ -19,6 +22,7 @@ import type { DonutSegment } from "./DonutChart";
 import { TopExpensesCard } from "./TopExpensesCard";
 import { WalletBreakdownCard } from "./WalletBreakdownCard";
 import { EssentialSplitCard } from "./EssentialSplitCard";
+import { PriorityExpensesSheet } from "./PriorityExpensesSheet";
 
 export default function HomeScreen() {
   const { t } = useTranslation();
@@ -35,6 +39,15 @@ export default function HomeScreen() {
   } = useData();
 
   const { expenses } = useExpenses();
+
+  const [selectedPriority, setSelectedPriority] =
+    useState<ExpensePriority>("essential");
+  const prioritySheetRef = useRef<BottomSheetModal>(null);
+
+  function handlePriorityPress(priority: ExpensePriority) {
+    setSelectedPriority(priority);
+    prioritySheetRef.current?.present();
+  }
 
   const isYearly = viewMode === "yearly";
 
@@ -111,6 +124,7 @@ export default function HomeScreen() {
   );
 
   return (
+    <>
     <ScreenWrapper scroll header={headerContent}>
       <View className="gap-4 pb-8">
         <View>
@@ -144,8 +158,17 @@ export default function HomeScreen() {
           expenses={expenses}
           viewMode={viewMode}
         />
-        <EssentialSplitCard expenses={expenses} viewMode={viewMode} />
+        <EssentialSplitCard
+          expenses={expenses}
+          viewMode={viewMode}
+          onPriorityPress={handlePriorityPress}
+        />
       </View>
     </ScreenWrapper>
+    <PriorityExpensesSheet
+      ref={prioritySheetRef}
+      priority={selectedPriority}
+    />
+    </>
   );
 }

@@ -107,8 +107,10 @@ const fr = {
     topExpenses: "D\u00E9penses principales",
     walletBreakdown: "Portefeuilles",
     essentialCosts: "Priorit\u00E9 d\u00E9penses",
-    nonEssential: "Non essentiels",
     essential: "Essentiels",
+    reducible: "Réductibles",
+    optional: "Optionnels",
+    noExpensesForPriority: "Aucune dépense avec cette priorité.",
   },
   categories: {
     title: "Cat\u00E9gories",
@@ -155,10 +157,16 @@ const fr = {
     amountPlaceholder: "12,99",
     walletSection: "Portefeuille",
     noWallets: "Aucun portefeuille. Appuyez pour en cr\u00E9er un.",
-    optionsSection: "Options",
-    essentialLabel: "D\u00E9pense essentielle",
-    essentialHint:
-      "Les d\u00E9penses essentielles sont des co\u00FBts fixes in\u00E9vitables comme le loyer, l\u2019assurance ou les abonnements. Elles sont utilis\u00E9es pour calculer votre fonds d\u2019urgence.",
+    priorityLabel: "Priorit\u00E9",
+    priorityEssential: "Essentiel",
+    priorityReducible: "R\u00E9ductible",
+    priorityOptional: "Optionnel",
+    priorityHintEssential:
+      "Indispensable, comme le loyer ou les factures.",
+    priorityHintReducible:
+      "N\u00E9cessaire, mais vous pourriez d\u00E9penser moins.",
+    priorityHintOptional:
+      "Un extra dont vous pourriez vous passer.",
     notesSection: "Notes",
     saveChanges: "Enregistrer les modifications",
     saveExpense: "Enregistrer la d\u00E9pense",
@@ -191,9 +199,9 @@ const fr = {
   emergency: {
     title: "Fonds d\u2019urgence",
     description:
-      "Simulez combien d\u2019argent vous avez besoin pour couvrir vos d\u00E9penses essentielles si vos revenus s\u2019arr\u00EAtent.",
+      "Simulez combien d\u2019argent vous avez besoin pour couvrir vos dépenses si vos revenus s\u2019arrêtent.",
     noEssential:
-      "Aucune d\u00E9pense essentielle. Marquez une d\u00E9pense comme essentielle pour commencer \u00E0 calculer votre fonds d\u2019urgence.",
+      "Aucune dépense essentielle ou réductible. Marquez une dépense comme essentielle ou réductible pour commencer à calculer votre fonds d\u2019urgence.",
     expenses: "D\u00E9penses",
     monthlyCost: "Co\u00FBt mensuel",
     coveragePeriod: "P\u00E9riode de couverture",
@@ -203,7 +211,8 @@ const fr = {
     topExpenses: "D\u00E9penses principales",
     recommendation:
       "La plupart des conseillers financiers recommandent d\u2019\u00E9pargner au moins 3 \u00E0 6 mois de d\u00E9penses essentielles pour les impr\u00E9vus. Ajustez en fonction de la stabilit\u00E9 de votre emploi et de votre confort personnel.",
-    essentialExpenses: "D\u00E9penses essentielles",
+    coveredDescription: "Ce sont vos dépenses essentielles et réductibles, utilisées pour calculer votre fonds d\u2019urgence.",
+    essentialExpenses: "Dépenses couvertes",
     months_one: "{{count}} mois",
     months_other: "{{count}} mois",
     years_one: "{{count}} an",
@@ -258,6 +267,8 @@ const fr = {
   },
   expenseCard: {
     essential: "Essentiel",
+    reducible: "Réductible",
+    optional: "Optionnel",
   },
 } as const;
 

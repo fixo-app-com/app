@@ -53,9 +53,12 @@ describe("AddEditExpenseScreen", () => {
     expect(screen.getByText("Intesa Sanpaolo")).toBeOnTheScreen();
   });
 
-  it("renders essential toggle", () => {
+  it("renders priority chip group", () => {
     render(<AddEditExpenseScreen />);
-    expect(screen.getByText("addEditExpense.essentialLabel")).toBeOnTheScreen();
+    expect(screen.getByText("addEditExpense.priorityLabel")).toBeOnTheScreen();
+    expect(screen.getByText("addEditExpense.priorityEssential")).toBeOnTheScreen();
+    expect(screen.getByText("addEditExpense.priorityReducible")).toBeOnTheScreen();
+    expect(screen.getByText("addEditExpense.priorityOptional")).toBeOnTheScreen();
   });
 
   it("renders save button", () => {

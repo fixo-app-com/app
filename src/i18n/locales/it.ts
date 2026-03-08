@@ -100,8 +100,10 @@ const it = {
     topExpenses: "Spese principali",
     walletBreakdown: "Portafogli",
     essentialCosts: "Priorit\u00E0 spese",
-    nonEssential: "Non essenziali",
     essential: "Essenziali",
+    reducible: "Riducibili",
+    optional: "Opzionali",
+    noExpensesForPriority: "Nessuna spesa con questa priorità.",
   },
   categories: {
     title: "Categorie",
@@ -148,10 +150,16 @@ const it = {
     amountPlaceholder: "12,99",
     walletSection: "Portafoglio",
     noWallets: "Nessun portafoglio. Tocca per crearne uno.",
-    optionsSection: "Opzioni",
-    essentialLabel: "Spesa essenziale",
-    essentialHint:
-      "Le spese essenziali sono costi fissi inevitabili come affitto, assicurazione o abbonamenti. Vengono usate per calcolare il fondo di emergenza.",
+    priorityLabel: "Priorità",
+    priorityEssential: "Essenziale",
+    priorityReducible: "Riducibile",
+    priorityOptional: "Opzionale",
+    priorityHintEssential:
+      "Non puoi farne a meno, come affitto o bollette.",
+    priorityHintReducible:
+      "Ti serve, ma potresti spendere meno.",
+    priorityHintOptional:
+      "Un extra a cui potresti rinunciare.",
     notesSection: "Note",
     saveChanges: "Salva modifiche",
     saveExpense: "Salva spesa",
@@ -184,9 +192,9 @@ const it = {
   emergency: {
     title: "Fondo di emergenza",
     description:
-      "Simula quanto denaro ti serve per coprire le spese essenziali se il tuo reddito si interrompe.",
+      "Simula quanto denaro ti serve per coprire le tue spese se il tuo reddito si interrompe.",
     noEssential:
-      "Nessuna spesa essenziale ancora. Segna una spesa come essenziale per iniziare a calcolare il fondo di emergenza.",
+      "Nessuna spesa essenziale o riducibile ancora. Segna una spesa come essenziale o riducibile per iniziare a calcolare il fondo di emergenza.",
     expenses: "Spese",
     monthlyCost: "Costo mensile",
     coveragePeriod: "Periodo di copertura",
@@ -196,7 +204,8 @@ const it = {
     topExpenses: "Spese principali",
     recommendation:
       "La maggior parte dei consulenti finanziari consiglia di risparmiare almeno da 3 a 6 mesi di spese essenziali per imprevisti. Regola in base alla stabilit\u00E0 del tuo lavoro e al tuo comfort personale.",
-    essentialExpenses: "Spese essenziali",
+    coveredDescription: "Queste sono le tue spese essenziali e riducibili, usate per calcolare il fondo di emergenza.",
+    essentialExpenses: "Spese coperte",
     months_one: "{{count}} mese",
     months_other: "{{count}} mesi",
     years_one: "{{count}} anno",
@@ -249,6 +258,8 @@ const it = {
   },
   expenseCard: {
     essential: "Essenziale",
+    reducible: "Riducibile",
+    optional: "Opzionale",
   },
 } as const;
 

@@ -3,6 +3,10 @@ import HomeScreen from "./HomeScreen";
 import { mockCategories, mockExpenses } from "../../../test/fixtures";
 import { mockDataContextDefaults } from "../../../test/mocks";
 
+jest.mock("./PriorityExpensesSheet", () => ({
+  PriorityExpensesSheet: () => null,
+}));
+
 const mockSetPinnedBudgetMetric = jest.fn();
 
 jest.mock("../../../contexts/AuthContext", () => ({

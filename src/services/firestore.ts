@@ -4,6 +4,7 @@ import firestore, {
 import type {
   Category,
   Expense,
+  ExpensePriority,
   UserSettings,
   Wallet,
 } from "../types/firestore";
@@ -95,11 +96,29 @@ export async function getExpenses(
   }
 
   const snapshot = await query.get();
-  const expenses = snapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
-    createdAt: doc.data().createdAt?.toDate() ?? new Date(),
-  })) as Expense[];
+  const expenses = snapshot.docs.map((doc) => {
+    const data = doc.data();
+    let priority: ExpensePriority;
+
+    if (data.priority) {
+      priority = data.priority;
+    } else {
+      // Lazy migration: old schema had `essential: boolean`
+      priority = data.essential ? "essential" : "optional";
+      // Fire-and-forget write to migrate the doc permanently
+      doc.ref.update({
+        priority,
+        essential: firestore.FieldValue.delete(),
+      });
+    }
+
+    return {
+      id: doc.id,
+      ...data,
+      priority,
+      createdAt: data.createdAt?.toDate() ?? new Date(),
+    };
+  }) as Expense[];
 
   if (filter?.walletId) {
     expenses.sort((a, b) => b.amountCents - a.amountCents);

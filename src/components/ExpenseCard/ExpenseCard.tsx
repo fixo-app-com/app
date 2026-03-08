@@ -3,8 +3,14 @@ import { useTranslation } from "react-i18next";
 import { Card } from "../../design-system";
 import { CurrencyText } from "../CurrencyText/CurrencyText";
 import { useData } from "../../contexts/DataContext";
-import type { BillingFrequency } from "../../types/firestore";
+import type { BillingFrequency, ExpensePriority } from "../../types/firestore";
 import { getDisplayAmountCents } from "../../types/firestore";
+
+const priorityColor: Record<ExpensePriority, string> = {
+  essential: "text-amber-500",
+  reducible: "text-blue-500",
+  optional: "text-green-500",
+};
 
 interface ExpenseCardProps {
   name: string;
@@ -12,7 +18,7 @@ interface ExpenseCardProps {
   notes: string;
   amountCents: number;
   billingFrequency: BillingFrequency;
-  essential?: boolean;
+  priority?: ExpensePriority;
   onPress: () => void;
   onLongPress: () => void;
 }
@@ -23,7 +29,7 @@ export function ExpenseCard({
   notes,
   amountCents,
   billingFrequency,
-  essential,
+  priority,
   onPress,
   onLongPress,
 }: ExpenseCardProps) {
@@ -41,11 +47,11 @@ export function ExpenseCard({
           <Text className="text-base font-semibold text-gray-900">{name}</Text>
           <View className="mt-1 flex-row items-center">
             <Text className="text-sm text-gray-500">{walletName}</Text>
-            {essential && (
+            {priority && (
               <>
                 <Text className="mx-2 text-sm text-gray-400">•</Text>
-                <Text className="text-sm font-medium text-amber-500">
-                  {t("expenseCard.essential")}
+                <Text className={`text-sm font-medium ${priorityColor[priority]}`}>
+                  {t(`expenseCard.${priority}`)}
                 </Text>
               </>
             )}

@@ -105,7 +105,7 @@ describe("firestore service", () => {
         amountCents: 1299,
         billingFrequency: "monthly" as const,
         walletId: "w1",
-        essential: false,
+        priority: "optional" as const,
         notes: "",
       };
       const id = await addExpense("uid", data);

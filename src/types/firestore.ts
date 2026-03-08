@@ -7,6 +7,8 @@ export interface Category {
 
 export type BillingFrequency = "monthly" | "yearly";
 
+export type ExpensePriority = "essential" | "reducible" | "optional";
+
 export interface Expense {
   id: string;
   categoryId: string;
@@ -14,7 +16,7 @@ export interface Expense {
   amountCents: number; // 1299 = €12.99
   billingFrequency: BillingFrequency; // "monthly" | "yearly"
   walletId: string;
-  essential: boolean; // "costo fisso" flag
+  priority: ExpensePriority;
   notes: string;
   createdAt: Date;
 }
