@@ -12,17 +12,20 @@ type MetricDef = {
   colorClass: string;
 };
 
+const EXPLAINABLE_METRICS: PinnedBudgetMetric[] = ["costs", "available"];
+
 function BudgetBar({
-  budgetDisplayCents,
+  incomeDisplayCents,
   totalCents,
 }: {
-  budgetDisplayCents: number;
+  incomeDisplayCents: number;
   totalCents: number;
 }) {
   const { t } = useTranslation();
-  const ratio = budgetDisplayCents > 0 ? totalCents / budgetDisplayCents : 0;
-  const pct = Math.round(ratio * 100);
-  const barWidth = Math.min(pct, 100);
+  const ratio = incomeDisplayCents > 0 ? totalCents / incomeDisplayCents : 0;
+  const rawPct = Math.round(ratio * 100);
+  const pct = Math.min(rawPct, 100);
+  const barWidth = pct;
 
   const barColor =
     pct <= 50 ? "bg-emerald-500" : pct <= 80 ? "bg-yellow-400" : "bg-red-500";
@@ -44,56 +47,39 @@ function BudgetBar({
 }
 
 export function BudgetCard({
-  hasBudget,
+  hasIncome,
   isYearly,
-  budgetDisplayCents,
+  incomeDisplayCents,
   totalCents,
   availableCents,
   pinnedMetric,
   onPin,
-  onBudgetEdit,
+  onIncomeEdit,
+  onMetricInfo,
 }: {
-  hasBudget: boolean;
+  hasIncome: boolean;
   isYearly: boolean;
-  budgetDisplayCents: number;
+  incomeDisplayCents: number;
   totalCents: number;
   availableCents: number;
   pinnedMetric: PinnedBudgetMetric;
   onPin: (m: PinnedBudgetMetric) => void;
-  onBudgetEdit: () => void;
+  onIncomeEdit: () => void;
+  onMetricInfo: (m: PinnedBudgetMetric) => void;
 }) {
   const { t } = useTranslation();
 
-  const metrics: MetricDef[] = [
-    {
-      key: "budget",
-      label: isYearly ? t("home.yearlyBudget") : t("home.monthlyBudget"),
-      cents: budgetDisplayCents,
-      colorClass: "text-gray-900",
-    },
-    {
-      key: "costs",
-      label: t("home.totalCosts"),
-      cents: totalCents,
-      colorClass: "text-red-500",
-    },
-    {
-      key: "available",
-      label: t("home.leftover"),
-      cents: availableCents,
-      colorClass: availableCents >= 0 ? "text-emerald-600" : "text-red-500",
-    },
-  ];
-
-  if (!hasBudget) {
+  // State: No income set
+  if (!hasIncome) {
     return (
       <Card>
         <Pressable
-          onPress={onBudgetEdit}
+          onPress={onIncomeEdit}
           className="flex-row items-center justify-center py-2"
+          testID="set-budget-prompt"
         >
           <Text className="text-sm font-medium text-gray-500">
-            {isYearly ? t("home.setYearlyBudget") : t("home.setMonthlyBudget")}
+            {isYearly ? t("home.setYearlyIncome") : t("home.setMonthlyIncome")}
           </Text>
           <Ionicons
             name="create-outline"
@@ -110,14 +96,37 @@ export function BudgetCard({
     );
   }
 
-  const hero = metrics.find((m) => m.key === pinnedMetric) ?? metrics[0];
-  const secondary = metrics.filter((m) => m.key !== pinnedMetric);
-  const isHeroBudget = hero.key === "budget";
+  // State: Income set — 3 metrics (income, costs, available) + bar
+  const allMetrics: MetricDef[] = [
+    {
+      key: "income",
+      label: isYearly ? t("home.yearlyIncome") : t("home.monthlyIncome"),
+      cents: incomeDisplayCents,
+      colorClass: "text-gray-900",
+    },
+    {
+      key: "costs",
+      label: t("home.totalCosts"),
+      cents: totalCents,
+      colorClass: "text-red-500",
+    },
+    {
+      key: "available",
+      label: t("home.available"),
+      cents: availableCents,
+      colorClass: availableCents >= 0 ? "text-emerald-600" : "text-red-500",
+    },
+  ];
+
+  const hero = allMetrics.find((m) => m.key === pinnedMetric) ?? allMetrics[0];
+  const secondary = allMetrics.filter((m) => m.key !== hero.key);
+  const isHeroIncome = hero.key === "income";
+  const heroHasInfo = EXPLAINABLE_METRICS.includes(hero.key);
 
   return (
     <Card>
       <Pressable
-        onPress={isHeroBudget ? onBudgetEdit : undefined}
+        onPress={isHeroIncome ? onIncomeEdit : undefined}
         className="items-center py-1"
         testID="hero-metric"
       >
@@ -125,7 +134,7 @@ export function BudgetCard({
           <Text className="text-xs font-medium uppercase tracking-wide text-gray-400">
             {hero.label}
           </Text>
-          {isHeroBudget && (
+          {isHeroIncome && (
             <Ionicons
               name="create-outline"
               size={14}
@@ -134,11 +143,27 @@ export function BudgetCard({
             />
           )}
         </View>
-        <CurrencyText
-          cents={hero.cents}
-          className={`mt-1 text-3xl font-bold ${hero.colorClass}`}
-          hideDecimals
-        />
+        <View className="flex-row items-center">
+          <CurrencyText
+            cents={hero.cents}
+            className={`mt-1 text-3xl font-bold ${hero.colorClass}`}
+            hideDecimals
+          />
+          {heroHasInfo && (
+            <Pressable
+              onPress={() => onMetricInfo(hero.key)}
+              hitSlop={8}
+              testID="hero-info"
+            >
+              <Ionicons
+                name="information-circle-outline"
+                size={18}
+                color="#9ca3af"
+                style={{ marginLeft: 6 }}
+              />
+            </Pressable>
+          )}
+        </View>
       </Pressable>
 
       <View className="mt-3 flex-row gap-3">
@@ -160,7 +185,7 @@ export function BudgetCard({
       </View>
 
       <BudgetBar
-        budgetDisplayCents={budgetDisplayCents}
+        incomeDisplayCents={incomeDisplayCents}
         totalCents={totalCents}
       />
     </Card>

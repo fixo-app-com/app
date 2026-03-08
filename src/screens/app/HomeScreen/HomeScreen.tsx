@@ -8,8 +8,9 @@ import {
   getDisplayAmountCents,
   sumDisplayCents,
 } from "../../../types/firestore";
-import type { ExpensePriority } from "../../../types/firestore";
+import type { ExpensePriority, PinnedBudgetMetric } from "../../../types/firestore";
 import {
+  BottomSheet,
   FullScreenLoader,
   ScreenWrapper,
   SectionHeader,
@@ -24,18 +25,21 @@ import { WalletBreakdownCard } from "./WalletBreakdownCard";
 import { EssentialSplitCard } from "./EssentialSplitCard";
 import { PriorityExpensesSheet } from "./PriorityExpensesSheet";
 
+const METRIC_EXPLAINER_KEYS: Record<string, string> = {
+  costs: "home.costsExplainer",
+  available: "home.availableExplainer",
+};
+
 export default function HomeScreen() {
   const { t } = useTranslation();
   const {
     categories,
     wallets,
-    monthlyBudgetCents,
-    setMonthlyBudget,
+    monthlyIncomeCents,
+    setMonthlyIncome,
     viewMode,
     setViewMode,
     isLoading: dataLoading,
-    pinnedBudgetMetric,
-    setPinnedBudgetMetric,
   } = useData();
 
   const { expenses } = useExpenses();
@@ -43,6 +47,28 @@ export default function HomeScreen() {
   const [selectedPriority, setSelectedPriority] =
     useState<ExpensePriority>("essential");
   const prioritySheetRef = useRef<BottomSheetModal>(null);
+
+  // Metric info bottom sheet
+  const metricInfoSheetRef = useRef<BottomSheetModal>(null);
+  const [metricInfoContent, setMetricInfoContent] = useState({ title: "", body: "" });
+
+  // Pinned budget metric (local state — no longer persisted)
+  const [pinnedBudgetMetric, setPinnedBudgetMetric] =
+    useState<PinnedBudgetMetric>("income");
+
+  function handleMetricInfo(metric: PinnedBudgetMetric) {
+    const key = METRIC_EXPLAINER_KEYS[metric];
+    if (!key) return;
+    const labels: Record<string, string> = {
+      costs: t("home.totalCosts"),
+      available: t("home.available"),
+    };
+    setMetricInfoContent({
+      title: labels[metric] ?? "",
+      body: t(key as never),
+    });
+    metricInfoSheetRef.current?.present();
+  }
 
   function handlePriorityPress(priority: ExpensePriority) {
     setSelectedPriority(priority);
@@ -53,24 +79,24 @@ export default function HomeScreen() {
 
   const rawTotalCents = sumDisplayCents(expenses, viewMode);
   const totalCents = roundToUnit(rawTotalCents);
-  const budgetDisplayCents = isYearly
-    ? monthlyBudgetCents * 12
-    : monthlyBudgetCents;
-  const availableCents = budgetDisplayCents - rawTotalCents;
-  const hasBudget = monthlyBudgetCents > 0;
+  const incomeDisplayCents = isYearly
+    ? monthlyIncomeCents * 12
+    : monthlyIncomeCents;
+  const availableCents = incomeDisplayCents - rawTotalCents;
+  const hasIncome = monthlyIncomeCents > 0;
 
-  function handleBudgetEdit() {
+  function handleIncomeEdit() {
     const displayCents = isYearly
-      ? monthlyBudgetCents * 12
-      : monthlyBudgetCents;
-    const current = hasBudget ? String(Math.floor(displayCents / 100)) : "";
-    const label = isYearly ? t("home.yearlyBudget") : t("home.monthlyBudget");
+      ? monthlyIncomeCents * 12
+      : monthlyIncomeCents;
+    const current = hasIncome ? String(Math.floor(displayCents / 100)) : "";
+    const label = isYearly ? t("home.yearlyIncome") : t("home.monthlyIncome");
     const period = isYearly
       ? t("common.yearly").toLowerCase()
       : t("common.monthly").toLowerCase();
     Alert.prompt(
       label,
-      t("home.enterBudget", { period }),
+      t("home.enterIncome", { period }),
       [
         { text: t("common.cancel"), style: "cancel" },
         {
@@ -78,13 +104,14 @@ export default function HomeScreen() {
           onPress: (value?: string) => {
             const trimmed = (value ?? "").trim();
             if (trimmed === "" || trimmed === "0") {
-              setMonthlyBudget(0);
+              setMonthlyIncome(0);
               return;
             }
             const parsed = parseFloat(trimmed.replace(",", "."));
             if (!isNaN(parsed) && parsed >= 0) {
               const cents = Math.round(parsed * 100);
-              setMonthlyBudget(isYearly ? Math.ceil(cents / 12) : cents);
+              const monthlyCents = isYearly ? Math.ceil(cents / 12) : cents;
+              setMonthlyIncome(monthlyCents);
             }
           },
         },
@@ -126,18 +153,19 @@ export default function HomeScreen() {
   return (
     <>
     <ScreenWrapper scroll header={headerContent}>
-      <View className="gap-4 pb-8">
+      <View className="gap-6 pb-8">
         <View>
-          <SectionHeader title={t("home.budget")} />
+          <SectionHeader title={t("home.income")} />
           <BudgetCard
-            hasBudget={hasBudget}
+            hasIncome={hasIncome}
             isYearly={isYearly}
-            budgetDisplayCents={budgetDisplayCents}
+            incomeDisplayCents={incomeDisplayCents}
             totalCents={totalCents}
             availableCents={availableCents}
             pinnedMetric={pinnedBudgetMetric}
             onPin={setPinnedBudgetMetric}
-            onBudgetEdit={handleBudgetEdit}
+            onIncomeEdit={handleIncomeEdit}
+            onMetricInfo={handleMetricInfo}
           />
         </View>
 
@@ -169,6 +197,11 @@ export default function HomeScreen() {
       ref={prioritySheetRef}
       priority={selectedPriority}
     />
+    <BottomSheet ref={metricInfoSheetRef} title={metricInfoContent.title}>
+      <Text className="text-sm leading-6 text-gray-600">
+        {metricInfoContent.body}
+      </Text>
+    </BottomSheet>
     </>
   );
 }

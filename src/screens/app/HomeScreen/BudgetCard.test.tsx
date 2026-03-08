@@ -7,26 +7,24 @@ jest.mock("../../../contexts/DataContext", () => ({
 
 describe("BudgetCard", () => {
   const baseProps = {
-    hasBudget: true,
+    hasIncome: true,
     isYearly: false,
-    budgetDisplayCents: 250000,
+    incomeDisplayCents: 250000,
     totalCents: 100000,
     availableCents: 150000,
-    pinnedMetric: "budget" as const,
+    pinnedMetric: "income" as const,
     onPin: jest.fn(),
-    onBudgetEdit: jest.fn(),
+    onIncomeEdit: jest.fn(),
+    onMetricInfo: jest.fn(),
   };
 
-  it("renders hero metric and secondary metrics when budget is set", () => {
+  // --- State: Income set (3-metric layout) ---
+
+  it("renders hero metric and 2 secondary metrics when income is set", () => {
     render(<BudgetCard {...baseProps} />);
     expect(screen.getByTestId("hero-metric")).toBeOnTheScreen();
     expect(screen.getByTestId("secondary-costs")).toBeOnTheScreen();
     expect(screen.getByTestId("secondary-available")).toBeOnTheScreen();
-  });
-
-  it("shows set-budget prompt when no budget", () => {
-    render(<BudgetCard {...baseProps} hasBudget={false} />);
-    expect(screen.getByText("home.setMonthlyBudget")).toBeOnTheScreen();
   });
 
   it("calls onPin when secondary metric is pressed", () => {
@@ -36,27 +34,56 @@ describe("BudgetCard", () => {
     expect(onPin).toHaveBeenCalledWith("costs");
   });
 
-  it("renders budget bar with percentage when budget is set", () => {
+  it("calls onIncomeEdit when hero is income", () => {
+    const onIncomeEdit = jest.fn();
+    render(<BudgetCard {...baseProps} onIncomeEdit={onIncomeEdit} />);
+    fireEvent.press(screen.getByTestId("hero-metric"));
+    expect(onIncomeEdit).toHaveBeenCalled();
+  });
+
+  it("does not call edit when hero is costs", () => {
+    const onIncomeEdit = jest.fn();
+    render(
+      <BudgetCard
+        {...baseProps}
+        pinnedMetric="costs"
+        onIncomeEdit={onIncomeEdit}
+      />,
+    );
+    fireEvent.press(screen.getByTestId("hero-metric"));
+    expect(onIncomeEdit).not.toHaveBeenCalled();
+  });
+
+  it("renders budget bar when income is set", () => {
     render(<BudgetCard {...baseProps} />);
     expect(screen.getByTestId("budget-bar")).toBeOnTheScreen();
     expect(screen.getByTestId("budget-bar-fill")).toBeOnTheScreen();
     expect(screen.getByText("home.pctUsed")).toBeOnTheScreen();
   });
 
-  it("does not render budget bar when no budget", () => {
-    render(<BudgetCard {...baseProps} hasBudget={false} />);
+  // --- State: No income ---
+
+  it("shows set-budget prompt when no income is set", () => {
+    render(<BudgetCard {...baseProps} hasIncome={false} />);
+    expect(screen.getByTestId("set-budget-prompt")).toBeOnTheScreen();
+  });
+
+  it("shows yearly label for prompt when isYearly and no income", () => {
+    render(
+      <BudgetCard {...baseProps} hasIncome={false} isYearly={true} />,
+    );
+    expect(screen.getByText("home.setYearlyIncome")).toBeOnTheScreen();
+  });
+
+  it("does not render budget bar when no income is set", () => {
+    render(<BudgetCard {...baseProps} hasIncome={false} />);
     expect(screen.queryByTestId("budget-bar")).toBeNull();
   });
 
-  it("shows yearly label when isYearly and no budget", () => {
-    render(<BudgetCard {...baseProps} hasBudget={false} isYearly={true} />);
-    expect(screen.getByText("home.setYearlyBudget")).toBeOnTheScreen();
-  });
-
-  it("calls onBudgetEdit when hero budget is pressed", () => {
-    const onBudgetEdit = jest.fn();
-    render(<BudgetCard {...baseProps} onBudgetEdit={onBudgetEdit} />);
-    fireEvent.press(screen.getByTestId("hero-metric"));
-    expect(onBudgetEdit).toHaveBeenCalled();
+  it("does not render hero or secondary metrics when no income", () => {
+    render(<BudgetCard {...baseProps} hasIncome={false} />);
+    expect(screen.queryByTestId("hero-metric")).toBeNull();
+    expect(screen.queryByTestId("secondary-costs")).toBeNull();
+    expect(screen.queryByTestId("secondary-available")).toBeNull();
   });
 });

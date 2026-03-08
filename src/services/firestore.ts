@@ -246,7 +246,7 @@ export async function deleteAllUserData(userId: string): Promise<void> {
 
 const DEFAULT_SETTINGS: UserSettings = {
   currency: "EUR",
-  monthlyBudgetCents: 0,
+  monthlyIncomeCents: 0,
   emergencyMonthlySavingCents: 0,
   language: undefined,
 };
@@ -263,8 +263,8 @@ export function subscribeUserSettings(
         const data = snapshot.data();
         onResult({
           currency: data?.currency ?? DEFAULT_SETTINGS.currency,
-          monthlyBudgetCents:
-            data?.monthlyBudgetCents ?? DEFAULT_SETTINGS.monthlyBudgetCents,
+          monthlyIncomeCents:
+            data?.monthlyIncomeCents ?? data?.monthlyBudgetCents ?? DEFAULT_SETTINGS.monthlyIncomeCents,
           emergencyMonthlySavingCents:
             data?.emergencyMonthlySavingCents ??
             DEFAULT_SETTINGS.emergencyMonthlySavingCents,

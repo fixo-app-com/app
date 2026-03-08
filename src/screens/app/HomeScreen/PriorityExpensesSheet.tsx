@@ -14,7 +14,6 @@ import { EmptyState } from "../../../design-system";
 import {
   ExpenseCard,
   ExpenseForm,
-  ListSpacer,
   SwipeableRow,
 } from "../../../components";
 
@@ -76,6 +75,12 @@ export const PriorityExpensesSheet = forwardRef<
     optional: t("home.optional"),
   };
 
+  const priorityHint: Record<ExpensePriority, string> = {
+    essential: t("addEditExpense.priorityHintEssential"),
+    reducible: t("addEditExpense.priorityHintReducible"),
+    optional: t("addEditExpense.priorityHintOptional"),
+  };
+
   return (
     <BottomSheetModal
       ref={ref}
@@ -95,24 +100,29 @@ export const PriorityExpensesSheet = forwardRef<
       >
         {mode.type === "list" ? (
           <>
-            <View className="mb-3 flex-row items-center justify-between">
-              <Text className="text-lg font-semibold text-gray-900">
-                {priorityLabel[priority]}
+            <View className="mb-3">
+              <View className="flex-row items-center justify-between">
+                <Text className="text-lg font-semibold text-gray-900">
+                  {priorityLabel[priority]}
+                </Text>
+                <Pressable
+                  onPress={() => {
+                    if (ref && "current" in ref) ref.current?.dismiss();
+                  }}
+                  hitSlop={8}
+                  className="items-center justify-center"
+                  style={({ pressed }) => ({
+                    opacity: pressed ? 0.6 : 1,
+                    width: 32,
+                    height: 32,
+                  })}
+                >
+                  <Ionicons name="close" size={22} color="#6b7280" />
+                </Pressable>
+              </View>
+              <Text className="mt-1 text-sm text-gray-400">
+                {priorityHint[priority]}
               </Text>
-              <Pressable
-                onPress={() => {
-                  if (ref && "current" in ref) ref.current?.dismiss();
-                }}
-                hitSlop={8}
-                className="items-center justify-center"
-                style={({ pressed }) => ({
-                  opacity: pressed ? 0.6 : 1,
-                  width: 32,
-                  height: 32,
-                })}
-              >
-                <Ionicons name="close" size={22} color="#6b7280" />
-              </Pressable>
             </View>
 
             {filtered.length === 0 ? (
@@ -122,13 +132,13 @@ export const PriorityExpensesSheet = forwardRef<
               />
             ) : (
               filtered.map((expense, index) => (
-                <View key={expense.id}>
-                  {index > 0 && <ListSpacer />}
                   <SwipeableRow
+                    key={expense.id}
                     onDelete={() => deleteExpense(expense.id)}
                     errorMessage={t("expenseList.deleteFailed", {
                       name: expense.name,
                     })}
+                    spacing={index < filtered.length - 1 ? 12 : 0}
                   >
                     <ExpenseCard
                       name={expense.name}
@@ -140,8 +150,7 @@ export const PriorityExpensesSheet = forwardRef<
                       onLongPress={() => {}}
                     />
                   </SwipeableRow>
-                </View>
-              ))
+                ))
             )}
           </>
         ) : (

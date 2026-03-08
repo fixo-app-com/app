@@ -10,14 +10,12 @@ import { useAuth } from "./AuthContext";
 import type {
   Category,
   Expense,
-  PinnedBudgetMetric,
   SupportedLanguage,
   Wallet,
 } from "../types/firestore";
 import * as firestoreService from "../services/firestore";
 import i18n, { setLanguage as setI18nLanguage } from "../i18n";
 
-const PINNED_METRIC_KEY = "pinnedBudgetMetric";
 const EMERGENCY_MONTHS_KEY = "@fixo/emergency_months";
 
 export type ViewMode = "monthly" | "yearly";
@@ -26,7 +24,7 @@ interface DataContextValue {
   categories: Category[];
   wallets: Wallet[];
   currency: string;
-  monthlyBudgetCents: number;
+  monthlyIncomeCents: number;
   viewMode: ViewMode;
   setViewMode: (mode: ViewMode) => void;
   isLoading: boolean;
@@ -46,7 +44,7 @@ interface DataContextValue {
   deleteWallet: (walletId: string) => Promise<void>;
   // Settings
   setCurrency: (currency: string) => Promise<void>;
-  setMonthlyBudget: (cents: number) => Promise<void>;
+  setMonthlyIncome: (cents: number) => Promise<void>;
   // Expenses (centralized)
   expenses: Expense[] | null;
   expensesLoading: boolean;
@@ -63,9 +61,6 @@ interface DataContextValue {
   setEmergencyMonths: (months: number) => Promise<void>;
   emergencyMonthlySavingCents: number;
   setEmergencyMonthlySavingCents: (cents: number) => Promise<void>;
-  // Pinned budget metric
-  pinnedBudgetMetric: PinnedBudgetMetric;
-  setPinnedBudgetMetric: (metric: PinnedBudgetMetric) => Promise<void>;
   // Language
   language: SupportedLanguage;
   setLanguage: (lang: SupportedLanguage) => Promise<void>;
@@ -75,7 +70,7 @@ const DataContext = createContext<DataContextValue>({
   categories: [],
   wallets: [],
   currency: "EUR",
-  monthlyBudgetCents: 0,
+  monthlyIncomeCents: 0,
   viewMode: "monthly",
   setViewMode: () => {},
   isLoading: true,
@@ -86,7 +81,7 @@ const DataContext = createContext<DataContextValue>({
   updateWallet: async () => {},
   deleteWallet: async () => {},
   setCurrency: async () => {},
-  setMonthlyBudget: async () => {},
+  setMonthlyIncome: async () => {},
   expenses: null,
   expensesLoading: false,
   ensureExpenses: async () => {},
@@ -98,8 +93,6 @@ const DataContext = createContext<DataContextValue>({
   setEmergencyMonths: async () => {},
   emergencyMonthlySavingCents: 0,
   setEmergencyMonthlySavingCents: async () => {},
-  pinnedBudgetMetric: "budget",
-  setPinnedBudgetMetric: async () => {},
   language: "en",
   setLanguage: async () => {},
 });
@@ -109,7 +102,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [wallets, setWallets] = useState<Wallet[]>([]);
   const [currency, setCurrencyState] = useState("EUR");
-  const [monthlyBudgetCents, setMonthlyBudgetCentsState] = useState(0);
+  const [monthlyIncomeCents, setMonthlyIncomeCentsState] = useState(0);
   const [viewMode, setViewMode] = useState<ViewMode>("monthly");
   const [isLoading, setIsLoading] = useState(true);
 
@@ -125,16 +118,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   // Language
   const [language, setLanguageState] = useState<SupportedLanguage>("en");
 
-  // Pinned budget metric (local-only, persisted via AsyncStorage)
-  const [pinnedBudgetMetric, setPinnedBudgetMetricState] =
-    useState<PinnedBudgetMetric>("budget");
-
   useEffect(() => {
-    AsyncStorage.getItem(PINNED_METRIC_KEY).then((value) => {
-      if (value === "budget" || value === "costs" || value === "available") {
-        setPinnedBudgetMetricState(value);
-      }
-    });
     AsyncStorage.getItem(EMERGENCY_MONTHS_KEY).then((value) => {
       if (value !== null) {
         const parsed = parseInt(value, 10);
@@ -148,11 +132,10 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       setCategories([]);
       setWallets([]);
       setCurrencyState("EUR");
-      setMonthlyBudgetCentsState(0);
+      setMonthlyIncomeCentsState(0);
       setEmergencyMonthsState(6);
       setEmergencyMonthlySavingCentsState(0);
       setLanguageState("en");
-      setPinnedBudgetMetricState("budget");
       setExpenses(null);
       setIsLoading(false);
       return;
@@ -200,7 +183,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       user.uid,
       (settings) => {
         setCurrencyState(settings.currency);
-        setMonthlyBudgetCentsState(settings.monthlyBudgetCents ?? 0);
+        setMonthlyIncomeCentsState(settings.monthlyIncomeCents ?? 0);
         setEmergencyMonthlySavingCentsState(
           settings.emergencyMonthlySavingCents ?? 0,
         );
@@ -251,7 +234,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     categories,
     wallets,
     currency,
-    monthlyBudgetCents,
+    monthlyIncomeCents,
     viewMode,
     setViewMode,
     isLoading,
@@ -266,10 +249,10 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       setCurrencyState(curr);
       await firestoreService.updateUserSettings(userId, { currency: curr });
     },
-    setMonthlyBudget: async (cents) => {
-      setMonthlyBudgetCentsState(cents);
+    setMonthlyIncome: async (cents) => {
+      setMonthlyIncomeCentsState(cents);
       await firestoreService.updateUserSettings(userId, {
-        monthlyBudgetCents: cents,
+        monthlyIncomeCents: cents,
       });
     },
     // Expenses
@@ -316,12 +299,6 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       await firestoreService.updateUserSettings(userId, {
         emergencyMonthlySavingCents: cents,
       });
-    },
-    // Pinned budget metric
-    pinnedBudgetMetric,
-    setPinnedBudgetMetric: async (metric) => {
-      setPinnedBudgetMetricState(metric);
-      await AsyncStorage.setItem(PINNED_METRIC_KEY, metric);
     },
     // Language
     language,

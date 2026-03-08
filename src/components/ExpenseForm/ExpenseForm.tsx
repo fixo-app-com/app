@@ -230,7 +230,7 @@ export function ExpenseForm({
           onSelect={setPriority}
           compact
         />
-        <Text className="mt-2 text-xs text-gray-400">
+        <Text className="text-xs text-gray-400">
           {t(
             (
               {

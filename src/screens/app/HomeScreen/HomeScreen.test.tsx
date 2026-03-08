@@ -7,8 +7,6 @@ jest.mock("./PriorityExpensesSheet", () => ({
   PriorityExpensesSheet: () => null,
 }));
 
-const mockSetPinnedBudgetMetric = jest.fn();
-
 jest.mock("../../../contexts/AuthContext", () => ({
   useAuth: () => ({ user: { uid: "test-uid" } }),
 }));
@@ -17,7 +15,6 @@ const mockDataDefaults = {
   ...mockDataContextDefaults,
   categories: mockCategories,
   expenses: mockExpenses,
-  setPinnedBudgetMetric: mockSetPinnedBudgetMetric,
 };
 
 let mockDataOverrides: Partial<typeof mockDataDefaults> = {};
@@ -43,58 +40,31 @@ describe("HomeScreen", () => {
     expect(screen.getByText("common.yearly")).toBeOnTheScreen();
   });
 
-  it("shows set-budget prompt when no budget is set", () => {
+  it("shows set-income prompt when no income is set", () => {
     render(<HomeScreen />);
-    expect(screen.getByText("home.setMonthlyBudget")).toBeOnTheScreen();
+    expect(screen.getByText("home.setMonthlyIncome")).toBeOnTheScreen();
   });
 
-  it("displays hero and secondary metrics when budget is set", () => {
-    mockDataOverrides = { monthlyBudgetCents: 250000 };
+  it("displays hero and secondary metrics when income is set", () => {
+    mockDataOverrides = { monthlyIncomeCents: 250000 };
     render(<HomeScreen />);
     expect(screen.getByTestId("hero-metric")).toBeOnTheScreen();
     expect(
       screen.getAllByText("home.totalCosts").length,
     ).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText("home.leftover").length).toBeGreaterThanOrEqual(
+    expect(screen.getAllByText("home.available").length).toBeGreaterThanOrEqual(
       1,
     );
   });
 
-  it("tapping secondary metric calls setPinnedBudgetMetric", () => {
-    mockDataOverrides = { monthlyBudgetCents: 250000 };
-    render(<HomeScreen />);
-    fireEvent.press(screen.getByTestId("secondary-costs"));
-    expect(mockSetPinnedBudgetMetric).toHaveBeenCalledWith("costs");
-  });
-
-  it("pins costs as hero when pinnedBudgetMetric is costs", () => {
-    mockDataOverrides = {
-      monthlyBudgetCents: 250000,
-      pinnedBudgetMetric: "costs",
-    };
-    render(<HomeScreen />);
-    expect(screen.getByTestId("secondary-budget")).toBeOnTheScreen();
-    expect(screen.getByTestId("secondary-available")).toBeOnTheScreen();
-  });
-
-  it("tapping secondary budget pins it instead of editing", () => {
-    mockDataOverrides = {
-      monthlyBudgetCents: 250000,
-      pinnedBudgetMetric: "costs",
-    };
-    render(<HomeScreen />);
-    fireEvent.press(screen.getByTestId("secondary-budget"));
-    expect(mockSetPinnedBudgetMetric).toHaveBeenCalledWith("budget");
-  });
-
-  it("renders budget bar when budget is set", () => {
-    mockDataOverrides = { monthlyBudgetCents: 250000 };
+  it("renders budget bar when income is set", () => {
+    mockDataOverrides = { monthlyIncomeCents: 250000 };
     render(<HomeScreen />);
     expect(screen.getByTestId("budget-bar")).toBeOnTheScreen();
   });
 
-  it("does not render budget bar when no budget is set", () => {
-    mockDataOverrides = { monthlyBudgetCents: 0 };
+  it("does not render budget bar when no income is set", () => {
+    mockDataOverrides = { monthlyIncomeCents: 0 };
     render(<HomeScreen />);
     expect(screen.queryByTestId("budget-bar")).toBeNull();
   });

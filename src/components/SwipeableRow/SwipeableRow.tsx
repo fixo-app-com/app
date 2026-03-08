@@ -18,6 +18,7 @@ interface SwipeableRowProps {
   children: ReactNode;
   onDelete: () => Promise<void>;
   errorMessage: string;
+  spacing?: number;
 }
 
 function RightAction({ drag }: { drag: SharedValue<number> }) {
@@ -48,6 +49,7 @@ export function SwipeableRow({
   children,
   onDelete,
   errorMessage,
+  spacing = 0,
 }: SwipeableRowProps) {
   const swipeableRef = useRef<SwipeableMethods>(null);
   const [deleted, setDeleted] = useState(false);
@@ -55,13 +57,18 @@ export function SwipeableRow({
 
   const rowHeight = useSharedValue<number>(-1);
   const opacity = useSharedValue(1);
+  const rowMargin = useSharedValue(spacing);
 
   const collapseStyle = useAnimatedStyle(() => {
-    if (rowHeight.value === -1) return {};
+    if (rowHeight.value === -1) {
+      return spacing ? { marginBottom: rowMargin.value } : {};
+    }
+
     return {
       height: rowHeight.value,
       opacity: opacity.value,
       overflow: "hidden" as const,
+      marginBottom: rowMargin.value,
     };
   });
 
@@ -74,6 +81,7 @@ export function SwipeableRow({
   function handleSwipeOpen() {
     setDeleted(true);
     opacity.value = withTiming(0, { duration: 120 });
+    rowMargin.value = withTiming(0, { duration: 150 });
     rowHeight.value = withTiming(0, { duration: 150 }, (finished) => {
       if (finished) runOnJS(performDelete)();
     });

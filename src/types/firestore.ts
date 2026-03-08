@@ -77,13 +77,13 @@ export interface Wallet {
   createdAt: Date;
 }
 
-export type PinnedBudgetMetric = "budget" | "costs" | "available";
+export type PinnedBudgetMetric = "income" | "costs" | "available";
 
 export type SupportedLanguage = "en" | "it" | "fr" | "de" | "es";
 
 export interface UserSettings {
   currency: string; // ISO 4217 code, e.g. "EUR", "USD"
-  monthlyBudgetCents?: number; // e.g. 250000 = €2,500.00
+  monthlyIncomeCents?: number; // e.g. 250000 = €2,500.00
   emergencyMonthlySavingCents?: number; // monthly saving rate (for projection)
   language?: SupportedLanguage;
 }
