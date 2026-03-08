@@ -104,8 +104,10 @@ const it = {
     reducible: "Riducibili",
     optional: "Opzionali",
     noExpensesForPriority: "Nessuna spesa con questa priorità.",
-    costsExplainer: "Il totale di tutte le tue spese fisse ricorrenti, come abbonamenti, bollette e rate.",
-    availableExplainer: "Quanto resta delle tue entrate dopo tutte le spese fisse. Puoi usarlo per le spese variabili (uscite, ristoranti, vacanze, shopping), per aumentare il tuo fondo di emergenza o per investimenti finanziari.",
+    costsExplainer:
+      "Il totale di tutte le tue spese fisse ricorrenti, come abbonamenti, bollette e rate.",
+    availableExplainer:
+      "Quanto resta delle tue entrate dopo tutte le spese fisse. Puoi usarlo per le spese variabili (uscite, ristoranti, vacanze, shopping), per aumentare il tuo fondo di emergenza o per investimenti finanziari.",
   },
   categories: {
     title: "Categorie",
@@ -156,12 +158,9 @@ const it = {
     priorityEssential: "Essenziale",
     priorityReducible: "Riducibile",
     priorityOptional: "Opzionale",
-    priorityHintEssential:
-      "Non puoi farne a meno, come affitto o bollette.",
-    priorityHintReducible:
-      "Ti serve, ma potresti spendere meno.",
-    priorityHintOptional:
-      "Un extra a cui potresti rinunciare.",
+    priorityHintEssential: "Non puoi farne a meno, come affitto o bollette.",
+    priorityHintReducible: "Ti serve, ma potresti spendere meno.",
+    priorityHintOptional: "Un extra a cui potresti rinunciare.",
     notesSection: "Note",
     saveChanges: "Salva modifiche",
     saveExpense: "Salva spesa",
@@ -206,7 +205,8 @@ const it = {
     topExpenses: "Spese principali",
     recommendation:
       "La maggior parte dei consulenti finanziari consiglia di risparmiare almeno da 3 a 6 mesi di spese essenziali per imprevisti. Regola in base alla stabilit\u00E0 del tuo lavoro e al tuo comfort personale.",
-    coveredDescription: "Queste sono le tue spese essenziali e riducibili, usate per calcolare il fondo di emergenza.",
+    coveredDescription:
+      "Queste sono le tue spese essenziali e riducibili, usate per calcolare il fondo di emergenza.",
     essentialExpenses: "Spese coperte",
     months_one: "{{count}} mese",
     months_other: "{{count}} mesi",

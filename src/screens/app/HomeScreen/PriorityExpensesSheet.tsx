@@ -11,11 +11,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useData } from "../../../contexts/DataContext";
 import type { Expense, ExpensePriority } from "../../../types/firestore";
 import { EmptyState } from "../../../design-system";
-import {
-  ExpenseCard,
-  ExpenseForm,
-  SwipeableRow,
-} from "../../../components";
+import { ExpenseCard, ExpenseForm, SwipeableRow } from "../../../components";
 
 type SheetMode = { type: "list" } | { type: "edit"; expense: Expense };
 
@@ -89,7 +85,11 @@ export const PriorityExpensesSheet = forwardRef<
       onDismiss={handleDismiss}
       backdropComponent={renderBackdrop}
       animationConfigs={animationConfigs}
-      backgroundStyle={{ borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: "#f3f4f6" }}
+      backgroundStyle={{
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        backgroundColor: "#f3f4f6",
+      }}
       handleIndicatorStyle={{ backgroundColor: "#d1d5db", width: 40 }}
       keyboardBehavior="interactive"
       keyboardBlurBehavior="restore"
@@ -132,25 +132,25 @@ export const PriorityExpensesSheet = forwardRef<
               />
             ) : (
               filtered.map((expense, index) => (
-                  <SwipeableRow
-                    key={expense.id}
-                    onDelete={() => deleteExpense(expense.id)}
-                    errorMessage={t("expenseList.deleteFailed", {
-                      name: expense.name,
-                    })}
-                    spacing={index < filtered.length - 1 ? 12 : 0}
-                  >
-                    <ExpenseCard
-                      name={expense.name}
-                      walletName={walletMap[expense.walletId] ?? ""}
-                      notes={expense.notes}
-                      amountCents={expense.amountCents}
-                      billingFrequency={expense.billingFrequency}
-                      onPress={() => setMode({ type: "edit", expense })}
-                      onLongPress={() => {}}
-                    />
-                  </SwipeableRow>
-                ))
+                <SwipeableRow
+                  key={expense.id}
+                  onDelete={() => deleteExpense(expense.id)}
+                  errorMessage={t("expenseList.deleteFailed", {
+                    name: expense.name,
+                  })}
+                  spacing={index < filtered.length - 1 ? 12 : 0}
+                >
+                  <ExpenseCard
+                    name={expense.name}
+                    walletName={walletMap[expense.walletId] ?? ""}
+                    notes={expense.notes}
+                    amountCents={expense.amountCents}
+                    billingFrequency={expense.billingFrequency}
+                    onPress={() => setMode({ type: "edit", expense })}
+                    onLongPress={() => {}}
+                  />
+                </SwipeableRow>
+              ))
             )}
           </>
         ) : (

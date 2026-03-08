@@ -56,9 +56,15 @@ describe("AddEditExpenseScreen", () => {
   it("renders priority chip group", () => {
     render(<AddEditExpenseScreen />);
     expect(screen.getByText("addEditExpense.priorityLabel")).toBeOnTheScreen();
-    expect(screen.getByText("addEditExpense.priorityEssential")).toBeOnTheScreen();
-    expect(screen.getByText("addEditExpense.priorityReducible")).toBeOnTheScreen();
-    expect(screen.getByText("addEditExpense.priorityOptional")).toBeOnTheScreen();
+    expect(
+      screen.getByText("addEditExpense.priorityEssential"),
+    ).toBeOnTheScreen();
+    expect(
+      screen.getByText("addEditExpense.priorityReducible"),
+    ).toBeOnTheScreen();
+    expect(
+      screen.getByText("addEditExpense.priorityOptional"),
+    ).toBeOnTheScreen();
   });
 
   it("renders save button", () => {

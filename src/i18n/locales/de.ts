@@ -110,8 +110,10 @@ const de = {
     reducible: "Reduzierbar",
     optional: "Optional",
     noExpensesForPriority: "Keine Ausgaben mit dieser Priorität.",
-    costsExplainer: "Die Summe aller festen wiederkehrenden Ausgaben, wie Abonnements, Rechnungen und Raten.",
-    availableExplainer: "Was von deinem Einkommen nach allen festen Ausgaben \u00FCbrig bleibt. Nutze es f\u00FCr variable Ausgaben (Ausgehen, Restaurants, Urlaub, Shopping), um deinen Notfallfonds aufzubauen oder f\u00FCr finanzielle Investitionen.",
+    costsExplainer:
+      "Die Summe aller festen wiederkehrenden Ausgaben, wie Abonnements, Rechnungen und Raten.",
+    availableExplainer:
+      "Was von deinem Einkommen nach allen festen Ausgaben \u00FCbrig bleibt. Nutze es f\u00FCr variable Ausgaben (Ausgehen, Restaurants, Urlaub, Shopping), um deinen Notfallfonds aufzubauen oder f\u00FCr finanzielle Investitionen.",
   },
   categories: {
     title: "Kategorien",
@@ -162,12 +164,9 @@ const de = {
     priorityEssential: "Wesentlich",
     priorityReducible: "Reduzierbar",
     priorityOptional: "Optional",
-    priorityHintEssential:
-      "Unverzichtbar, wie Miete oder Rechnungen.",
-    priorityHintReducible:
-      "Du brauchst es, könntest aber weniger ausgeben.",
-    priorityHintOptional:
-      "Ein Extra, auf das du verzichten könntest.",
+    priorityHintEssential: "Unverzichtbar, wie Miete oder Rechnungen.",
+    priorityHintReducible: "Du brauchst es, könntest aber weniger ausgeben.",
+    priorityHintOptional: "Ein Extra, auf das du verzichten könntest.",
     notesSection: "Notizen",
     saveChanges: "\u00C4nderungen speichern",
     saveExpense: "Ausgabe speichern",
@@ -212,7 +211,8 @@ const de = {
     topExpenses: "Top-Ausgaben",
     recommendation:
       "Die meisten Finanzberater empfehlen, mindestens 3 bis 6 Monate an wesentlichen Ausgaben f\u00FCr unvorhergesehene Ereignisse zu sparen. Passe es an deine Arbeitsplatzsicherheit und deinen pers\u00F6nlichen Komfort an.",
-    coveredDescription: "Dies sind deine wesentlichen und reduzierbaren Ausgaben, die zur Berechnung deines Notfallfonds verwendet werden.",
+    coveredDescription:
+      "Dies sind deine wesentlichen und reduzierbaren Ausgaben, die zur Berechnung deines Notfallfonds verwendet werden.",
     essentialExpenses: "Abgedeckte Ausgaben",
     months_one: "{{count}} Monat",
     months_other: "{{count}} Monate",

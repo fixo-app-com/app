@@ -7,7 +7,11 @@ import { getExpenses } from "../../../services/firestore";
 import { useStoreReview } from "../../../hooks/useStoreReview";
 import type { CategoriesStackParamList } from "../../../navigation/RootNavigator";
 import type { Expense } from "../../../types/firestore";
-import { FullScreenLoader, ScreenHeader, ScreenWrapper } from "../../../design-system";
+import {
+  FullScreenLoader,
+  ScreenHeader,
+  ScreenWrapper,
+} from "../../../design-system";
 import { ExpenseForm } from "../../../components";
 
 type Nav = NativeStackNavigationProp<

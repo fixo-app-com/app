@@ -50,7 +50,9 @@ export function ExpenseCard({
             {priority && (
               <>
                 <Text className="mx-2 text-sm text-gray-400">•</Text>
-                <Text className={`text-sm font-medium ${priorityColor[priority]}`}>
+                <Text
+                  className={`text-sm font-medium ${priorityColor[priority]}`}
+                >
                   {t(`expenseCard.${priority}`)}
                 </Text>
               </>

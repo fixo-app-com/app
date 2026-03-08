@@ -264,7 +264,9 @@ export function subscribeUserSettings(
         onResult({
           currency: data?.currency ?? DEFAULT_SETTINGS.currency,
           monthlyIncomeCents:
-            data?.monthlyIncomeCents ?? data?.monthlyBudgetCents ?? DEFAULT_SETTINGS.monthlyIncomeCents,
+            data?.monthlyIncomeCents ??
+            data?.monthlyBudgetCents ??
+            DEFAULT_SETTINGS.monthlyIncomeCents,
           emergencyMonthlySavingCents:
             data?.emergencyMonthlySavingCents ??
             DEFAULT_SETTINGS.emergencyMonthlySavingCents,

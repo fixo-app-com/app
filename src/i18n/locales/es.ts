@@ -110,8 +110,10 @@ const es = {
     reducible: "Reducibles",
     optional: "Opcionales",
     noExpensesForPriority: "No hay gastos con esta prioridad.",
-    costsExplainer: "El total de todos tus gastos fijos recurrentes, como suscripciones, facturas y cuotas.",
-    availableExplainer: "Lo que queda de tu ingreso despu\u00E9s de todos los gastos fijos. \u00DAsalo para gastos variables (salidas, restaurantes, vacaciones, shopping), para aumentar tu fondo de emergencia o para inversiones financieras.",
+    costsExplainer:
+      "El total de todos tus gastos fijos recurrentes, como suscripciones, facturas y cuotas.",
+    availableExplainer:
+      "Lo que queda de tu ingreso despu\u00E9s de todos los gastos fijos. \u00DAsalo para gastos variables (salidas, restaurantes, vacaciones, shopping), para aumentar tu fondo de emergencia o para inversiones financieras.",
   },
   categories: {
     title: "Categor\u00EDas",
@@ -164,10 +166,8 @@ const es = {
     priorityOptional: "Opcional",
     priorityHintEssential:
       "No puedes prescindir de él, como alquiler o facturas.",
-    priorityHintReducible:
-      "Lo necesitas, pero podrías gastar menos.",
-    priorityHintOptional:
-      "Un extra del que podrías prescindir.",
+    priorityHintReducible: "Lo necesitas, pero podrías gastar menos.",
+    priorityHintOptional: "Un extra del que podrías prescindir.",
     notesSection: "Notas",
     saveChanges: "Guardar cambios",
     saveExpense: "Guardar gasto",
@@ -212,7 +212,8 @@ const es = {
     topExpenses: "Gastos principales",
     recommendation:
       "La mayor\u00EDa de los asesores financieros recomiendan ahorrar al menos de 3 a 6 meses de gastos esenciales para imprevistos. Ajusta seg\u00FAn la estabilidad de tu empleo y tu comodidad personal.",
-    coveredDescription: "Estos son tus gastos esenciales y reducibles, usados para calcular tu fondo de emergencia.",
+    coveredDescription:
+      "Estos son tus gastos esenciales y reducibles, usados para calcular tu fondo de emergencia.",
     essentialExpenses: "Gastos cubiertos",
     months_one: "{{count}} mes",
     months_other: "{{count}} meses",

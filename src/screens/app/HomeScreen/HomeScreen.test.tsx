@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react-native";
+import { render, screen } from "@testing-library/react-native";
 import HomeScreen from "./HomeScreen";
 import { mockCategories, mockExpenses } from "../../../test/fixtures";
 import { mockDataContextDefaults } from "../../../test/mocks";

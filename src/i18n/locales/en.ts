@@ -102,8 +102,10 @@ const en = {
     reducible: "Reducible",
     optional: "Optional",
     noExpensesForPriority: "No expenses with this priority.",
-    costsExplainer: "The total of all your fixed recurring expenses, such as subscriptions, bills, and installments.",
-    availableExplainer: "What remains from your income after all fixed expenses. Use it for variable spending (eating out, vacations, shopping), to grow your emergency fund, or for financial investments.",
+    costsExplainer:
+      "The total of all your fixed recurring expenses, such as subscriptions, bills, and installments.",
+    availableExplainer:
+      "What remains from your income after all fixed expenses. Use it for variable spending (eating out, vacations, shopping), to grow your emergency fund, or for financial investments.",
   },
   categories: {
     title: "Categories",
@@ -153,12 +155,9 @@ const en = {
     priorityEssential: "Essential",
     priorityReducible: "Reducible",
     priorityOptional: "Optional",
-    priorityHintEssential:
-      "You can't do without it, like rent or bills.",
-    priorityHintReducible:
-      "You need it, but you could spend less.",
-    priorityHintOptional:
-      "An extra you could give up.",
+    priorityHintEssential: "You can't do without it, like rent or bills.",
+    priorityHintReducible: "You need it, but you could spend less.",
+    priorityHintOptional: "An extra you could give up.",
     notesSection: "Notes",
     saveChanges: "Save changes",
     saveExpense: "Save expense",
@@ -203,7 +202,8 @@ const en = {
     topExpenses: "Top expenses",
     recommendation:
       "Most financial advisors recommend saving at least 3 to 6 months of essential expenses for unexpected events. Adjust based on your job stability and personal comfort.",
-    coveredDescription: "These are your essential and reducible expenses, used to calculate your emergency fund.",
+    coveredDescription:
+      "These are your essential and reducible expenses, used to calculate your emergency fund.",
     essentialExpenses: "Covered expenses",
     months_one: "{{count}} month",
     months_other: "{{count}} months",

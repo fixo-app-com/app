@@ -8,7 +8,10 @@ import {
   getDisplayAmountCents,
   sumDisplayCents,
 } from "../../../types/firestore";
-import type { ExpensePriority, PinnedBudgetMetric } from "../../../types/firestore";
+import type {
+  ExpensePriority,
+  PinnedBudgetMetric,
+} from "../../../types/firestore";
 import {
   BottomSheet,
   FullScreenLoader,
@@ -50,7 +53,10 @@ export default function HomeScreen() {
 
   // Metric info bottom sheet
   const metricInfoSheetRef = useRef<BottomSheetModal>(null);
-  const [metricInfoContent, setMetricInfoContent] = useState({ title: "", body: "" });
+  const [metricInfoContent, setMetricInfoContent] = useState({
+    title: "",
+    body: "",
+  });
 
   // Pinned budget metric (local state — no longer persisted)
   const [pinnedBudgetMetric, setPinnedBudgetMetric] =
@@ -152,56 +158,56 @@ export default function HomeScreen() {
 
   return (
     <>
-    <ScreenWrapper scroll header={headerContent}>
-      <View className="gap-6 pb-8">
-        <View>
-          <SectionHeader title={t("home.income")} />
-          <BudgetCard
-            hasIncome={hasIncome}
-            isYearly={isYearly}
-            incomeDisplayCents={incomeDisplayCents}
-            totalCents={totalCents}
-            availableCents={availableCents}
-            pinnedMetric={pinnedBudgetMetric}
-            onPin={setPinnedBudgetMetric}
-            onIncomeEdit={handleIncomeEdit}
-            onMetricInfo={handleMetricInfo}
-          />
-        </View>
-
-        {donutSegments.length > 0 && (
+      <ScreenWrapper scroll header={headerContent}>
+        <View className="gap-6 pb-8">
           <View>
-            <SectionHeader title={t("home.breakdown")} />
-            <DonutChart
-              segments={donutSegments}
-              totalCents={donutTotal}
-              allLabel={t("home.allCategories")}
+            <SectionHeader title={t("home.income")} />
+            <BudgetCard
+              hasIncome={hasIncome}
+              isYearly={isYearly}
+              incomeDisplayCents={incomeDisplayCents}
+              totalCents={totalCents}
+              availableCents={availableCents}
+              pinnedMetric={pinnedBudgetMetric}
+              onPin={setPinnedBudgetMetric}
+              onIncomeEdit={handleIncomeEdit}
+              onMetricInfo={handleMetricInfo}
             />
           </View>
-        )}
 
-        <TopExpensesCard expenses={expenses} viewMode={viewMode} />
-        <WalletBreakdownCard
-          wallets={wallets}
-          expenses={expenses}
-          viewMode={viewMode}
-        />
-        <EssentialSplitCard
-          expenses={expenses}
-          viewMode={viewMode}
-          onPriorityPress={handlePriorityPress}
-        />
-      </View>
-    </ScreenWrapper>
-    <PriorityExpensesSheet
-      ref={prioritySheetRef}
-      priority={selectedPriority}
-    />
-    <BottomSheet ref={metricInfoSheetRef} title={metricInfoContent.title}>
-      <Text className="text-sm leading-6 text-gray-600">
-        {metricInfoContent.body}
-      </Text>
-    </BottomSheet>
+          {donutSegments.length > 0 && (
+            <View>
+              <SectionHeader title={t("home.breakdown")} />
+              <DonutChart
+                segments={donutSegments}
+                totalCents={donutTotal}
+                allLabel={t("home.allCategories")}
+              />
+            </View>
+          )}
+
+          <TopExpensesCard expenses={expenses} viewMode={viewMode} />
+          <WalletBreakdownCard
+            wallets={wallets}
+            expenses={expenses}
+            viewMode={viewMode}
+          />
+          <EssentialSplitCard
+            expenses={expenses}
+            viewMode={viewMode}
+            onPriorityPress={handlePriorityPress}
+          />
+        </View>
+      </ScreenWrapper>
+      <PriorityExpensesSheet
+        ref={prioritySheetRef}
+        priority={selectedPriority}
+      />
+      <BottomSheet ref={metricInfoSheetRef} title={metricInfoContent.title}>
+        <Text className="text-sm leading-6 text-gray-600">
+          {metricInfoContent.body}
+        </Text>
+      </BottomSheet>
     </>
   );
 }

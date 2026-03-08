@@ -111,8 +111,10 @@ const fr = {
     reducible: "Réductibles",
     optional: "Optionnels",
     noExpensesForPriority: "Aucune dépense avec cette priorité.",
-    costsExplainer: "Le total de toutes vos dépenses fixes récurrentes, comme les abonnements, factures et mensualités.",
-    availableExplainer: "Ce qui reste de votre revenu apr\u00E8s toutes les d\u00E9penses fixes. Utilisez-le pour les d\u00E9penses variables (sorties, restaurants, vacances, shopping), pour renforcer votre fonds d\u2019urgence ou pour des investissements financiers.",
+    costsExplainer:
+      "Le total de toutes vos dépenses fixes récurrentes, comme les abonnements, factures et mensualités.",
+    availableExplainer:
+      "Ce qui reste de votre revenu apr\u00E8s toutes les d\u00E9penses fixes. Utilisez-le pour les d\u00E9penses variables (sorties, restaurants, vacances, shopping), pour renforcer votre fonds d\u2019urgence ou pour des investissements financiers.",
   },
   categories: {
     title: "Cat\u00E9gories",
@@ -163,12 +165,10 @@ const fr = {
     priorityEssential: "Essentiel",
     priorityReducible: "R\u00E9ductible",
     priorityOptional: "Optionnel",
-    priorityHintEssential:
-      "Indispensable, comme le loyer ou les factures.",
+    priorityHintEssential: "Indispensable, comme le loyer ou les factures.",
     priorityHintReducible:
       "N\u00E9cessaire, mais vous pourriez d\u00E9penser moins.",
-    priorityHintOptional:
-      "Un extra dont vous pourriez vous passer.",
+    priorityHintOptional: "Un extra dont vous pourriez vous passer.",
     notesSection: "Notes",
     saveChanges: "Enregistrer les modifications",
     saveExpense: "Enregistrer la d\u00E9pense",
@@ -213,7 +213,8 @@ const fr = {
     topExpenses: "D\u00E9penses principales",
     recommendation:
       "La plupart des conseillers financiers recommandent d\u2019\u00E9pargner au moins 3 \u00E0 6 mois de d\u00E9penses essentielles pour les impr\u00E9vus. Ajustez en fonction de la stabilit\u00E9 de votre emploi et de votre confort personnel.",
-    coveredDescription: "Ce sont vos dépenses essentielles et réductibles, utilisées pour calculer votre fonds d\u2019urgence.",
+    coveredDescription:
+      "Ce sont vos dépenses essentielles et réductibles, utilisées pour calculer votre fonds d\u2019urgence.",
     essentialExpenses: "Dépenses couvertes",
     months_one: "{{count}} mois",
     months_other: "{{count}} mois",

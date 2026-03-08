@@ -69,9 +69,7 @@ describe("BudgetCard", () => {
   });
 
   it("shows yearly label for prompt when isYearly and no income", () => {
-    render(
-      <BudgetCard {...baseProps} hasIncome={false} isYearly={true} />,
-    );
+    render(<BudgetCard {...baseProps} hasIncome={false} isYearly={true} />);
     expect(screen.getByText("home.setYearlyIncome")).toBeOnTheScreen();
   });
 

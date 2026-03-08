@@ -77,9 +77,7 @@ export function EssentialSplitCard({
               className="text-xl font-bold text-gray-900"
               suffixFormat
             />
-            <Text className="text-xs text-blue-500">
-              {t("home.reducible")}
-            </Text>
+            <Text className="text-xs text-blue-500">{t("home.reducible")}</Text>
           </Pressable>
           <View className="w-px self-stretch bg-gray-200" />
           <Pressable
@@ -92,9 +90,7 @@ export function EssentialSplitCard({
               className="text-xl font-bold text-gray-900"
               suffixFormat
             />
-            <Text className="text-xs text-green-500">
-              {t("home.optional")}
-            </Text>
+            <Text className="text-xs text-green-500">{t("home.optional")}</Text>
           </Pressable>
         </View>
       </Card>
