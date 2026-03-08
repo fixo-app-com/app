@@ -93,6 +93,7 @@ const en = {
     noCategories: "No categories yet.",
     addCategory: "Add category",
     allCategories: "All",
+    budget: "Budget",
     breakdown: "Breakdown",
   },
   categories: {

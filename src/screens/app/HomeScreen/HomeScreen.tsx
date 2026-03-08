@@ -6,7 +6,11 @@ import {
   getDisplayAmountCents,
   sumDisplayCents,
 } from "../../../types/firestore";
-import { FullScreenLoader, ScreenWrapper } from "../../../design-system";
+import {
+  FullScreenLoader,
+  ScreenWrapper,
+  SectionHeader,
+} from "../../../design-system";
 import { ViewModeToggle } from "../../../components";
 import { useExpenses } from "../../../hooks/useExpenses";
 import { BudgetCard } from "./BudgetCard";
@@ -105,23 +109,29 @@ export default function HomeScreen() {
   return (
     <ScreenWrapper scroll header={headerContent}>
       <View className="gap-4 pb-8">
-        <BudgetCard
-          hasBudget={hasBudget}
-          isYearly={isYearly}
-          budgetDisplayCents={budgetDisplayCents}
-          totalCents={totalCents}
-          availableCents={availableCents}
-          pinnedMetric={pinnedBudgetMetric}
-          onPin={setPinnedBudgetMetric}
-          onBudgetEdit={handleBudgetEdit}
-        />
+        <View>
+          <SectionHeader title={t("home.budget")} />
+          <BudgetCard
+            hasBudget={hasBudget}
+            isYearly={isYearly}
+            budgetDisplayCents={budgetDisplayCents}
+            totalCents={totalCents}
+            availableCents={availableCents}
+            pinnedMetric={pinnedBudgetMetric}
+            onPin={setPinnedBudgetMetric}
+            onBudgetEdit={handleBudgetEdit}
+          />
+        </View>
 
         {donutSegments.length > 0 && (
-          <DonutChart
-            segments={donutSegments}
-            totalCents={donutTotal}
-            allLabel={t("home.allCategories")}
-          />
+          <View>
+            <SectionHeader title={t("home.breakdown")} />
+            <DonutChart
+              segments={donutSegments}
+              totalCents={donutTotal}
+              allLabel={t("home.allCategories")}
+            />
+          </View>
         )}
       </View>
     </ScreenWrapper>

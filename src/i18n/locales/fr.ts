@@ -102,6 +102,7 @@ const fr = {
     noCategories: "Aucune cat\u00E9gorie pour le moment.",
     addCategory: "Ajouter une cat\u00E9gorie",
     allCategories: "Toutes",
+    budget: "Budget",
     breakdown: "R\u00E9partition",
   },
   categories: {

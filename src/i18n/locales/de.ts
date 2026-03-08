@@ -101,6 +101,7 @@ const de = {
     noCategories: "Noch keine Kategorien.",
     addCategory: "Kategorie hinzuf\u00FCgen",
     allCategories: "Alle",
+    budget: "Budget",
     breakdown: "Aufschl\u00FCsselung",
   },
   categories: {

@@ -101,6 +101,7 @@ const es = {
     noCategories: "A\u00FAn no hay categor\u00EDas.",
     addCategory: "Agregar categor\u00EDa",
     allCategories: "Todas",
+    budget: "Presupuesto",
     breakdown: "Desglose",
   },
   categories: {

@@ -95,6 +95,7 @@ const it = {
     noCategories: "Nessuna categoria ancora.",
     addCategory: "Aggiungi categoria",
     allCategories: "Tutte",
+    budget: "Budget",
     breakdown: "Ripartizione",
   },
   categories: {

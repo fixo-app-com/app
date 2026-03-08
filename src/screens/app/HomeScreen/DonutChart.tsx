@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { LayoutChangeEvent, Pressable, Text, View } from "react-native";
-import { useTranslation } from "react-i18next";
 import { Svg, Path, G } from "react-native-svg";
 import { Card } from "../../../design-system";
 import { CurrencyText } from "../../../components";
@@ -61,7 +60,6 @@ export function DonutChart({
   totalCents,
   allLabel,
 }: DonutChartProps) {
-  const { t } = useTranslation();
   const [containerWidth, setContainerWidth] = useState(0);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
@@ -111,9 +109,6 @@ export function DonutChart({
 
   return (
     <Card testID="donut-chart">
-      <Text className="mb-2 text-xs font-medium uppercase tracking-wide text-gray-400">
-        {t("home.breakdown")}
-      </Text>
       <View onLayout={handleLayout} style={{ alignItems: "center" }}>
         <View style={{ width: chartSize, height: chartSize }}>
           <Svg width={chartSize} height={chartSize}>
