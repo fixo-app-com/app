@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useData } from "../../../contexts/DataContext";
-import type { WalletsStackParamList } from "../../../navigation/RootNavigator";
+import type { AppRootStackParamList } from "../../../navigation/RootNavigator";
 import { BANKS } from "../../../constants/banks";
 import { useDeleteConfirmation } from "../../../hooks/useDeleteConfirmation";
 import { BankIcon } from "../../../components";
@@ -23,8 +23,8 @@ import {
 } from "../../../design-system";
 import { useExpenses } from "../../../hooks/useExpenses";
 
-type Nav = NativeStackNavigationProp<WalletsStackParamList, "AddEditWallet">;
-type Route = RouteProp<WalletsStackParamList, "AddEditWallet">;
+type Nav = NativeStackNavigationProp<AppRootStackParamList, "AddEditWallet">;
+type Route = RouteProp<AppRootStackParamList, "AddEditWallet">;
 
 const ITEM_BASE_WIDTH = 72;
 const H_PADDING = 32;
@@ -122,7 +122,10 @@ export default function AddEditWalletScreen() {
       onConfirm: async () => {
         try {
           await deleteWallet(walletId);
-          navigation.popTo("Wallets");
+          navigation.navigate("MainTabs", {
+            screen: "WalletsTab",
+            params: { screen: "Wallets" },
+          });
         } catch (error) {
           if (__DEV__) console.error("Failed to delete wallet:", error);
         }
@@ -212,6 +215,7 @@ export default function AddEditWalletScreen() {
         }
         onDelete={isEditing && !hasExpenses ? handleDelete : undefined}
       />
+      <View className="h-8" />
     </ScreenWrapper>
   );
 }

@@ -1,16 +1,24 @@
 import { useTranslation } from "react-i18next";
-import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
+import {
+  CompositeNavigationProp,
+  useNavigation,
+  useRoute,
+  RouteProp,
+} from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useData } from "../../../contexts/DataContext";
-import type { CategoriesStackParamList } from "../../../navigation/RootNavigator";
+import type {
+  AppRootStackParamList,
+  CategoriesStackParamList,
+} from "../../../navigation/RootNavigator";
 import { computeTotalCents } from "../../../types/firestore";
 import { useExpenses } from "../../../hooks/useExpenses";
 import { useSortSheet } from "../../../hooks/useSortSheet";
 import { EntityDetailScreen } from "../shared/EntityDetailScreen";
 
-type Nav = NativeStackNavigationProp<
-  CategoriesStackParamList,
-  "CategoryDetail"
+type Nav = CompositeNavigationProp<
+  NativeStackNavigationProp<CategoriesStackParamList, "CategoryDetail">,
+  NativeStackNavigationProp<AppRootStackParamList>
 >;
 type Route = RouteProp<CategoriesStackParamList, "CategoryDetail">;
 

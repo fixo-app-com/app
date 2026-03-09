@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
+import { View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAuth } from "../../../contexts/AuthContext";
 import { getExpenses } from "../../../services/firestore";
 import { useStoreReview } from "../../../hooks/useStoreReview";
-import type { CategoriesStackParamList } from "../../../navigation/RootNavigator";
+import type { AppRootStackParamList } from "../../../navigation/RootNavigator";
 import type { Expense } from "../../../types/firestore";
 import {
   FullScreenLoader,
@@ -14,11 +15,8 @@ import {
 } from "../../../design-system";
 import { ExpenseForm } from "../../../components";
 
-type Nav = NativeStackNavigationProp<
-  CategoriesStackParamList,
-  "AddEditExpense"
->;
-type Route = RouteProp<CategoriesStackParamList, "AddEditExpense">;
+type Nav = NativeStackNavigationProp<AppRootStackParamList, "AddEditExpense">;
+type Route = RouteProp<AppRootStackParamList, "AddEditExpense">;
 
 export default function AddEditExpenseScreen() {
   const { t } = useTranslation();
@@ -78,6 +76,7 @@ export default function AddEditExpenseScreen() {
         }}
         onNavigateToWallet={() => navigation.navigate("AddEditWallet", {})}
       />
+      <View className="h-8" />
     </ScreenWrapper>
   );
 }

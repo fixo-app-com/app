@@ -15,7 +15,7 @@ export function ScreenHeader({ title, onBack, right }: ScreenHeaderProps) {
         <Pressable
           onPress={onBack}
           accessibilityRole="button"
-          accessibilityLabel="Go back"
+          accessibilityLabel="Close"
           className="-ml-1.5 mr-2 justify-center"
           style={({ pressed }) => ({
             opacity: pressed ? 0.6 : 1,
@@ -23,7 +23,7 @@ export function ScreenHeader({ title, onBack, right }: ScreenHeaderProps) {
           })}
           hitSlop={{ top: 8, bottom: 8, right: 8, left: 0 }}
         >
-          <Ionicons name="chevron-back" size={24} color="#6b7280" />
+          <Ionicons name="close" size={24} color="#6b7280" />
         </Pressable>
         <Text
           className="flex-1 text-lg font-semibold text-gray-900"

@@ -1,10 +1,13 @@
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
-import { useNavigation } from "@react-navigation/native";
+import { CompositeNavigationProp, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useData } from "../../../contexts/DataContext";
 import { colors } from "../../../constants/colors";
-import type { CategoriesStackParamList } from "../../../navigation/RootNavigator";
+import type {
+  AppRootStackParamList,
+  CategoriesStackParamList,
+} from "../../../navigation/RootNavigator";
 import {
   EmptyState,
   FloatingAction,
@@ -17,7 +20,10 @@ import { useExpenses } from "../../../hooks/useExpenses";
 import { useSortSheet } from "../../../hooks/useSortSheet";
 import { useEntityList } from "../../../hooks/useEntityList";
 
-type Nav = NativeStackNavigationProp<CategoriesStackParamList>;
+type Nav = CompositeNavigationProp<
+  NativeStackNavigationProp<CategoriesStackParamList>,
+  NativeStackNavigationProp<AppRootStackParamList>
+>;
 
 export default function CategoriesScreen() {
   const { t } = useTranslation();

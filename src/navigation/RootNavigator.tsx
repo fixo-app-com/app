@@ -1,4 +1,5 @@
 import type { ComponentProps } from "react";
+import type { NavigatorScreenParams } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { ActivityIndicator, View } from "react-native";
@@ -36,6 +37,31 @@ export type HomeStackParamList = {
 export type CategoriesStackParamList = {
   Categories: undefined;
   CategoryDetail: { categoryId: string; categoryName: string };
+};
+
+export type WalletsStackParamList = {
+  Wallets: undefined;
+  WalletDetail: { walletId: string; walletName: string; walletIcon: string };
+};
+
+export type EmergencyStackParamList = {
+  EmergencyFund: undefined;
+};
+
+export type SettingsStackParamList = {
+  Settings: undefined;
+};
+
+export type TabParamList = {
+  HomeTab: NavigatorScreenParams<HomeStackParamList> | undefined;
+  CategoriesTab: NavigatorScreenParams<CategoriesStackParamList> | undefined;
+  WalletsTab: NavigatorScreenParams<WalletsStackParamList> | undefined;
+  EmergencyTab: NavigatorScreenParams<EmergencyStackParamList> | undefined;
+  SettingsTab: NavigatorScreenParams<SettingsStackParamList> | undefined;
+};
+
+export type AppRootStackParamList = {
+  MainTabs: NavigatorScreenParams<TabParamList> | undefined;
   AddEditCategory: {
     categoryId?: string;
     categoryName?: string;
@@ -49,33 +75,6 @@ export type CategoriesStackParamList = {
   };
 };
 
-export type WalletsStackParamList = {
-  Wallets: undefined;
-  WalletDetail: { walletId: string; walletName: string; walletIcon: string };
-  AddEditWallet: {
-    walletId?: string;
-    walletName?: string;
-    walletIcon?: string;
-  };
-  AddEditExpense: { categoryId: string; expenseId?: string };
-};
-
-export type EmergencyStackParamList = {
-  EmergencyFund: undefined;
-};
-
-export type SettingsStackParamList = {
-  Settings: undefined;
-};
-
-export type TabParamList = {
-  HomeTab: undefined;
-  CategoriesTab: undefined;
-  WalletsTab: undefined;
-  EmergencyTab: undefined;
-  SettingsTab: undefined;
-};
-
 // --- Navigators ---
 
 const AuthStack = createNativeStackNavigator<AuthStackParamList>();
@@ -84,6 +83,7 @@ const CategoriesStack = createNativeStackNavigator<CategoriesStackParamList>();
 const WalletsStack = createNativeStackNavigator<WalletsStackParamList>();
 const EmergencyStack = createNativeStackNavigator<EmergencyStackParamList>();
 const SettingsStack = createNativeStackNavigator<SettingsStackParamList>();
+const AppRootStack = createNativeStackNavigator<AppRootStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
 
 const BG_COLOR = "#f1f5f9";
@@ -127,18 +127,6 @@ function CategoriesStackNavigator() {
         name="CategoryDetail"
         component={CategoryDetailScreen}
       />
-      <CategoriesStack.Screen
-        name="AddEditCategory"
-        component={AddEditCategoryScreen}
-      />
-      <CategoriesStack.Screen
-        name="AddEditExpense"
-        component={AddEditExpenseScreen}
-      />
-      <CategoriesStack.Screen
-        name="AddEditWallet"
-        component={AddEditWalletScreen}
-      />
     </CategoriesStack.Navigator>
   );
 }
@@ -148,14 +136,6 @@ function WalletsStackNavigator() {
     <WalletsStack.Navigator screenOptions={stackOptions}>
       <WalletsStack.Screen name="Wallets" component={WalletsScreen} />
       <WalletsStack.Screen name="WalletDetail" component={WalletDetailScreen} />
-      <WalletsStack.Screen
-        name="AddEditWallet"
-        component={AddEditWalletScreen}
-      />
-      <WalletsStack.Screen
-        name="AddEditExpense"
-        component={AddEditExpenseScreen}
-      />
     </WalletsStack.Navigator>
   );
 }
@@ -210,7 +190,7 @@ function TabIcon({
   );
 }
 
-function AppNavigator() {
+function TabNavigator() {
   const { t } = useTranslation();
 
   return (
@@ -269,6 +249,34 @@ function AppNavigator() {
         }}
       />
     </Tab.Navigator>
+  );
+}
+
+function AppNavigator() {
+  return (
+    <AppRootStack.Navigator screenOptions={stackOptions}>
+      <AppRootStack.Screen name="MainTabs" component={TabNavigator} />
+      <AppRootStack.Group
+        screenOptions={{
+          animation: "slide_from_bottom",
+          animationDuration: 300,
+          gestureEnabled: false,
+        }}
+      >
+        <AppRootStack.Screen
+          name="AddEditCategory"
+          component={AddEditCategoryScreen}
+        />
+        <AppRootStack.Screen
+          name="AddEditExpense"
+          component={AddEditExpenseScreen}
+        />
+        <AppRootStack.Screen
+          name="AddEditWallet"
+          component={AddEditWalletScreen}
+        />
+      </AppRootStack.Group>
+    </AppRootStack.Navigator>
   );
 }
 

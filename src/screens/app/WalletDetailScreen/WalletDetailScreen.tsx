@@ -1,14 +1,25 @@
 import { useTranslation } from "react-i18next";
-import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
+import {
+  CompositeNavigationProp,
+  useNavigation,
+  useRoute,
+  RouteProp,
+} from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useData } from "../../../contexts/DataContext";
-import type { WalletsStackParamList } from "../../../navigation/RootNavigator";
+import type {
+  AppRootStackParamList,
+  WalletsStackParamList,
+} from "../../../navigation/RootNavigator";
 import { computeTotalCents } from "../../../types/firestore";
 import { useExpenses } from "../../../hooks/useExpenses";
 import { useSortSheet } from "../../../hooks/useSortSheet";
 import { EntityDetailScreen } from "../shared/EntityDetailScreen";
 
-type Nav = NativeStackNavigationProp<WalletsStackParamList, "WalletDetail">;
+type Nav = CompositeNavigationProp<
+  NativeStackNavigationProp<WalletsStackParamList, "WalletDetail">,
+  NativeStackNavigationProp<AppRootStackParamList>
+>;
 type Route = RouteProp<WalletsStackParamList, "WalletDetail">;
 
 export default function WalletDetailScreen() {

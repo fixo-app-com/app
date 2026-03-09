@@ -5,7 +5,7 @@ import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useData } from "../../../contexts/DataContext";
-import type { CategoriesStackParamList } from "../../../navigation/RootNavigator";
+import type { AppRootStackParamList } from "../../../navigation/RootNavigator";
 import { useDeleteConfirmation } from "../../../hooks/useDeleteConfirmation";
 import {
   ChipGroup,
@@ -16,11 +16,8 @@ import {
   ScreenWrapper,
 } from "../../../design-system";
 
-type Nav = NativeStackNavigationProp<
-  CategoriesStackParamList,
-  "AddEditCategory"
->;
-type Route = RouteProp<CategoriesStackParamList, "AddEditCategory">;
+type Nav = NativeStackNavigationProp<AppRootStackParamList, "AddEditCategory">;
+type Route = RouteProp<AppRootStackParamList, "AddEditCategory">;
 
 const EMOJI_OPTIONS = [
   // People & family
@@ -99,7 +96,10 @@ export default function AddEditCategoryScreen() {
         try {
           await deleteExpensesByCategory(categoryId);
           await deleteCategory(categoryId);
-          navigation.popTo("Categories");
+          navigation.navigate("MainTabs", {
+            screen: "CategoriesTab",
+            params: { screen: "Categories" },
+          });
         } catch (error) {
           if (__DEV__) console.error("Failed to delete category:", error);
         }
@@ -180,6 +180,7 @@ export default function AddEditCategoryScreen() {
         }
         onDelete={isEditing ? handleDelete : undefined}
       />
+      <View className="h-8" />
     </ScreenWrapper>
   );
 }
