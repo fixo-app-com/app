@@ -63,7 +63,7 @@ export default function HomeScreen() {
   } = useData();
 
   const { expenses } = useExpenses();
-  const { order, saveOrder, loaded } = useWidgetOrder();
+  const { order, saveOrder } = useWidgetOrder();
 
   const [selectedPriority, setSelectedPriority] =
     useState<ExpensePriority>("essential");
@@ -167,7 +167,10 @@ export default function HomeScreen() {
   const donutTotal = donutSegments.reduce((sum, s) => sum + s.totalCents, 0);
 
   // Widget registry: maps each key to visibility + render function
-  const registry: Record<WidgetKey, { isVisible: boolean; render: () => React.ReactNode }> = {
+  const registry: Record<
+    WidgetKey,
+    { isVisible: boolean; render: () => React.ReactNode }
+  > = {
     overview: {
       isVisible: true,
       render: () => (
@@ -258,9 +261,7 @@ export default function HomeScreen() {
   // Build visible items from user's saved order
   const visibleItems: WidgetItem[] = useMemo(
     () =>
-      order
-        .filter((key) => registry[key].isVisible)
-        .map((key) => ({ key })),
+      order.filter((key) => registry[key].isVisible).map((key) => ({ key })),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [order, hasIncome, expenses.length, donutSegments.length],
   );
@@ -300,9 +301,18 @@ export default function HomeScreen() {
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
-      hasIncome, isYearly, incomeDisplayCents, totalCents, availableCents,
-      pinnedBudgetMetric, expenses, donutSegments, donutTotal,
-      wallets, viewMode, categories,
+      hasIncome,
+      isYearly,
+      incomeDisplayCents,
+      totalCents,
+      availableCents,
+      pinnedBudgetMetric,
+      expenses,
+      donutSegments,
+      donutTotal,
+      wallets,
+      viewMode,
+      categories,
     ],
   );
 
