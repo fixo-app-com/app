@@ -74,7 +74,9 @@ export default function SettingsScreen() {
         }
       />
 
-      <FormLabel title={t("settings.currency")} />
+      <View className="mt-4">
+        <FormLabel title={t("settings.currency")} />
+      </View>
 
       <ChipGroup
         options={CURRENCIES.map((c) => ({
@@ -86,7 +88,9 @@ export default function SettingsScreen() {
         compact
       />
 
-      <FormLabel title={t("settings.language")} />
+      <View className="mt-4">
+        <FormLabel title={t("settings.language")} />
+      </View>
 
       <ChipGroup
         options={SUPPORTED_LANGUAGES.map((lang) => ({
@@ -98,7 +102,9 @@ export default function SettingsScreen() {
         compact
       />
 
-      <FormLabel title={t("settings.legal")} />
+      <View className="mt-4">
+        <FormLabel title={t("settings.legal")} />
+      </View>
 
       <FormRow
         label={t("settings.privacyPolicy")}
@@ -120,7 +126,7 @@ export default function SettingsScreen() {
 
       <View className="flex-1" />
 
-      <View className="mt-6 pb-4">
+      <View className="mt-14 pb-4">
         <Button
           label={t("settings.signOut")}
           variant="secondary"

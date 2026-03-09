@@ -9,7 +9,7 @@ import { getDisplayAmountCents } from "../../types/firestore";
 const priorityColor: Record<ExpensePriority, string> = {
   essential: "text-amber-500",
   reducible: "text-blue-500",
-  optional: "text-green-500",
+  optional: "text-gray-400",
 };
 
 interface ExpenseCardProps {

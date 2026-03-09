@@ -90,7 +90,7 @@ export function EssentialSplitCard({
               className="text-xl font-bold text-gray-900"
               suffixFormat
             />
-            <Text className="text-xs text-green-500">{t("home.optional")}</Text>
+            <Text className="text-xs text-gray-400">{t("home.optional")}</Text>
           </Pressable>
         </View>
       </Card>
