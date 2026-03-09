@@ -128,6 +128,9 @@ const fr = {
     yearsToReach: "10+ ans",
     setSavingsRate:
       "D\u00E9finissez un taux d\u2019\u00E9pargne pour suivre vos progr\u00E8s",
+    addFirstCategory: "Ajouter une cat\u00E9gorie",
+    addFirstExpense: "Ajouter une d\u00E9pense",
+    addFirstWallet: "Ajouter un portefeuille",
   },
   categories: {
     title: "Cat\u00E9gories",

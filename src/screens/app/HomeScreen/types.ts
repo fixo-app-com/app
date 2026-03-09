@@ -1,5 +1,6 @@
 export type WidgetKey =
   | "overview"
+  | "gettingStarted"
   | "breakdown"
   | "essentialSplit"
   | "fixedCosts"
@@ -10,6 +11,7 @@ export type WidgetKey =
 
 export const DEFAULT_WIDGET_ORDER: WidgetKey[] = [
   "overview",
+  "gettingStarted",
   "breakdown",
   "essentialSplit",
   "fixedCosts",

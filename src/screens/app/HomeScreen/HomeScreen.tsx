@@ -26,7 +26,7 @@ import {
 } from "../../../design-system";
 import { ViewModeToggle } from "../../../components";
 import { useExpenses } from "../../../hooks/useExpenses";
-import type { TabParamList } from "../../../navigation/RootNavigator";
+import type { AppRootStackParamList } from "../../../navigation/RootNavigator";
 import { BudgetCard } from "./BudgetCard";
 import { DonutChart } from "./DonutChart";
 import type { DonutSegment } from "./DonutChart";
@@ -37,6 +37,7 @@ import { PriorityExpensesSheet } from "./PriorityExpensesSheet";
 import { FixedCostRatioCard } from "./FixedCostRatioCard";
 import { DailyBudgetCard } from "./DailyBudgetCard";
 import { EmergencyFundMiniCard } from "./EmergencyFundMiniCard";
+import { GettingStartedCards } from "./GettingStartedCards";
 import { useWidgetOrder } from "./useWidgetOrder";
 import type { WidgetKey } from "./types";
 
@@ -51,7 +52,7 @@ const ItemSeparator = () => <View style={{ height: 24 }} />;
 
 export default function HomeScreen() {
   const { t } = useTranslation();
-  const navigation = useNavigation<NavigationProp<TabParamList>>();
+  const navigation = useNavigation<NavigationProp<AppRootStackParamList>>();
   const {
     categories,
     wallets,
@@ -190,6 +191,20 @@ export default function HomeScreen() {
         </View>
       ),
     },
+    gettingStarted: {
+      isVisible:
+        categories.length === 0 ||
+        expenses.length === 0 ||
+        wallets.length === 0,
+      render: () => (
+        <GettingStartedCards
+          categories={categories}
+          expenses={expenses}
+          wallets={wallets}
+          navigation={navigation}
+        />
+      ),
+    },
     fixedCosts: {
       isVisible: hasIncome && expenses.length > 0,
       render: () => (
@@ -215,7 +230,9 @@ export default function HomeScreen() {
         <EmergencyFundMiniCard
           expenses={expenses}
           availableMonthlyCents={availableMonthlyCents}
-          onPress={() => navigation.navigate("EmergencyTab")}
+          onPress={() =>
+            navigation.navigate("MainTabs", { screen: "EmergencyTab" })
+          }
         />
       ),
     },
@@ -263,7 +280,14 @@ export default function HomeScreen() {
     () =>
       order.filter((key) => registry[key].isVisible).map((key) => ({ key })),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [order, hasIncome, expenses.length, donutSegments.length],
+    [
+      order,
+      hasIncome,
+      expenses.length,
+      donutSegments.length,
+      categories.length,
+      wallets.length,
+    ],
   );
 
   const handleDragEnd = useCallback(

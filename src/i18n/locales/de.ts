@@ -126,6 +126,9 @@ const de = {
     monthsToReach: "~{{count}} Monate bei {{amount}}/Mo",
     yearsToReach: "10+ Jahre",
     setSavingsRate: "Lege eine Sparrate fest, um den Fortschritt zu verfolgen",
+    addFirstCategory: "Kategorie hinzufügen",
+    addFirstExpense: "Ausgabe hinzufügen",
+    addFirstWallet: "Konto hinzufügen",
   },
   categories: {
     title: "Kategorien",

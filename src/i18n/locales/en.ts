@@ -118,6 +118,9 @@ const en = {
     monthsToReach: "~{{count}} months at {{amount}}/mo",
     yearsToReach: "10+ years",
     setSavingsRate: "Set a savings rate to track progress",
+    addFirstCategory: "Add a category",
+    addFirstExpense: "Add an expense",
+    addFirstWallet: "Add a wallet",
   },
   categories: {
     title: "Categories",

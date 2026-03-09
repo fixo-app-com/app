@@ -120,6 +120,9 @@ const it = {
     monthsToReach: "~{{count}} mesi a {{amount}}/mese",
     yearsToReach: "10+ anni",
     setSavingsRate: "Imposta un tasso di risparmio per monitorare i progressi",
+    addFirstCategory: "Aggiungi una categoria",
+    addFirstExpense: "Aggiungi una spesa",
+    addFirstWallet: "Aggiungi un portafoglio",
   },
   categories: {
     title: "Categorie",

@@ -126,6 +126,9 @@ const es = {
     monthsToReach: "~{{count}} meses a {{amount}}/mes",
     yearsToReach: "10+ a\u00F1os",
     setSavingsRate: "Establece una tasa de ahorro para seguir el progreso",
+    addFirstCategory: "Agregar una categoría",
+    addFirstExpense: "Agregar un gasto",
+    addFirstWallet: "Agregar una billetera",
   },
   categories: {
     title: "Categor\u00EDas",
