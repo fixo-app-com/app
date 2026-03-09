@@ -250,8 +250,8 @@ jest.mock("react-native-screens", () => {
 
 // Mock react-native-draggable-flatlist — use a separate file to avoid
 // NativeWind babel transform injecting _ReactNativeCSSInterop into the factory.
-
+/* eslint-disable @typescript-eslint/no-require-imports */
 jest.mock("react-native-draggable-flatlist", () =>
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
   require("./mocks/draggableFlatList"),
 );
+/* eslint-enable @typescript-eslint/no-require-imports */
