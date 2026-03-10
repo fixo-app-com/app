@@ -60,7 +60,9 @@ describe("CategoriesScreen", () => {
 
   it("renders title", () => {
     render(<CategoriesScreen />);
-    expect(screen.getAllByText("categories.title").length).toBeGreaterThanOrEqual(1);
+    expect(
+      screen.getAllByText("categories.title").length,
+    ).toBeGreaterThanOrEqual(1);
   });
 
   it("shows empty state when no categories", () => {

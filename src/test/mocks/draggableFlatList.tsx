@@ -3,10 +3,20 @@ import { View } from "react-native";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 function MockDraggableFlatList(props: any) {
-  const { data = [], renderItem, keyExtractor, ItemSeparatorComponent, ListHeaderComponent } = props;
-  const header = ListHeaderComponent
-    ? React.isValidElement(ListHeaderComponent) ? ListHeaderComponent : <ListHeaderComponent />
-    : null;
+  const {
+    data = [],
+    renderItem,
+    keyExtractor,
+    ItemSeparatorComponent,
+    ListHeaderComponent,
+  } = props;
+  const header = ListHeaderComponent ? (
+    React.isValidElement(ListHeaderComponent) ? (
+      ListHeaderComponent
+    ) : (
+      <ListHeaderComponent />
+    )
+  ) : null;
   return (
     <View>
       {header}

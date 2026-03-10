@@ -364,7 +364,9 @@ export default function HomeScreen() {
         <ViewModeToggle selected={viewMode} onSelect={setViewMode} />
       </View>
       {registry.overview.isVisible && (
-        <View style={{ marginBottom: WIDGET_GAP }}>{registry.overview.render()}</View>
+        <View style={{ marginBottom: WIDGET_GAP }}>
+          {registry.overview.render()}
+        </View>
       )}
     </>
   );

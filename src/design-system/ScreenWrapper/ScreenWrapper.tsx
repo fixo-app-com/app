@@ -49,10 +49,9 @@ export function useScrollHeader(externalScrollY?: Animated.Value) {
 
   const scrollHandler = useMemo(
     () =>
-      Animated.event(
-        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-        { useNativeDriver: false },
-      ),
+      Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
+        useNativeDriver: false,
+      }),
     [scrollY],
   );
 
@@ -110,10 +109,9 @@ export function ScreenWrapper({
 
   const internalScrollHandler = useMemo(
     () =>
-      Animated.event(
-        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-        { useNativeDriver: false },
-      ),
+      Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
+        useNativeDriver: false,
+      }),
     [scrollY],
   );
 
@@ -157,7 +155,10 @@ export function ScreenWrapper({
             </ScrollView>
           </KeyboardAvoidingView>
         ) : (
-          <View className="flex-1 px-4" style={{ paddingBottom: bottomPadding }}>
+          <View
+            className="flex-1 px-4"
+            style={{ paddingBottom: bottomPadding }}
+          >
             {children}
           </View>
         )}
@@ -175,7 +176,13 @@ export function ScreenWrapper({
           <BlurView
             intensity={HEADER_BLUR_INTENSITY}
             tint="light"
-            style={[styles.stickyBlur, { paddingTop: insets.top, height: insets.top + STICKY_TITLE_ROW_HEIGHT }]}
+            style={[
+              styles.stickyBlur,
+              {
+                paddingTop: insets.top,
+                height: insets.top + STICKY_TITLE_ROW_HEIGHT,
+              },
+            ]}
           />
         </View>
       </Animated.View>
@@ -184,9 +191,7 @@ export function ScreenWrapper({
         style={{ opacity: smallTitleOpacity, paddingTop: insets.top }}
       >
         <View style={styles.stickyTitleRow}>
-          <Text className="text-base font-semibold text-gray-900">
-            {title}
-          </Text>
+          <Text className="text-base font-semibold text-gray-900">{title}</Text>
         </View>
       </Animated.View>
     </View>

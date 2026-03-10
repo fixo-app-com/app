@@ -49,7 +49,9 @@ describe("EmergencyFundScreen", () => {
 
   it("renders title and subtitle", () => {
     render(<EmergencyFundScreen />);
-    expect(screen.getAllByText("emergency.title").length).toBeGreaterThanOrEqual(1);
+    expect(
+      screen.getAllByText("emergency.title").length,
+    ).toBeGreaterThanOrEqual(1);
     expect(screen.getByText("emergency.description")).toBeOnTheScreen();
   });
 

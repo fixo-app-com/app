@@ -1,4 +1,10 @@
-import { ActivityIndicator, Animated, FlatList, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Animated,
+  FlatList,
+  Text,
+  View,
+} from "react-native";
 import { useTranslation } from "react-i18next";
 import {
   CompositeNavigationProp,
@@ -19,7 +25,10 @@ import {
   SortTrigger,
   useScrollHeader,
 } from "../../../design-system";
-import { LIST_BOTTOM_PADDING_FAB, SCROLL_EVENT_THROTTLE } from "../../../constants/layout";
+import {
+  LIST_BOTTOM_PADDING_FAB,
+  SCROLL_EVENT_THROTTLE,
+} from "../../../constants/layout";
 import { ListSpacer, ViewModeToggle, WalletCard } from "../../../components";
 import { useExpenses } from "../../../hooks/useExpenses";
 import { useSortSheet } from "../../../hooks/useSortSheet";
