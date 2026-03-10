@@ -22,7 +22,7 @@ jest.mock("../../../services/auth", () => ({
 describe("SettingsScreen", () => {
   it("renders title", () => {
     render(<SettingsScreen />);
-    expect(screen.getByText("settings.title")).toBeOnTheScreen();
+    expect(screen.getAllByText("settings.title").length).toBeGreaterThanOrEqual(1);
   });
 
   it("renders user email", () => {

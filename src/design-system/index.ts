@@ -12,7 +12,7 @@ export { IconButton } from "./IconButton/IconButton";
 export { Input } from "./Input/Input";
 export { SaveDeleteFooter } from "./SaveDeleteFooter/SaveDeleteFooter";
 export { ScreenHeader } from "./ScreenHeader/ScreenHeader";
-export { ScreenWrapper } from "./ScreenWrapper/ScreenWrapper";
+export { ScreenWrapper, useScrollHeader } from "./ScreenWrapper/ScreenWrapper";
 export { SectionHeader } from "./SectionHeader/SectionHeader";
 export { SortBottomSheet } from "./SortBottomSheet/SortBottomSheet";
 export { SortTrigger } from "./SortTrigger/SortTrigger";

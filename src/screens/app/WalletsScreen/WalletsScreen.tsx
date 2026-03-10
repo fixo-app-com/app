@@ -1,4 +1,4 @@
-import { ActivityIndicator, FlatList, Text, View } from "react-native";
+import { ActivityIndicator, Animated, FlatList, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import {
   CompositeNavigationProp,
@@ -17,7 +17,9 @@ import {
   ScreenWrapper,
   SortBottomSheet,
   SortTrigger,
+  useScrollHeader,
 } from "../../../design-system";
+import { LIST_BOTTOM_PADDING_FAB, SCROLL_EVENT_THROTTLE } from "../../../constants/layout";
 import { ListSpacer, ViewModeToggle, WalletCard } from "../../../components";
 import { useExpenses } from "../../../hooks/useExpenses";
 import { useSortSheet } from "../../../hooks/useSortSheet";
@@ -43,14 +45,19 @@ export default function WalletsScreen() {
     "walletId",
   );
 
-  const headerContent = (
+  const { scrollY, scrollHandler, largeTitleOpacity, contentTopPadding } =
+    useScrollHeader();
+
+  const listHeader = (
     <>
-      <Text className="mb-4 text-3xl font-bold text-gray-900">
-        {t("wallets.title")}
-      </Text>
+      <Animated.View style={{ opacity: largeTitleOpacity }}>
+        <Text className="mb-2 text-3xl font-bold text-gray-900">
+          {t("wallets.title")}
+        </Text>
+      </Animated.View>
 
       {/* Monthly / Yearly toggle + sort */}
-      <View className="flex-row items-center justify-between">
+      <View className="mb-4 flex-row items-center justify-between">
         <ViewModeToggle selected={viewMode} onSelect={setViewMode} />
         <SortTrigger label={sort.triggerLabel} onPress={sort.open} />
       </View>
@@ -58,14 +65,20 @@ export default function WalletsScreen() {
   );
 
   return (
-    <ScreenWrapper header={headerContent}>
+    <ScreenWrapper title={t("wallets.title")} scrollY={scrollY}>
       {loadingExpenses ? (
         <ActivityIndicator color={colors.fixo[400]} className="mt-8" />
       ) : (
         <FlatList
           data={sortedWallets}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={{ paddingBottom: 100 }}
+          onScroll={scrollHandler}
+          scrollEventThrottle={SCROLL_EVENT_THROTTLE}
+          contentContainerStyle={{
+            paddingTop: contentTopPadding,
+            paddingBottom: LIST_BOTTOM_PADDING_FAB,
+          }}
+          ListHeaderComponent={listHeader}
           renderItem={({ item }) => (
             <WalletCard
               name={item.name}

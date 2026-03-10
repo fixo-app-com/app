@@ -35,7 +35,7 @@ describe("HomeScreen", () => {
 
   it("renders Home title", () => {
     render(<HomeScreen />);
-    expect(screen.getByText("home.title")).toBeOnTheScreen();
+    expect(screen.getAllByText("home.title").length).toBeGreaterThanOrEqual(1);
   });
 
   it("renders monthly/yearly toggle chips", () => {

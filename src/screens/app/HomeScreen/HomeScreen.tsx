@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useRef, useState } from "react";
-import { Alert, Pressable, Text, View } from "react-native";
+import { Alert, Animated, Pressable, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { useNavigation } from "@react-navigation/native";
 import type { NavigationProp } from "@react-navigation/native";
@@ -23,7 +23,9 @@ import {
   FullScreenLoader,
   ScreenWrapper,
   SectionHeader,
+  useScrollHeader,
 } from "../../../design-system";
+import { LIST_BOTTOM_PADDING, WIDGET_GAP } from "../../../constants/layout";
 import { ViewModeToggle } from "../../../components";
 import { useExpenses } from "../../../hooks/useExpenses";
 import type { AppRootStackParamList } from "../../../navigation/RootNavigator";
@@ -48,7 +50,7 @@ const METRIC_EXPLAINER_KEYS: Record<string, string> = {
 
 type WidgetItem = { key: WidgetKey };
 
-const ItemSeparator = () => <View style={{ height: 24 }} />;
+const ItemSeparator = () => <View style={{ height: WIDGET_GAP }} />;
 
 export default function HomeScreen() {
   const { t } = useTranslation();
@@ -80,6 +82,18 @@ export default function HomeScreen() {
   // Pinned budget metric (local state — no longer persisted)
   const [pinnedBudgetMetric, setPinnedBudgetMetric] =
     useState<PinnedBudgetMetric>("income");
+
+  // Collapsing header: own scrollY driven by DraggableFlatList's onScrollOffsetChange
+  const ownScrollY = useRef(new Animated.Value(0)).current;
+  const { scrollY, largeTitleOpacity, contentTopPadding } =
+    useScrollHeader(ownScrollY);
+
+  const handleScrollOffset = useCallback(
+    (offset: number) => {
+      scrollY.setValue(offset);
+    },
+    [scrollY],
+  );
 
   function handleMetricInfo(metric: PinnedBudgetMetric) {
     const key = METRIC_EXPLAINER_KEYS[metric];
@@ -275,10 +289,12 @@ export default function HomeScreen() {
     },
   };
 
-  // Build visible items from user's saved order
+  // Build visible items from user's saved order (overview excluded — rendered in header)
   const visibleItems: WidgetItem[] = useMemo(
     () =>
-      order.filter((key) => registry[key].isVisible).map((key) => ({ key })),
+      order
+        .filter((key) => key !== "overview" && registry[key].isVisible)
+        .map((key) => ({ key })),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       order,
@@ -292,31 +308,26 @@ export default function HomeScreen() {
 
   const handleDragEnd = useCallback(
     ({ data }: { data: WidgetItem[] }) => {
-      // Force overview to stay first
       const reordered = data.map((d) => d.key);
-      const overviewIdx = reordered.indexOf("overview");
-      if (overviewIdx > 0) {
-        reordered.splice(overviewIdx, 1);
-        reordered.unshift("overview");
-      }
 
-      // Rebuild full order: reordered visible keys + hidden keys appended
+      // Rebuild full order: overview first, then reordered visible, then hidden
       const visibleSet = new Set(reordered);
-      const hidden = order.filter((k) => !visibleSet.has(k));
-      saveOrder([...reordered, ...hidden]);
+      const hidden = order.filter(
+        (k) => k !== "overview" && !visibleSet.has(k),
+      );
+      saveOrder(["overview", ...reordered, ...hidden]);
     },
     [order, saveOrder],
   );
 
   const renderWidget = useCallback(
     ({ item, drag, isActive }: RenderItemParams<WidgetItem>) => {
-      const isPinned = item.key === "overview";
       return (
-        <OpacityDecorator activeOpacity={0.9}>
+        <OpacityDecorator activeOpacity={0.6}>
           <Pressable
-            onLongPress={isPinned ? undefined : drag}
+            onLongPress={drag}
             delayLongPress={200}
-            style={isActive ? { opacity: 0.9 } : undefined}
+            style={isActive ? { opacity: 0.6 } : undefined}
           >
             {registry[item.key].render()}
           </Pressable>
@@ -342,30 +353,42 @@ export default function HomeScreen() {
 
   const keyExtractor = useCallback((item: WidgetItem) => item.key, []);
 
+  const listHeader = (
+    <>
+      <Animated.View style={{ opacity: largeTitleOpacity }}>
+        <Text className="mb-2 text-3xl font-bold text-gray-900">
+          {t("home.title")}
+        </Text>
+      </Animated.View>
+      <View className="mb-4">
+        <ViewModeToggle selected={viewMode} onSelect={setViewMode} />
+      </View>
+      {registry.overview.isVisible && (
+        <View style={{ marginBottom: WIDGET_GAP }}>{registry.overview.render()}</View>
+      )}
+    </>
+  );
+
   if (dataLoading) {
     return <FullScreenLoader />;
   }
 
-  const headerContent = (
-    <>
-      <Text className="mb-4 text-3xl font-bold text-gray-900">
-        {t("home.title")}
-      </Text>
-      <ViewModeToggle selected={viewMode} onSelect={setViewMode} />
-    </>
-  );
-
   return (
     <>
-      <ScreenWrapper header={headerContent}>
+      <ScreenWrapper title={t("home.title")} scrollY={scrollY}>
         <DraggableFlatList
           data={visibleItems}
           keyExtractor={keyExtractor}
           renderItem={renderWidget}
           onDragEnd={handleDragEnd}
+          onScrollOffsetChange={handleScrollOffset}
+          ListHeaderComponent={listHeader}
           ItemSeparatorComponent={ItemSeparator}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 32 }}
+          contentContainerStyle={{
+            paddingTop: contentTopPadding,
+            paddingBottom: LIST_BOTTOM_PADDING,
+          }}
         />
       </ScreenWrapper>
       <PriorityExpensesSheet

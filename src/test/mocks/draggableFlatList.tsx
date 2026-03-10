@@ -3,9 +3,13 @@ import { View } from "react-native";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 function MockDraggableFlatList(props: any) {
-  const { data = [], renderItem, keyExtractor, ItemSeparatorComponent } = props;
+  const { data = [], renderItem, keyExtractor, ItemSeparatorComponent, ListHeaderComponent } = props;
+  const header = ListHeaderComponent
+    ? React.isValidElement(ListHeaderComponent) ? ListHeaderComponent : <ListHeaderComponent />
+    : null;
   return (
     <View>
+      {header}
       {data.map((item: any, index: number) => (
         <React.Fragment
           key={keyExtractor ? keyExtractor(item, index) : String(index)}

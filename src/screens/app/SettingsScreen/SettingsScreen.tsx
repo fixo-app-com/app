@@ -53,14 +53,8 @@ export default function SettingsScreen() {
     );
   }
 
-  const headerContent = (
-    <Text className="mb-6 text-3xl font-bold text-gray-900">
-      {t("settings.title")}
-    </Text>
-  );
-
   return (
-    <ScreenWrapper scroll header={headerContent}>
+    <ScreenWrapper scroll title={t("settings.title")}>
       <FormLabel title={t("settings.account")} />
 
       <FormRow

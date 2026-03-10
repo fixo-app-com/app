@@ -153,6 +153,7 @@ jest.mock("react-native-reanimated", () => {
   return {
     useSharedValue: (init: unknown) => ({ value: init }),
     useAnimatedStyle: (fn: () => object) => fn(),
+    useAnimatedScrollHandler: () => () => {},
     withTiming: (val: number) => val,
     runOnJS: (fn: (...args: unknown[]) => void) => fn,
     interpolate: jest.fn(),

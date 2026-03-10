@@ -133,18 +133,13 @@ export default function EmergencyFundScreen() {
   const targetCents = roundToUnit((yearlyEssentialCents / 12) * selectedMonths);
 
   const headerContent = (
-    <View>
-      <Text className="text-3xl font-bold text-gray-900 mb-3">
-        {t("emergency.title")}
-      </Text>
-      <Text className="mt-1 mb-3 text-sm text-gray-500">
-        {t("emergency.description")}
-      </Text>
-    </View>
+    <Text className="mb-3 text-sm text-gray-500">
+      {t("emergency.description")}
+    </Text>
   );
 
   return (
-    <ScreenWrapper header={headerContent} scroll>
+    <ScreenWrapper title={t("emergency.title")} header={headerContent} scroll>
       {loading ? (
         <ActivityIndicator color={colors.fixo[400]} className="mt-8" />
       ) : essentialExpenses.length === 0 ? (
