@@ -11,7 +11,8 @@ interface ExpenseListProps {
   expenses: Expense[];
   loading: boolean;
   emptyMessage: string;
-  getSubtitle: (expense: Expense) => string;
+  getWalletName: (expense: Expense) => string;
+  getCategoryName?: (expense: Expense) => string;
   onPress: (expense: Expense) => void;
   onDelete: (expenseId: string) => Promise<void>;
 }
@@ -20,7 +21,8 @@ export function ExpenseList({
   expenses,
   loading,
   emptyMessage,
-  getSubtitle,
+  getWalletName,
+  getCategoryName,
   onPress,
   onDelete,
 }: ExpenseListProps) {
@@ -42,7 +44,8 @@ export function ExpenseList({
         >
           <ExpenseCard
             name={item.name}
-            walletName={getSubtitle(item)}
+            walletName={getWalletName(item)}
+            categoryName={getCategoryName?.(item)}
             notes={item.notes}
             amountCents={item.amountCents}
             billingFrequency={item.billingFrequency ?? "monthly"}

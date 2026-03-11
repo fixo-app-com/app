@@ -11,7 +11,7 @@ import type {
   AppRootStackParamList,
   WalletsStackParamList,
 } from "../../../navigation/RootNavigator";
-import { computeTotalCents } from "../../../types/firestore";
+import { sumDisplayCents } from "../../../types/firestore";
 import { useExpenses } from "../../../hooks/useExpenses";
 import { useSortSheet } from "../../../hooks/useSortSheet";
 import { EntityDetailScreen } from "../shared/EntityDetailScreen";
@@ -36,7 +36,7 @@ export default function WalletDetailScreen() {
   const sort = useSortSheet("expenses");
   const { expenses, loading } = useExpenses({ walletId, sort: sort.selected });
 
-  const totalCents = computeTotalCents(expenses, viewMode);
+  const totalCents = sumDisplayCents(expenses, viewMode);
 
   return (
     <EntityDetailScreen
@@ -59,7 +59,7 @@ export default function WalletDetailScreen() {
       expenses={expenses}
       loading={loading}
       emptyMessage={t("walletDetail.noExpenses")}
-      getSubtitle={(e) =>
+      getWalletName={(e) =>
         categories.find((c) => c.id === e.categoryId)?.name ?? "\u2014"
       }
       onExpensePress={(e) =>

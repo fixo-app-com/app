@@ -44,23 +44,23 @@ const categories = [
 ];
 
 describe("useEntityList", () => {
-  it("getTotal computes rounded total for a category in monthly mode", () => {
+  it("getTotal computes raw total for a category in monthly mode", () => {
     const { result } = renderHook(() =>
       useEntityList(categories, expenses, "monthly", "newest", "categoryId"),
     );
-    // cat1: 1299 + 80000 = 81299 → remainder 99 >= 30 → 81300
-    expect(result.current.getTotal("cat1")).toBe(81300);
-    // cat2: round(120000/12) = 10000 → remainder 0 → 10000
+    // cat1: 1299 + 80000 = 81299 (raw, no rounding)
+    expect(result.current.getTotal("cat1")).toBe(81299);
+    // cat2: round(120000/12) = 10000
     expect(result.current.getTotal("cat2")).toBe(10000);
   });
 
-  it("getTotal computes rounded total in yearly mode", () => {
+  it("getTotal computes raw total in yearly mode", () => {
     const { result } = renderHook(() =>
       useEntityList(categories, expenses, "yearly", "newest", "categoryId"),
     );
-    // cat1: 1299*12 + 80000*12 = 15588 + 960000 = 975588 → remainder 88 >= 30 → 975600
-    expect(result.current.getTotal("cat1")).toBe(975600);
-    // cat2: 120000 → remainder 0 → 120000
+    // cat1: 1299*12 + 80000*12 = 15588 + 960000 = 975588 (raw, no rounding)
+    expect(result.current.getTotal("cat1")).toBe(975588);
+    // cat2: 120000
     expect(result.current.getTotal("cat2")).toBe(120000);
   });
 
@@ -81,7 +81,7 @@ describe("useEntityList", () => {
         "categoryId",
       ),
     );
-    // cat1 total=81300 > cat2 total=10000
+    // cat1 total=81299 > cat2 total=10000
     expect(result.current.sorted.map((c) => c.id)).toEqual(["cat1", "cat2"]);
   });
 
@@ -100,7 +100,7 @@ describe("useEntityList", () => {
     const { result } = renderHook(() =>
       useEntityList(wallets, expenses, "monthly", "price_desc", "walletId"),
     );
-    // w1: 1299+80000=81299→81300, w2: 10000→10000
+    // w1: 1299+80000=81299, w2: 10000
     expect(result.current.sorted.map((w) => w.id)).toEqual(["w1", "w2"]);
   });
 });

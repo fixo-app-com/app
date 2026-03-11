@@ -123,7 +123,12 @@ const de = {
     costsExceedIncome: "Deine Fixkosten \u00FCbersteigen dein Einkommen",
     emergencyFund: "Notfallfonds",
     emergencyTarget: "Ziel",
-    monthsToReach: "~{{count}} Monate bei {{amount}}/Mo",
+    timeMonths_one: "{{count}} Monat",
+    timeMonths_other: "{{count}} Monate",
+    timeYears_one: "{{count}} Jahr",
+    timeYears_other: "{{count}} Jahre",
+    timeAndConnector: "und",
+    timeToReach: "~{{period}} bei {{amount}}/Mo",
     yearsToReach: "10+ Jahre",
     setSavingsRate: "Lege eine Sparrate fest, um den Fortschritt zu verfolgen",
     addFirstCategory: "Kategorie hinzufügen",
@@ -169,6 +174,7 @@ const de = {
   addEditExpense: {
     editTitle: "Ausgabe bearbeiten",
     newTitle: "Neue Ausgabe",
+    categoryLabel: "Kategorie",
     nameLabel: "Name",
     namePlaceholder: "z.B. Netflix, Versicherung...",
     amountLabel: "Betrag ({{symbol}})",
@@ -182,6 +188,11 @@ const de = {
     priorityHintEssential: "Unverzichtbar, wie Miete oder Rechnungen.",
     priorityHintReducible: "Du brauchst es, könntest aber weniger ausgeben.",
     priorityHintOptional: "Ein Extra, auf das du verzichten könntest.",
+    frequencyLabel: "Wiederkehr",
+    frequencyHintMonthly:
+      "Monatlich abgerechnet. In der Monatsansicht unver\u00E4ndert angezeigt.",
+    frequencyHintYearly:
+      "Einmal j\u00E4hrlich abgerechnet. Fixo teilt sie durch 12, damit du das reale Monatsgewicht siehst.",
     notesSection: "Notizen",
     saveChanges: "\u00C4nderungen speichern",
     saveExpense: "Ausgabe speichern",

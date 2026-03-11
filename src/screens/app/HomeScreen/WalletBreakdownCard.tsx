@@ -1,40 +1,15 @@
-import { useMemo } from "react";
 import { Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
-import type { Expense, Wallet } from "../../../types/firestore";
-import { getDisplayAmountCents, roundToUnit } from "../../../types/firestore";
 import { Card, SectionHeader } from "../../../design-system";
 import { BankIcon, CurrencyText } from "../../../components";
-import type { ViewMode } from "../../../contexts/DataContext";
+import type { WalletSpend } from "../../../hooks/useBudgetSummary";
 
 interface WalletBreakdownCardProps {
-  wallets: Wallet[];
-  expenses: Expense[];
-  viewMode: ViewMode;
+  walletSpend: WalletSpend[];
 }
 
-export function WalletBreakdownCard({
-  wallets,
-  expenses,
-  viewMode,
-}: WalletBreakdownCardProps) {
+export function WalletBreakdownCard({ walletSpend }: WalletBreakdownCardProps) {
   const { t } = useTranslation();
-
-  const walletSpend = useMemo(() => {
-    const spendMap: Record<string, number> = {};
-    for (const e of expenses) {
-      spendMap[e.walletId] =
-        (spendMap[e.walletId] ?? 0) + getDisplayAmountCents(e, viewMode);
-    }
-
-    return wallets
-      .map((w) => ({
-        wallet: w,
-        totalCents: roundToUnit(spendMap[w.id] ?? 0),
-      }))
-      .filter((item) => item.totalCents > 0)
-      .sort((a, b) => b.totalCents - a.totalCents);
-  }, [wallets, expenses, viewMode]);
 
   if (walletSpend.length === 0) return null;
 

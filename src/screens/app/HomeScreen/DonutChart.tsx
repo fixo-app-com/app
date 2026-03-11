@@ -4,13 +4,8 @@ import { Svg, Path, G } from "react-native-svg";
 import { Card } from "../../../design-system";
 import { CurrencyText } from "../../../components";
 import { emojiToColor, darkenColor } from "../../../utils/emojiColor";
-
-export interface DonutSegment {
-  id: string;
-  name: string;
-  icon: string;
-  totalCents: number;
-}
+import type { DonutSegment } from "../../../hooks/useBudgetSummary";
+export type { DonutSegment };
 
 interface DonutChartProps {
   segments: DonutSegment[];

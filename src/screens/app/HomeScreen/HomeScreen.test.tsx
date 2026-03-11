@@ -4,7 +4,10 @@ import { mockCategories, mockExpenses } from "../../../test/fixtures";
 import { mockDataContextDefaults } from "../../../test/mocks";
 
 jest.mock("@react-navigation/native", () => ({
-  useNavigation: () => ({ navigate: jest.fn() }),
+  useNavigation: () => ({
+    navigate: jest.fn(),
+    addListener: jest.fn(() => jest.fn()),
+  }),
 }));
 
 jest.mock("./PriorityExpensesSheet", () => ({

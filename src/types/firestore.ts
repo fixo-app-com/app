@@ -70,6 +70,21 @@ export function computeTotalCents(
   return roundToUnit(sumDisplayCents(expenses, viewMode));
 }
 
+/**
+ * Computes monthly essential cost and emergency target from expenses.
+ * Single source of truth used by both the home mini-card and the emergency screen.
+ */
+export function computeEmergencyTarget(
+  expenses: Pick<Expense, "amountCents" | "billingFrequency" | "priority">[],
+  months: number,
+): { monthlyEssentialCents: number; targetCents: number } {
+  const nonOptional = expenses.filter((e) => e.priority !== "optional");
+  const yearlyRaw = sumDisplayCents(nonOptional, "yearly");
+  const monthlyEssentialCents = roundToUnit(yearlyRaw / 12);
+  const targetCents = roundToUnit((yearlyRaw / 12) * months);
+  return { monthlyEssentialCents, targetCents };
+}
+
 export interface Wallet {
   id: string;
   name: string; // "Intesa Sanpaolo", "Revolut"

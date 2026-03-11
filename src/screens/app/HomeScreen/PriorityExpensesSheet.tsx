@@ -1,6 +1,7 @@
-import { forwardRef, useCallback, useMemo, useState } from "react";
+import { forwardRef, useCallback, useMemo } from "react";
 import { Pressable, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   BottomSheetBackdrop,
   BottomSheetModal,
@@ -11,21 +12,20 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useData } from "../../../contexts/DataContext";
 import type { Expense, ExpensePriority } from "../../../types/firestore";
 import { EmptyState } from "../../../design-system";
-import { ExpenseCard, ExpenseForm, SwipeableRow } from "../../../components";
-
-type SheetMode = { type: "list" } | { type: "edit"; expense: Expense };
+import { ExpenseCard, SwipeableRow } from "../../../components";
 
 interface PriorityExpensesSheetProps {
   priority: ExpensePriority;
+  onExpensePress: (expense: Expense) => void;
 }
 
 export const PriorityExpensesSheet = forwardRef<
   BottomSheetModal,
   PriorityExpensesSheetProps
->(function PriorityExpensesSheet({ priority }, ref) {
+>(function PriorityExpensesSheet({ priority, onExpensePress }, ref) {
   const { t } = useTranslation();
-  const { expenses, wallets, deleteExpense } = useData();
-  const [mode, setMode] = useState<SheetMode>({ type: "list" });
+  const { top: topInset } = useSafeAreaInsets();
+  const { expenses, wallets, categories, deleteExpense } = useData();
 
   const filtered = useMemo(
     () => (expenses ?? []).filter((e) => e.priority === priority),
@@ -38,10 +38,13 @@ export const PriorityExpensesSheet = forwardRef<
     return map;
   }, [wallets]);
 
-  const snapPoints = useMemo(
-    () => (mode.type === "list" ? ["50%", "85%"] : ["92%"]),
-    [mode.type],
-  );
+  const categoryMap = useMemo(() => {
+    const map: Record<string, string> = {};
+    for (const c of categories) map[c.id] = c.name;
+    return map;
+  }, [categories]);
+
+  const snapPoints = useMemo(() => ["50%", "85%"], []);
 
   const animationConfigs = useMemo(
     () => ({ duration: 350, easing: Easing.out(Easing.cubic) }),
@@ -61,10 +64,6 @@ export const PriorityExpensesSheet = forwardRef<
     [],
   );
 
-  const handleDismiss = useCallback(() => {
-    setMode({ type: "list" });
-  }, []);
-
   const priorityLabel: Record<ExpensePriority, string> = {
     essential: t("home.essential"),
     reducible: t("home.reducible"),
@@ -81,8 +80,8 @@ export const PriorityExpensesSheet = forwardRef<
     <BottomSheetModal
       ref={ref}
       snapPoints={snapPoints}
+      topInset={topInset + 16}
       enablePanDownToClose
-      onDismiss={handleDismiss}
       backdropComponent={renderBackdrop}
       animationConfigs={animationConfigs}
       backgroundStyle={{
@@ -91,89 +90,62 @@ export const PriorityExpensesSheet = forwardRef<
         backgroundColor: "#f3f4f6",
       }}
       handleIndicatorStyle={{ backgroundColor: "#d1d5db", width: 40 }}
-      keyboardBehavior="interactive"
-      keyboardBlurBehavior="restore"
     >
       <BottomSheetScrollView
         contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 32 }}
-        keyboardShouldPersistTaps="handled"
       >
-        {mode.type === "list" ? (
-          <>
-            <View className="mb-3">
-              <View className="flex-row items-center justify-between">
-                <Text className="text-lg font-semibold text-gray-900">
-                  {priorityLabel[priority]}
-                </Text>
-                <Pressable
-                  onPress={() => {
-                    if (ref && "current" in ref) ref.current?.dismiss();
-                  }}
-                  hitSlop={8}
-                  className="items-center justify-center"
-                  style={({ pressed }) => ({
-                    opacity: pressed ? 0.6 : 1,
-                    width: 32,
-                    height: 32,
-                  })}
-                >
-                  <Ionicons name="close" size={22} color="#6b7280" />
-                </Pressable>
-              </View>
-              <Text className="mt-1 text-sm text-gray-400">
-                {priorityHint[priority]}
-              </Text>
-            </View>
+        <View className="mb-3">
+          <View className="flex-row items-center justify-between">
+            <Text className="text-lg font-semibold text-gray-900">
+              {priorityLabel[priority]}
+            </Text>
+            <Pressable
+              onPress={() => {
+                if (ref && "current" in ref) ref.current?.dismiss();
+              }}
+              hitSlop={8}
+              className="items-center justify-center"
+              style={({ pressed }) => ({
+                opacity: pressed ? 0.6 : 1,
+                width: 32,
+                height: 32,
+              })}
+            >
+              <Ionicons name="close" size={22} color="#6b7280" />
+            </Pressable>
+          </View>
+          <Text className="mt-1 text-sm text-gray-400">
+            {priorityHint[priority]}
+          </Text>
+        </View>
 
-            {filtered.length === 0 ? (
-              <EmptyState
-                icon="receipt-outline"
-                message={t("home.noExpensesForPriority")}
-              />
-            ) : (
-              filtered.map((expense, index) => (
-                <SwipeableRow
-                  key={expense.id}
-                  onDelete={() => deleteExpense(expense.id)}
-                  errorMessage={t("expenseList.deleteFailed", {
-                    name: expense.name,
-                  })}
-                  spacing={index < filtered.length - 1 ? 12 : 0}
-                >
-                  <ExpenseCard
-                    name={expense.name}
-                    walletName={walletMap[expense.walletId] ?? ""}
-                    notes={expense.notes}
-                    amountCents={expense.amountCents}
-                    billingFrequency={expense.billingFrequency}
-                    onPress={() => setMode({ type: "edit", expense })}
-                    onLongPress={() => {}}
-                  />
-                </SwipeableRow>
-              ))
-            )}
-          </>
+        {filtered.length === 0 ? (
+          <EmptyState
+            icon="receipt-outline"
+            message={t("home.noExpensesForPriority")}
+          />
         ) : (
-          <>
-            <View className="mb-3">
-              <Pressable
-                onPress={() => setMode({ type: "list" })}
-                hitSlop={8}
-                className="flex-row items-center self-start"
-                style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
-              >
-                <Ionicons name="chevron-back" size={22} color="#6b7280" />
-                <Text className="ml-1 text-base text-gray-500">
-                  {priorityLabel[priority]}
-                </Text>
-              </Pressable>
-            </View>
-
-            <ExpenseForm
-              expense={mode.expense}
-              onComplete={() => setMode({ type: "list" })}
-            />
-          </>
+          filtered.map((expense, index) => (
+            <SwipeableRow
+              key={expense.id}
+              onDelete={() => deleteExpense(expense.id)}
+              errorMessage={t("expenseList.deleteFailed", {
+                name: expense.name,
+              })}
+              spacing={index < filtered.length - 1 ? 12 : 0}
+            >
+              <ExpenseCard
+                name={expense.name}
+                walletName={walletMap[expense.walletId] ?? ""}
+                categoryName={categoryMap[expense.categoryId] ?? ""}
+                notes={expense.notes}
+                amountCents={expense.amountCents}
+                billingFrequency={expense.billingFrequency}
+                onPress={() => onExpensePress(expense)}
+                onLongPress={() => {}}
+              />
+            </SwipeableRow>
+          ))
         )}
       </BottomSheetScrollView>
     </BottomSheetModal>

@@ -3,7 +3,6 @@ import { EmergencyFundMiniCard } from "./EmergencyFundMiniCard";
 import type { Expense } from "../../../types/firestore";
 
 const mockDataValues = {
-  emergencyMonths: 6,
   emergencyMonthlySavingCents: 0,
   currency: "EUR",
 };
@@ -24,41 +23,22 @@ const essentialExpense: Expense = {
   createdAt: new Date(),
 };
 
-const optionalExpense: Expense = {
-  id: "e2",
-  categoryId: "cat1",
-  name: "Netflix",
-  amountCents: 1299,
-  billingFrequency: "monthly",
-  walletId: "w1",
-  priority: "optional",
-  notes: "",
-  createdAt: new Date(),
-};
-
 describe("EmergencyFundMiniCard", () => {
   const baseProps = {
-    expenses: [essentialExpense, optionalExpense],
+    essentialExpenses: [essentialExpense],
+    targetCents: 480000,
     availableMonthlyCents: 50000,
     onPress: jest.fn(),
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockDataValues.emergencyMonths = 6;
     mockDataValues.emergencyMonthlySavingCents = 0;
   });
 
-  it("renders nothing when all expenses are optional", () => {
+  it("renders nothing when essentialExpenses array is empty", () => {
     const { toJSON } = render(
-      <EmergencyFundMiniCard {...baseProps} expenses={[optionalExpense]} />,
-    );
-    expect(toJSON()).toBeNull();
-  });
-
-  it("renders nothing when expenses array is empty", () => {
-    const { toJSON } = render(
-      <EmergencyFundMiniCard {...baseProps} expenses={[]} />,
+      <EmergencyFundMiniCard {...baseProps} essentialExpenses={[]} />,
     );
     expect(toJSON()).toBeNull();
   });
@@ -74,7 +54,7 @@ describe("EmergencyFundMiniCard", () => {
     expect(screen.getByText("home.setSavingsRate")).toBeOnTheScreen();
   });
 
-  it("shows monthsToReach when savings are available via fallback", () => {
+  it("shows time estimate when savings are available via fallback", () => {
     render(<EmergencyFundMiniCard {...baseProps} />);
     expect(screen.queryByText("home.setSavingsRate")).toBeNull();
     expect(screen.queryByText("home.yearsToReach")).toBeNull();

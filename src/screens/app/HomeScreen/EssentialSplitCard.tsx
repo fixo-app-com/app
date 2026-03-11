@@ -1,51 +1,26 @@
-import { useMemo } from "react";
 import { Pressable, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
-import type { Expense, ExpensePriority } from "../../../types/firestore";
-import { getDisplayAmountCents, roundToUnit } from "../../../types/firestore";
+import type { ExpensePriority } from "../../../types/firestore";
 import { Card, SectionHeader } from "../../../design-system";
 import { CurrencyText } from "../../../components";
-import type { ViewMode } from "../../../contexts/DataContext";
 
 interface EssentialSplitCardProps {
-  expenses: Expense[];
-  viewMode: ViewMode;
+  essentialCents: number;
+  reducibleCents: number;
+  optionalCents: number;
   onPriorityPress: (priority: ExpensePriority) => void;
 }
 
 export function EssentialSplitCard({
-  expenses,
-  viewMode,
+  essentialCents,
+  reducibleCents,
+  optionalCents,
   onPriorityPress,
 }: EssentialSplitCardProps) {
   const { t } = useTranslation();
 
-  const { essentialCents, reducibleCents, optionalCents } = useMemo(() => {
-    let essential = 0;
-    let reducible = 0;
-    let optional = 0;
-    for (const e of expenses) {
-      const amount = getDisplayAmountCents(e, viewMode);
-      switch (e.priority) {
-        case "essential":
-          essential += amount;
-          break;
-        case "reducible":
-          reducible += amount;
-          break;
-        default:
-          optional += amount;
-          break;
-      }
-    }
-    return {
-      essentialCents: roundToUnit(essential),
-      reducibleCents: roundToUnit(reducible),
-      optionalCents: roundToUnit(optional),
-    };
-  }, [expenses, viewMode]);
-
-  if (expenses.length === 0) return null;
+  if (essentialCents === 0 && reducibleCents === 0 && optionalCents === 0)
+    return null;
 
   return (
     <View testID="essential-split">

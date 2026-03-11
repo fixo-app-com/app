@@ -5,35 +5,38 @@ import { useData } from "../../../contexts/DataContext";
 import { getCurrencySymbol } from "../../../constants/banks";
 import { formatAmount } from "../../../utils/formatCurrency";
 import type { Expense } from "../../../types/firestore";
-import { getDisplayAmountCents, roundToUnit } from "../../../types/firestore";
 import { Card, SectionHeader } from "../../../design-system";
 import { CurrencyText } from "../../../components";
 
 interface EmergencyFundMiniCardProps {
-  expenses: Expense[];
+  essentialExpenses: Expense[];
+  targetCents: number;
   availableMonthlyCents: number;
   onPress: () => void;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function formatYearsMonths(totalMonths: number, t: any): string {
+  const years = Math.floor(totalMonths / 12);
+  const months = totalMonths % 12;
+  if (years === 0) return t("home.timeMonths", { count: months });
+  if (months === 0) return t("home.timeYears", { count: years });
+  const yPart = t("home.timeYears", { count: years });
+  const mPart = t("home.timeMonths", { count: months });
+  return `${yPart} ${t("home.timeAndConnector")} ${mPart}`;
+}
+
 export function EmergencyFundMiniCard({
-  expenses,
+  essentialExpenses,
+  targetCents,
   availableMonthlyCents,
   onPress,
 }: EmergencyFundMiniCardProps) {
   const { t } = useTranslation();
-  const { emergencyMonths, emergencyMonthlySavingCents, currency } = useData();
+  const { emergencyMonthlySavingCents, currency } = useData();
   const symbol = getCurrencySymbol(currency);
 
-  const essentialExpenses = expenses.filter((e) => e.priority !== "optional");
   if (essentialExpenses.length === 0) return null;
-
-  const yearlyEssentialCents = essentialExpenses.reduce(
-    (sum, e) => sum + getDisplayAmountCents(e, "yearly"),
-    0,
-  );
-  const monthlyEssentialCents = roundToUnit(yearlyEssentialCents / 12);
-  const months = emergencyMonths;
-  const targetCents = roundToUnit(monthlyEssentialCents * months);
 
   const savingsPerMonth =
     emergencyMonthlySavingCents > 0
@@ -55,8 +58,9 @@ export function EmergencyFundMiniCard({
     if (monthsToTarget > 120) {
       timeEstimate = t("home.yearsToReach");
     } else {
-      timeEstimate = t("home.monthsToReach", {
-        count: monthsToTarget,
+      const period = formatYearsMonths(monthsToTarget, t);
+      timeEstimate = t("home.timeToReach", {
+        period,
         amount: savingsFormatted,
       });
     }

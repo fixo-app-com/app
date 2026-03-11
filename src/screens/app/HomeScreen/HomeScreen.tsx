@@ -1,5 +1,6 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Alert, Animated, Pressable, Text, View } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
 import { useNavigation } from "@react-navigation/native";
 import type { NavigationProp } from "@react-navigation/native";
@@ -9,11 +10,6 @@ import DraggableFlatList, {
 } from "react-native-draggable-flatlist";
 import type { RenderItemParams } from "react-native-draggable-flatlist";
 import { useData } from "../../../contexts/DataContext";
-import {
-  roundToUnit,
-  getDisplayAmountCents,
-  sumDisplayCents,
-} from "../../../types/firestore";
 import type {
   ExpensePriority,
   PinnedBudgetMetric,
@@ -28,10 +24,10 @@ import {
 import { LIST_BOTTOM_PADDING, WIDGET_GAP } from "../../../constants/layout";
 import { ViewModeToggle } from "../../../components";
 import { useExpenses } from "../../../hooks/useExpenses";
+import { useBudgetSummary } from "../../../hooks/useBudgetSummary";
 import type { AppRootStackParamList } from "../../../navigation/RootNavigator";
 import { BudgetCard } from "./BudgetCard";
 import { DonutChart } from "./DonutChart";
-import type { DonutSegment } from "./DonutChart";
 import { TopExpensesCard } from "./TopExpensesCard";
 import { WalletBreakdownCard } from "./WalletBreakdownCard";
 import { EssentialSplitCard } from "./EssentialSplitCard";
@@ -59,6 +55,7 @@ export default function HomeScreen() {
     categories,
     wallets,
     monthlyIncomeCents,
+    emergencyMonths,
     setMonthlyIncome,
     viewMode,
     setViewMode,
@@ -68,9 +65,29 @@ export default function HomeScreen() {
   const { expenses } = useExpenses();
   const { order, saveOrder } = useWidgetOrder();
 
+  const budget = useBudgetSummary({
+    expenses,
+    categories,
+    wallets,
+    monthlyIncomeCents,
+    viewMode,
+    emergencyMonths,
+  });
+
   const [selectedPriority, setSelectedPriority] =
     useState<ExpensePriority>("essential");
   const prioritySheetRef = useRef<BottomSheetModal>(null);
+  const reopenPrioritySheet = useRef(false);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      if (reopenPrioritySheet.current) {
+        reopenPrioritySheet.current = false;
+        requestAnimationFrame(() => prioritySheetRef.current?.present());
+      }
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   // Metric info bottom sheet
   const metricInfoSheetRef = useRef<BottomSheetModal>(null);
@@ -79,9 +96,22 @@ export default function HomeScreen() {
     body: "",
   });
 
-  // Pinned budget metric (local state — no longer persisted)
-  const [pinnedBudgetMetric, setPinnedBudgetMetric] =
+  // Pinned budget metric (persisted to AsyncStorage)
+  const [pinnedBudgetMetric, setPinnedBudgetMetricRaw] =
     useState<PinnedBudgetMetric>("income");
+
+  useEffect(() => {
+    AsyncStorage.getItem("@fixo/pinned_metric").then((v) => {
+      if (v === "income" || v === "costs" || v === "available") {
+        setPinnedBudgetMetricRaw(v);
+      }
+    });
+  }, []);
+
+  const setPinnedBudgetMetric = useCallback((m: PinnedBudgetMetric) => {
+    setPinnedBudgetMetricRaw(m);
+    AsyncStorage.setItem("@fixo/pinned_metric", m);
+  }, []);
 
   // Collapsing header: own scrollY driven by DraggableFlatList's onScrollOffsetChange
   const ownScrollY = useRef(new Animated.Value(0)).current;
@@ -115,25 +145,12 @@ export default function HomeScreen() {
   }
 
   const isYearly = viewMode === "yearly";
-
-  const rawTotalCents = sumDisplayCents(expenses, viewMode);
-  const totalCents = roundToUnit(rawTotalCents);
-  const incomeDisplayCents = isYearly
-    ? monthlyIncomeCents * 12
-    : monthlyIncomeCents;
-  const availableCents = incomeDisplayCents - rawTotalCents;
   const hasIncome = monthlyIncomeCents > 0;
 
-  // Monthly available for emergency fund time estimate
-  const availableMonthlyCents = isYearly
-    ? Math.round(availableCents / 12)
-    : availableCents;
-
   function handleIncomeEdit() {
-    const displayCents = isYearly
-      ? monthlyIncomeCents * 12
-      : monthlyIncomeCents;
-    const current = hasIncome ? String(Math.floor(displayCents / 100)) : "";
+    const current = hasIncome
+      ? String(Math.floor(budget.incomeDisplayCents / 100))
+      : "";
     const label = isYearly ? t("home.yearlyIncome") : t("home.monthlyIncome");
     const period = isYearly
       ? t("common.yearly").toLowerCase()
@@ -166,21 +183,6 @@ export default function HomeScreen() {
     );
   }
 
-  const donutSegments: DonutSegment[] = categories
-    .map((cat) => ({
-      id: cat.id,
-      name: cat.name,
-      icon: cat.icon,
-      totalCents: roundToUnit(
-        expenses
-          .filter((e) => e.categoryId === cat.id)
-          .reduce((sum, e) => sum + getDisplayAmountCents(e, viewMode), 0),
-      ),
-    }))
-    .filter((s) => s.totalCents > 0);
-
-  const donutTotal = donutSegments.reduce((sum, s) => sum + s.totalCents, 0);
-
   // Widget registry: maps each key to visibility + render function
   const registry: Record<
     WidgetKey,
@@ -194,9 +196,9 @@ export default function HomeScreen() {
           <BudgetCard
             hasIncome={hasIncome}
             isYearly={isYearly}
-            incomeDisplayCents={incomeDisplayCents}
-            totalCents={totalCents}
-            availableCents={availableCents}
+            incomeDisplayCents={budget.incomeDisplayCents}
+            totalCents={budget.totalCents}
+            availableCents={budget.availableCents}
             pinnedMetric={pinnedBudgetMetric}
             onPin={setPinnedBudgetMetric}
             onIncomeEdit={handleIncomeEdit}
@@ -223,8 +225,8 @@ export default function HomeScreen() {
       isVisible: hasIncome && expenses.length > 0,
       render: () => (
         <FixedCostRatioCard
-          totalCents={totalCents}
-          incomeDisplayCents={incomeDisplayCents}
+          totalCents={budget.totalCents}
+          incomeDisplayCents={budget.incomeDisplayCents}
         />
       ),
     },
@@ -232,8 +234,8 @@ export default function HomeScreen() {
       isVisible: hasIncome && expenses.length > 0,
       render: () => (
         <DailyBudgetCard
-          availableCents={availableCents}
-          incomeDisplayCents={incomeDisplayCents}
+          availableCents={budget.availableCents}
+          incomeDisplayCents={budget.incomeDisplayCents}
           isYearly={isYearly}
         />
       ),
@@ -242,8 +244,9 @@ export default function HomeScreen() {
       isVisible: hasIncome,
       render: () => (
         <EmergencyFundMiniCard
-          expenses={expenses}
-          availableMonthlyCents={availableMonthlyCents}
+          essentialExpenses={budget.essentialExpenses}
+          targetCents={budget.emergencyTargetCents}
+          availableMonthlyCents={budget.availableMonthlyCents}
           onPress={() =>
             navigation.navigate("MainTabs", { screen: "EmergencyTab" })
           }
@@ -251,13 +254,13 @@ export default function HomeScreen() {
       ),
     },
     breakdown: {
-      isVisible: donutSegments.length > 0,
+      isVisible: budget.donutSegments.length > 0,
       render: () => (
         <View>
           <SectionHeader title={t("home.breakdown")} />
           <DonutChart
-            segments={donutSegments}
-            totalCents={donutTotal}
+            segments={budget.donutSegments}
+            totalCents={budget.totalCents}
             allLabel={t("home.allCategories")}
           />
         </View>
@@ -268,21 +271,16 @@ export default function HomeScreen() {
       render: () => <TopExpensesCard expenses={expenses} viewMode={viewMode} />,
     },
     wallets: {
-      isVisible: true,
-      render: () => (
-        <WalletBreakdownCard
-          wallets={wallets}
-          expenses={expenses}
-          viewMode={viewMode}
-        />
-      ),
+      isVisible: budget.walletSpend.length > 0,
+      render: () => <WalletBreakdownCard walletSpend={budget.walletSpend} />,
     },
     essentialSplit: {
-      isVisible: true,
+      isVisible: expenses.length > 0,
       render: () => (
         <EssentialSplitCard
-          expenses={expenses}
-          viewMode={viewMode}
+          essentialCents={budget.essentialCents}
+          reducibleCents={budget.reducibleCents}
+          optionalCents={budget.optionalCents}
           onPriorityPress={handlePriorityPress}
         />
       ),
@@ -296,14 +294,7 @@ export default function HomeScreen() {
         .filter((key) => key !== "overview" && registry[key].isVisible)
         .map((key) => ({ key })),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      order,
-      hasIncome,
-      expenses.length,
-      donutSegments.length,
-      categories.length,
-      wallets.length,
-    ],
+    [order, hasIncome, expenses.length, budget],
   );
 
   const handleDragEnd = useCallback(
@@ -335,20 +326,7 @@ export default function HomeScreen() {
       );
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      hasIncome,
-      isYearly,
-      incomeDisplayCents,
-      totalCents,
-      availableCents,
-      pinnedBudgetMetric,
-      expenses,
-      donutSegments,
-      donutTotal,
-      wallets,
-      viewMode,
-      categories,
-    ],
+    [hasIncome, isYearly, pinnedBudgetMetric, expenses, viewMode, budget],
   );
 
   const keyExtractor = useCallback((item: WidgetItem) => item.key, []);
@@ -396,6 +374,14 @@ export default function HomeScreen() {
       <PriorityExpensesSheet
         ref={prioritySheetRef}
         priority={selectedPriority}
+        onExpensePress={(expense) => {
+          reopenPrioritySheet.current = true;
+          prioritySheetRef.current?.dismiss();
+          navigation.navigate("AddEditExpense", {
+            categoryId: expense.categoryId,
+            expenseId: expense.id,
+          });
+        }}
       />
       <BottomSheet ref={metricInfoSheetRef} title={metricInfoContent.title}>
         <Text className="text-sm leading-6 text-gray-600">

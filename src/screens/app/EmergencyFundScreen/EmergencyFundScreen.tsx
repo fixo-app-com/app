@@ -5,8 +5,7 @@ import Slider from "@react-native-community/slider";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import {
-  sumDisplayCents,
-  roundToUnit,
+  computeEmergencyTarget,
   getDisplayAmountCents,
 } from "../../../types/firestore";
 import type { Expense } from "../../../types/firestore";
@@ -48,6 +47,7 @@ export default function EmergencyFundScreen() {
     emergencyMonths,
     setEmergencyMonths: saveEmergencyMonths,
     wallets,
+    categories,
     currency,
   } = useData();
 
@@ -88,6 +88,12 @@ export default function EmergencyFundScreen() {
     return map;
   }, [wallets]);
 
+  const categoryNameMap = useMemo(() => {
+    const map: Record<string, string> = {};
+    for (const c of categories) map[c.id] = c.name;
+    return map;
+  }, [categories]);
+
   const priorityLabel = useMemo<Record<string, string>>(
     () => ({
       essential: t("home.essential"),
@@ -106,9 +112,20 @@ export default function EmergencyFundScreen() {
               {item.name}
             </Text>
             <View className="mt-0.5 flex-row items-center">
-              <Text className="text-sm text-gray-500">
+              <Text className="text-sm text-gray-900">
                 {walletNameMap[item.walletId] ?? "\u2014"}
               </Text>
+              {categoryNameMap[item.categoryId] ? (
+                <>
+                  <Text className="mx-2 text-sm text-gray-400">•</Text>
+                  <Text
+                    className="shrink text-sm text-gray-400"
+                    numberOfLines={1}
+                  >
+                    {categoryNameMap[item.categoryId]}
+                  </Text>
+                </>
+              ) : null}
               <Text className="mx-2 text-sm text-gray-400">•</Text>
               <Text
                 className={`text-sm font-medium ${PRIORITY_COLOR[item.priority] ?? "text-gray-400"}`}
@@ -124,13 +141,14 @@ export default function EmergencyFundScreen() {
         </View>
       );
     },
-    [walletNameMap, priorityLabel],
+    [walletNameMap, categoryNameMap, priorityLabel],
   );
 
   const essentialExpenses = expenses.filter((e) => e.priority !== "optional");
-  const yearlyEssentialCents = sumDisplayCents(essentialExpenses, "yearly");
-  const monthlyEssentialCents = roundToUnit(yearlyEssentialCents / 12);
-  const targetCents = roundToUnit((yearlyEssentialCents / 12) * selectedMonths);
+  const { monthlyEssentialCents, targetCents } = computeEmergencyTarget(
+    expenses,
+    selectedMonths,
+  );
 
   const headerContent = (
     <Text className="mb-3 text-sm text-gray-500">

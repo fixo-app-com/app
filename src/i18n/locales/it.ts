@@ -117,7 +117,12 @@ const it = {
     costsExceedIncome: "I costi fissi superano le tue entrate",
     emergencyFund: "Fondo di emergenza",
     emergencyTarget: "Obiettivo",
-    monthsToReach: "~{{count}} mesi a {{amount}}/mese",
+    timeMonths_one: "{{count}} mese",
+    timeMonths_other: "{{count}} mesi",
+    timeYears_one: "{{count}} anno",
+    timeYears_other: "{{count}} anni",
+    timeAndConnector: "e",
+    timeToReach: "~{{period}} a {{amount}}/mese",
     yearsToReach: "10+ anni",
     setSavingsRate: "Imposta un tasso di risparmio per monitorare i progressi",
     addFirstCategory: "Aggiungi una categoria",
@@ -163,6 +168,7 @@ const it = {
   addEditExpense: {
     editTitle: "Modifica spesa",
     newTitle: "Nuova spesa",
+    categoryLabel: "Categoria",
     nameLabel: "Nome",
     namePlaceholder: "es. Netflix, Assicurazione...",
     amountLabel: "Importo ({{symbol}})",
@@ -176,6 +182,11 @@ const it = {
     priorityHintEssential: "Non puoi farne a meno, come affitto o bollette.",
     priorityHintReducible: "Ti serve, ma potresti spendere meno.",
     priorityHintOptional: "Un extra a cui potresti rinunciare.",
+    frequencyLabel: "Ricorrenza",
+    frequencyHintMonthly:
+      "Addebitata ogni mese. Mostrata cos\u00EC com'\u00E8 nella vista mensile.",
+    frequencyHintYearly:
+      "Addebitata una volta all'anno. Fixo la divide per 12 per mostrarti il peso mensile reale.",
     notesSection: "Note",
     saveChanges: "Salva modifiche",
     saveExpense: "Salva spesa",

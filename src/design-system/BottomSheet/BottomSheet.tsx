@@ -1,5 +1,6 @@
 import { forwardRef, useCallback, useMemo } from "react";
 import { Pressable, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   BottomSheetBackdrop,
   BottomSheetModal,
@@ -20,6 +21,8 @@ export const BottomSheet = forwardRef<BottomSheetModal, Props>(
     { title, snapPoints: snapPointsProp, onDismiss, children },
     ref,
   ) {
+    const { top: safeTop } = useSafeAreaInsets();
+
     const snapPoints = useMemo(
       () => snapPointsProp ?? ["40%"],
       [snapPointsProp],
@@ -47,6 +50,7 @@ export const BottomSheet = forwardRef<BottomSheetModal, Props>(
       <BottomSheetModal
         ref={ref}
         snapPoints={snapPoints}
+        topInset={safeTop + 16}
         enablePanDownToClose
         onDismiss={onDismiss}
         backdropComponent={renderBackdrop}

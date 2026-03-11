@@ -1,12 +1,13 @@
 import { useMemo } from "react";
-import { roundToUnit, getDisplayAmountCents } from "../types/firestore";
+import { getDisplayAmountCents } from "../types/firestore";
 import type { Expense } from "../types/firestore";
 import type { SortOption } from "../constants/sort";
 import { makeSortComparator } from "../utils/sort";
 
 /**
  * Sorts entities by the given sort option and provides a getTotal helper
- * that computes the rounded display total for a given entity ID.
+ * that computes the raw display total (in cents) for a given entity ID.
+ * No rounding — display components truncate decimals visually.
  */
 export function useEntityList<T extends { id: string; createdAt: Date }>(
   entities: T[],
@@ -16,11 +17,9 @@ export function useEntityList<T extends { id: string; createdAt: Date }>(
   expenseKey: keyof Pick<Expense, "categoryId" | "walletId">,
 ): { sorted: T[]; getTotal: (id: string) => number } {
   const getTotal = (id: string): number =>
-    roundToUnit(
-      expenses
-        .filter((e) => e[expenseKey] === id)
-        .reduce((sum, e) => sum + getDisplayAmountCents(e, viewMode), 0),
-    );
+    expenses
+      .filter((e) => e[expenseKey] === id)
+      .reduce((sum, e) => sum + getDisplayAmountCents(e, viewMode), 0);
 
   const sorted = useMemo(() => {
     const comparator = makeSortComparator<T>(

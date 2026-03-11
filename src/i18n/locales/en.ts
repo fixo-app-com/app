@@ -115,7 +115,12 @@ const en = {
     costsExceedIncome: "Your fixed costs exceed your income",
     emergencyFund: "Emergency fund",
     emergencyTarget: "Target",
-    monthsToReach: "~{{count}} months at {{amount}}/mo",
+    timeMonths_one: "{{count}} month",
+    timeMonths_other: "{{count}} months",
+    timeYears_one: "{{count}} year",
+    timeYears_other: "{{count}} years",
+    timeAndConnector: "and",
+    timeToReach: "~{{period}} at {{amount}}/mo",
     yearsToReach: "10+ years",
     setSavingsRate: "Set a savings rate to track progress",
     addFirstCategory: "Add a category",
@@ -160,6 +165,7 @@ const en = {
   addEditExpense: {
     editTitle: "Edit expense",
     newTitle: "New expense",
+    categoryLabel: "Category",
     nameLabel: "Name",
     namePlaceholder: "e.g. Netflix, Insurance...",
     amountLabel: "Amount ({{symbol}})",
@@ -173,6 +179,11 @@ const en = {
     priorityHintEssential: "You can't do without it, like rent or bills.",
     priorityHintReducible: "You need it, but you could spend less.",
     priorityHintOptional: "An extra you could give up.",
+    frequencyLabel: "Recurrence",
+    frequencyHintMonthly:
+      "Billed every month. Shown as-is in the monthly view.",
+    frequencyHintYearly:
+      "Billed once a year. Fixo divides it by 12 so you see its real monthly weight.",
     notesSection: "Notes",
     saveChanges: "Save changes",
     saveExpense: "Save expense",

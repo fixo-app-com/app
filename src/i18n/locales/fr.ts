@@ -124,7 +124,12 @@ const fr = {
     costsExceedIncome: "Vos co\u00FBts fixes d\u00E9passent vos revenus",
     emergencyFund: "Fonds d\u2019urgence",
     emergencyTarget: "Objectif",
-    monthsToReach: "~{{count}} mois \u00E0 {{amount}}/mois",
+    timeMonths_one: "{{count}} mois",
+    timeMonths_other: "{{count}} mois",
+    timeYears_one: "{{count}} an",
+    timeYears_other: "{{count}} ans",
+    timeAndConnector: "et",
+    timeToReach: "~{{period}} \u00E0 {{amount}}/mois",
     yearsToReach: "10+ ans",
     setSavingsRate:
       "D\u00E9finissez un taux d\u2019\u00E9pargne pour suivre vos progr\u00E8s",
@@ -171,6 +176,7 @@ const fr = {
   addEditExpense: {
     editTitle: "Modifier la d\u00E9pense",
     newTitle: "Nouvelle d\u00E9pense",
+    categoryLabel: "Catégorie",
     nameLabel: "Nom",
     namePlaceholder: "ex. Netflix, Assurance...",
     amountLabel: "Montant ({{symbol}})",
@@ -185,6 +191,11 @@ const fr = {
     priorityHintReducible:
       "N\u00E9cessaire, mais vous pourriez d\u00E9penser moins.",
     priorityHintOptional: "Un extra dont vous pourriez vous passer.",
+    frequencyLabel: "R\u00E9currence",
+    frequencyHintMonthly:
+      "Factur\u00E9e chaque mois. Affich\u00E9e telle quelle en vue mensuelle.",
+    frequencyHintYearly:
+      "Factur\u00E9e une fois par an. Fixo la divise par 12 pour montrer son poids mensuel r\u00E9el.",
     notesSection: "Notes",
     saveChanges: "Enregistrer les modifications",
     saveExpense: "Enregistrer la d\u00E9pense",

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Alert, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { useData } from "../../contexts/DataContext";
@@ -31,8 +31,20 @@ export function ExpenseForm({
   onNavigateToWallet,
 }: ExpenseFormProps) {
   const { t } = useTranslation();
-  const { wallets, currency, addExpense, updateExpense, deleteExpense } =
-    useData();
+  const {
+    categories,
+    wallets,
+    currency,
+    addExpense,
+    updateExpense,
+    deleteExpense,
+  } = useData();
+
+  const resolvedCategoryId = expense?.categoryId ?? categoryId;
+  const category = useMemo(
+    () => categories.find((c) => c.id === resolvedCategoryId),
+    [categories, resolvedCategoryId],
+  );
 
   const isEditing = !!expense;
 
@@ -106,9 +118,8 @@ export function ExpenseForm({
 
     setSaving(true);
     try {
-      const resolvedCategoryId = expense?.categoryId ?? categoryId ?? "";
       const data = {
-        categoryId: resolvedCategoryId,
+        categoryId: resolvedCategoryId ?? "",
         name: trimmedName,
         amountCents,
         billingFrequency,
@@ -172,23 +183,32 @@ export function ExpenseForm({
           placeholder={t("addEditExpense.amountPlaceholder")}
           keyboardType="decimal-pad"
         />
-        <View className="mt-2">
-          <ChipGroup
-            options={[
-              {
-                value: "monthly" as BillingFrequency,
-                label: t("common.monthly"),
-              },
-              {
-                value: "yearly" as BillingFrequency,
-                label: t("common.yearly"),
-              },
-            ]}
-            selected={billingFrequency}
-            onSelect={setBillingFrequency}
-            compact
-          />
-        </View>
+      </View>
+
+      <View className="mb-4">
+        <FormLabel title={t("addEditExpense.frequencyLabel")} />
+        <ChipGroup
+          options={[
+            {
+              value: "monthly" as BillingFrequency,
+              label: t("common.monthly"),
+            },
+            {
+              value: "yearly" as BillingFrequency,
+              label: t("common.yearly"),
+            },
+          ]}
+          selected={billingFrequency}
+          onSelect={setBillingFrequency}
+          compact
+        />
+        <Text className="text-xs text-gray-400">
+          {t(
+            billingFrequency === "monthly"
+              ? "addEditExpense.frequencyHintMonthly"
+              : "addEditExpense.frequencyHintYearly",
+          )}
+        </Text>
       </View>
 
       <View className="mb-4">
@@ -242,6 +262,18 @@ export function ExpenseForm({
           )}
         </Text>
       </View>
+
+      {category && (
+        <View className="mb-4">
+          <FormLabel title={t("addEditExpense.categoryLabel")} />
+          <View className="flex-row items-center rounded-xl bg-gray-100 px-3 py-2.5">
+            <Text className="mr-2 text-base">{category.icon}</Text>
+            <Text className="text-sm font-medium text-gray-700">
+              {category.name}
+            </Text>
+          </View>
+        </View>
+      )}
 
       <View className="mb-4">
         <FormLabel title={t("addEditExpense.notesSection")} />

@@ -123,7 +123,12 @@ const es = {
     costsExceedIncome: "Tus costos fijos superan tus ingresos",
     emergencyFund: "Fondo de emergencia",
     emergencyTarget: "Objetivo",
-    monthsToReach: "~{{count}} meses a {{amount}}/mes",
+    timeMonths_one: "{{count}} mes",
+    timeMonths_other: "{{count}} meses",
+    timeYears_one: "{{count}} a\u00F1o",
+    timeYears_other: "{{count}} a\u00F1os",
+    timeAndConnector: "y",
+    timeToReach: "~{{period}} a {{amount}}/mes",
     yearsToReach: "10+ a\u00F1os",
     setSavingsRate: "Establece una tasa de ahorro para seguir el progreso",
     addFirstCategory: "Agregar una categoría",
@@ -169,6 +174,7 @@ const es = {
   addEditExpense: {
     editTitle: "Editar gasto",
     newTitle: "Nuevo gasto",
+    categoryLabel: "Categoría",
     nameLabel: "Nombre",
     namePlaceholder: "ej. Netflix, Seguro...",
     amountLabel: "Monto ({{symbol}})",
@@ -183,6 +189,11 @@ const es = {
       "No puedes prescindir de él, como alquiler o facturas.",
     priorityHintReducible: "Lo necesitas, pero podrías gastar menos.",
     priorityHintOptional: "Un extra del que podrías prescindir.",
+    frequencyLabel: "Recurrencia",
+    frequencyHintMonthly:
+      "Cobrado cada mes. Se muestra tal cual en la vista mensual.",
+    frequencyHintYearly:
+      "Cobrado una vez al a\u00F1o. Fixo lo divide entre 12 para mostrar su peso mensual real.",
     notesSection: "Notas",
     saveChanges: "Guardar cambios",
     saveExpense: "Guardar gasto",

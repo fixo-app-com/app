@@ -15,6 +15,7 @@ const priorityColor: Record<ExpensePriority, string> = {
 interface ExpenseCardProps {
   name: string;
   walletName: string;
+  categoryName?: string;
   notes: string;
   amountCents: number;
   billingFrequency: BillingFrequency;
@@ -26,6 +27,7 @@ interface ExpenseCardProps {
 export function ExpenseCard({
   name,
   walletName,
+  categoryName,
   notes,
   amountCents,
   billingFrequency,
@@ -46,7 +48,18 @@ export function ExpenseCard({
         <View className="mr-4 flex-1">
           <Text className="text-base font-semibold text-gray-900">{name}</Text>
           <View className="mt-1 flex-row items-center">
-            <Text className="text-sm text-gray-500">{walletName}</Text>
+            <Text className="text-sm text-gray-900">{walletName}</Text>
+            {categoryName ? (
+              <>
+                <Text className="mx-2 text-sm text-gray-400">•</Text>
+                <Text
+                  className="shrink text-sm text-gray-400"
+                  numberOfLines={1}
+                >
+                  {categoryName}
+                </Text>
+              </>
+            ) : null}
             {priority && (
               <>
                 <Text className="mx-2 text-sm text-gray-400">•</Text>

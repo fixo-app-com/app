@@ -1,6 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react-native";
 import { EssentialSplitCard } from "./EssentialSplitCard";
-import { mockExpenses } from "../../../test/fixtures";
 
 jest.mock("../../../contexts/DataContext", () => ({
   useData: () => ({ currency: "EUR" }),
@@ -14,8 +13,9 @@ describe("EssentialSplitCard", () => {
   it("renders essential, reducible and optional sections", () => {
     render(
       <EssentialSplitCard
-        expenses={mockExpenses}
-        viewMode="monthly"
+        essentialCents={80000}
+        reducibleCents={3500}
+        optionalCents={1300}
         onPriorityPress={onPriorityPress}
       />,
     );
@@ -25,11 +25,12 @@ describe("EssentialSplitCard", () => {
     expect(screen.getByText("home.optional")).toBeOnTheScreen();
   });
 
-  it("does not render when no expenses", () => {
+  it("does not render when all values are zero", () => {
     render(
       <EssentialSplitCard
-        expenses={[]}
-        viewMode="monthly"
+        essentialCents={0}
+        reducibleCents={0}
+        optionalCents={0}
         onPriorityPress={onPriorityPress}
       />,
     );
@@ -39,8 +40,9 @@ describe("EssentialSplitCard", () => {
   it("calls onPriorityPress with 'essential' when essential column is pressed", () => {
     render(
       <EssentialSplitCard
-        expenses={mockExpenses}
-        viewMode="monthly"
+        essentialCents={80000}
+        reducibleCents={3500}
+        optionalCents={1300}
         onPriorityPress={onPriorityPress}
       />,
     );
@@ -51,8 +53,9 @@ describe("EssentialSplitCard", () => {
   it("calls onPriorityPress with 'reducible' when reducible column is pressed", () => {
     render(
       <EssentialSplitCard
-        expenses={mockExpenses}
-        viewMode="monthly"
+        essentialCents={80000}
+        reducibleCents={3500}
+        optionalCents={1300}
         onPriorityPress={onPriorityPress}
       />,
     );
@@ -63,8 +66,9 @@ describe("EssentialSplitCard", () => {
   it("calls onPriorityPress with 'optional' when optional column is pressed", () => {
     render(
       <EssentialSplitCard
-        expenses={mockExpenses}
-        viewMode="monthly"
+        essentialCents={80000}
+        reducibleCents={3500}
+        optionalCents={1300}
         onPriorityPress={onPriorityPress}
       />,
     );

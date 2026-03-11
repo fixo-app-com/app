@@ -21,7 +21,8 @@ type Props = {
   expenses: Expense[];
   loading: boolean;
   emptyMessage: string;
-  getSubtitle: (expense: Expense) => string;
+  getWalletName: (expense: Expense) => string;
+  getCategoryName?: (expense: Expense) => string;
   onExpensePress: (expense: Expense) => void;
   onExpenseDelete: (expenseId: string) => Promise<void>;
   onAdd?: () => void;
@@ -37,7 +38,8 @@ export function EntityDetailScreen({
   expenses,
   loading,
   emptyMessage,
-  getSubtitle,
+  getWalletName,
+  getCategoryName,
   onExpensePress,
   onExpenseDelete,
   onAdd,
@@ -75,7 +77,8 @@ export function EntityDetailScreen({
         expenses={expenses}
         loading={loading}
         emptyMessage={emptyMessage}
-        getSubtitle={getSubtitle}
+        getWalletName={getWalletName}
+        getCategoryName={getCategoryName}
         onPress={onExpensePress}
         onDelete={onExpenseDelete}
       />

@@ -11,7 +11,7 @@ import type {
   AppRootStackParamList,
   CategoriesStackParamList,
 } from "../../../navigation/RootNavigator";
-import { computeTotalCents } from "../../../types/firestore";
+import { sumDisplayCents } from "../../../types/firestore";
 import { useExpenses } from "../../../hooks/useExpenses";
 import { useSortSheet } from "../../../hooks/useSortSheet";
 import { EntityDetailScreen } from "../shared/EntityDetailScreen";
@@ -38,7 +38,7 @@ export default function CategoryDetailScreen() {
     sort: sort.selected,
   });
 
-  const totalCents = computeTotalCents(expenses, viewMode);
+  const totalCents = sumDisplayCents(expenses, viewMode);
 
   return (
     <EntityDetailScreen
@@ -61,7 +61,7 @@ export default function CategoryDetailScreen() {
       expenses={expenses}
       loading={loading}
       emptyMessage={t("categoryDetail.noExpenses")}
-      getSubtitle={(e) =>
+      getWalletName={(e) =>
         wallets.find((w) => w.id === e.walletId)?.name ?? "\u2014"
       }
       onExpensePress={(e) =>

@@ -27,7 +27,7 @@ describe("EntityDetailScreen", () => {
     expenses: [],
     loading: false,
     emptyMessage: "No expenses",
-    getSubtitle: () => "Subtitle",
+    getWalletName: () => "Wallet",
     onExpensePress: jest.fn(),
     onExpenseDelete: jest.fn(() => Promise.resolve()),
   };
