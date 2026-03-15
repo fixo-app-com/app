@@ -76,8 +76,18 @@ export function HomeScreenSkeleton() {
               <SkeletonBlock width={140} height={36} opacity={opacity} />
             </View>
             <View className="flex-row justify-around">
-              <SkeletonBlock width={80} height={32} opacity={opacity} rounded={12} />
-              <SkeletonBlock width={80} height={32} opacity={opacity} rounded={12} />
+              <SkeletonBlock
+                width={80}
+                height={32}
+                opacity={opacity}
+                rounded={12}
+              />
+              <SkeletonBlock
+                width={80}
+                height={32}
+                opacity={opacity}
+                rounded={12}
+              />
             </View>
           </Card>
         </View>
@@ -150,8 +160,18 @@ export function HomeScreenSkeleton() {
                   className="flex-row items-center justify-between"
                   style={{ paddingVertical: 12 }}
                 >
-                  <SkeletonBlock width={120} height={14} opacity={opacity} rounded={4} />
-                  <SkeletonBlock width={50} height={14} opacity={opacity} rounded={4} />
+                  <SkeletonBlock
+                    width={120}
+                    height={14}
+                    opacity={opacity}
+                    rounded={4}
+                  />
+                  <SkeletonBlock
+                    width={50}
+                    height={14}
+                    opacity={opacity}
+                    rounded={4}
+                  />
                 </View>
               </View>
             ))}

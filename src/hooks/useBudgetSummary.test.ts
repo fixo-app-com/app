@@ -10,7 +10,11 @@ describe("useBudgetSummary", () => {
     monthlyIncomeCents: 300000,
     viewMode: "monthly" as const,
     emergencyMonths: 6,
-    emergencyPriorities: ["essential", "reducible"] as ("essential" | "reducible" | "optional")[],
+    emergencyPriorities: ["essential", "reducible"] as (
+      | "essential"
+      | "reducible"
+      | "optional"
+    )[],
   };
 
   it("priority splits sum exactly to totalCents", () => {

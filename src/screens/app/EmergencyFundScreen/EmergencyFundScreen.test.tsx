@@ -108,5 +108,4 @@ describe("EmergencyFundScreen", () => {
     expect(screen.getByTestId("priority-chip-reducible")).toBeOnTheScreen();
     expect(screen.getByTestId("priority-chip-optional")).toBeOnTheScreen();
   });
-
 });

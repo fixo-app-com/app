@@ -222,90 +222,90 @@ export default function EmergencyFundScreen() {
               message={t("emergency.noEssential")}
             />
           ) : (
-        <View className="gap-4 pb-4">
-          {/* Essentials Summary */}
-          <Card>
-            <View className="flex-row items-center">
-              <Pressable
-                className="flex-1 items-center"
-                onPress={() => detailSheetRef.current?.present()}
-              >
+            <View className="gap-4 pb-4">
+              {/* Essentials Summary */}
+              <Card>
                 <View className="flex-row items-center">
-                  <Text className="text-2xl font-bold text-gray-900">
-                    {essentialExpenses.length}
-                  </Text>
-                  <Ionicons
-                    name="information-circle-outline"
-                    size={16}
-                    color="#9ca3af"
-                    style={{ marginLeft: 4 }}
-                  />
+                  <Pressable
+                    className="flex-1 items-center"
+                    onPress={() => detailSheetRef.current?.present()}
+                  >
+                    <View className="flex-row items-center">
+                      <Text className="text-2xl font-bold text-gray-900">
+                        {essentialExpenses.length}
+                      </Text>
+                      <Ionicons
+                        name="information-circle-outline"
+                        size={16}
+                        color="#9ca3af"
+                        style={{ marginLeft: 4 }}
+                      />
+                    </View>
+                    <Text className="text-xs font-medium text-gray-400">
+                      {t("emergency.essentialExpenses")}
+                    </Text>
+                  </Pressable>
+                  <View className="w-px self-stretch bg-gray-200" />
+                  <View className="flex-1 items-center">
+                    <CurrencyText
+                      cents={monthlyEssentialCents}
+                      className="text-2xl font-bold text-gray-900"
+                      suffixFormat
+                    />
+                    <Text className="text-xs text-gray-400">
+                      {t("emergency.monthlyCost")}
+                    </Text>
+                  </View>
                 </View>
-                <Text className="text-xs font-medium text-gray-400">
-                  {t("emergency.essentialExpenses")}
-                </Text>
-              </Pressable>
-              <View className="w-px self-stretch bg-gray-200" />
-              <View className="flex-1 items-center">
-                <CurrencyText
-                  cents={monthlyEssentialCents}
-                  className="text-2xl font-bold text-gray-900"
-                  suffixFormat
+              </Card>
+
+              {/* Coverage Period + Target (unified) */}
+              <View>
+                <SectionHeader title={t("emergency.yourTarget")} />
+                <Card>
+                  <Slider
+                    testID="slider"
+                    minimumValue={0}
+                    maximumValue={SNAP_POINTS.length - 1}
+                    step={1}
+                    value={SNAP_POINTS.indexOf(selectedMonths)}
+                    onValueChange={(i) => setSelectedMonths(SNAP_POINTS[i])}
+                    onSlidingComplete={handleSlidingComplete}
+                    minimumTrackTintColor={colors.fixo[400]}
+                    maximumTrackTintColor="#e5e7eb"
+                    thumbTintColor={colors.fixo[400]}
+                  />
+                  <Text className="mt-1 text-center text-xl font-bold text-gray-900">
+                    {formatPeriod(selectedMonths)}
+                  </Text>
+                  <CurrencyText
+                    cents={targetCents}
+                    className="mt-3 text-center text-3xl font-bold text-fixo-500"
+                    suffixFormat
+                  />
+                  <Text className="mt-2 text-center text-xs text-gray-400">
+                    {t("emergency.targetDetail", {
+                      count: essentialExpenses.length,
+                      monthlyCost: `${getCurrencySymbol(currency)}${(monthlyEssentialCents / 100).toFixed(0)}`,
+                      months: selectedMonths,
+                    })}
+                  </Text>
+                </Card>
+              </View>
+
+              {/* Recommendation Tip */}
+              <View className="flex-row rounded-xl bg-fixo-50 p-4">
+                <Ionicons
+                  name="information-circle-outline"
+                  size={20}
+                  color={colors.fixo[400]}
+                  style={{ marginRight: 8, marginTop: 2 }}
                 />
-                <Text className="text-xs text-gray-400">
-                  {t("emergency.monthlyCost")}
+                <Text className="flex-1 text-sm leading-5 text-gray-600">
+                  {t("emergency.recommendation")}
                 </Text>
               </View>
             </View>
-          </Card>
-
-          {/* Coverage Period + Target (unified) */}
-          <View>
-            <SectionHeader title={t("emergency.yourTarget")} />
-            <Card>
-              <Slider
-                testID="slider"
-                minimumValue={0}
-                maximumValue={SNAP_POINTS.length - 1}
-                step={1}
-                value={SNAP_POINTS.indexOf(selectedMonths)}
-                onValueChange={(i) => setSelectedMonths(SNAP_POINTS[i])}
-                onSlidingComplete={handleSlidingComplete}
-                minimumTrackTintColor={colors.fixo[400]}
-                maximumTrackTintColor="#e5e7eb"
-                thumbTintColor={colors.fixo[400]}
-              />
-              <Text className="mt-1 text-center text-xl font-bold text-gray-900">
-                {formatPeriod(selectedMonths)}
-              </Text>
-              <CurrencyText
-                cents={targetCents}
-                className="mt-3 text-center text-3xl font-bold text-fixo-500"
-                suffixFormat
-              />
-              <Text className="mt-2 text-center text-xs text-gray-400">
-                {t("emergency.targetDetail", {
-                  count: essentialExpenses.length,
-                  monthlyCost: `${getCurrencySymbol(currency)}${(monthlyEssentialCents / 100).toFixed(0)}`,
-                  months: selectedMonths,
-                })}
-              </Text>
-            </Card>
-          </View>
-
-          {/* Recommendation Tip */}
-          <View className="flex-row rounded-xl bg-fixo-50 p-4">
-            <Ionicons
-              name="information-circle-outline"
-              size={20}
-              color={colors.fixo[400]}
-              style={{ marginRight: 8, marginTop: 2 }}
-            />
-            <Text className="flex-1 text-sm leading-5 text-gray-600">
-              {t("emergency.recommendation")}
-            </Text>
-          </View>
-        </View>
           )}
         </>
       )}
