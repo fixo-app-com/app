@@ -77,9 +77,12 @@ export function computeTotalCents(
 export function computeEmergencyTarget(
   expenses: Pick<Expense, "amountCents" | "billingFrequency" | "priority">[],
   months: number,
+  includedPriorities: ExpensePriority[] = ["essential", "reducible"],
 ): { monthlyEssentialCents: number; targetCents: number } {
-  const nonOptional = expenses.filter((e) => e.priority !== "optional");
-  const yearlyRaw = sumDisplayCents(nonOptional, "yearly");
+  const included = expenses.filter((e) =>
+    includedPriorities.includes(e.priority),
+  );
+  const yearlyRaw = sumDisplayCents(included, "yearly");
   const monthlyEssentialCents = roundToUnit(yearlyRaw / 12);
   const targetCents = roundToUnit((yearlyRaw / 12) * months);
   return { monthlyEssentialCents, targetCents };

@@ -10,6 +10,7 @@ import { useAuth } from "./AuthContext";
 import type {
   Category,
   Expense,
+  ExpensePriority,
   SupportedLanguage,
   Wallet,
 } from "../types/firestore";
@@ -17,6 +18,7 @@ import * as firestoreService from "../services/firestore";
 import i18n, { setLanguage as setI18nLanguage } from "../i18n";
 
 const EMERGENCY_MONTHS_KEY = "@fixo/emergency_months";
+const EMERGENCY_PRIORITIES_KEY = "@fixo/emergency_priorities";
 
 export type ViewMode = "monthly" | "yearly";
 
@@ -59,6 +61,8 @@ interface DataContextValue {
   // Emergency fund
   emergencyMonths: number;
   setEmergencyMonths: (months: number) => Promise<void>;
+  emergencyPriorities: ExpensePriority[];
+  setEmergencyPriorities: (priorities: ExpensePriority[]) => Promise<void>;
   emergencyMonthlySavingCents: number;
   setEmergencyMonthlySavingCents: (cents: number) => Promise<void>;
   // Language
@@ -91,6 +95,8 @@ const DataContext = createContext<DataContextValue>({
   deleteExpensesByCategory: async () => {},
   emergencyMonths: 6,
   setEmergencyMonths: async () => {},
+  emergencyPriorities: ["essential"],
+  setEmergencyPriorities: async () => {},
   emergencyMonthlySavingCents: 0,
   setEmergencyMonthlySavingCents: async () => {},
   language: "en",
@@ -112,6 +118,9 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
 
   // Emergency fund months
   const [emergencyMonths, setEmergencyMonthsState] = useState(6);
+  const [emergencyPriorities, setEmergencyPrioritiesState] = useState<
+    ExpensePriority[]
+  >(["essential", "reducible"]);
   const [emergencyMonthlySavingCents, setEmergencyMonthlySavingCentsState] =
     useState(0);
 
@@ -125,6 +134,16 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         if (!isNaN(parsed)) setEmergencyMonthsState(parsed);
       }
     });
+    AsyncStorage.getItem(EMERGENCY_PRIORITIES_KEY).then((value) => {
+      if (value !== null) {
+        try {
+          const parsed = JSON.parse(value);
+          if (Array.isArray(parsed)) setEmergencyPrioritiesState(parsed);
+        } catch {
+          // ignore malformed data
+        }
+      }
+    });
   }, []);
 
   useEffect(() => {
@@ -134,6 +153,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       setCurrencyState("EUR");
       setMonthlyIncomeCentsState(0);
       setEmergencyMonthsState(6);
+      setEmergencyPrioritiesState(["essential", "reducible"]);
       setEmergencyMonthlySavingCentsState(0);
       setLanguageState("en");
       setExpenses(null);
@@ -292,6 +312,14 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     setEmergencyMonths: async (months) => {
       setEmergencyMonthsState(months);
       await AsyncStorage.setItem(EMERGENCY_MONTHS_KEY, String(months));
+    },
+    emergencyPriorities,
+    setEmergencyPriorities: async (priorities) => {
+      setEmergencyPrioritiesState(priorities);
+      await AsyncStorage.setItem(
+        EMERGENCY_PRIORITIES_KEY,
+        JSON.stringify(priorities),
+      );
     },
     emergencyMonthlySavingCents,
     setEmergencyMonthlySavingCents: async (cents) => {

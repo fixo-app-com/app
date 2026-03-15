@@ -8,7 +8,7 @@ import {
   computeEmergencyTarget,
   getDisplayAmountCents,
 } from "../../../types/firestore";
-import type { Expense } from "../../../types/firestore";
+import type { Expense, ExpensePriority } from "../../../types/firestore";
 import { getCurrencySymbol } from "../../../constants/banks";
 import { colors } from "../../../constants/colors";
 import {
@@ -27,7 +27,17 @@ const SNAP_POINTS: number[] = [3, 6, 12, 18, 24, 36, 48, 60];
 const PRIORITY_COLOR: Record<string, string> = {
   essential: "text-amber-500",
   reducible: "text-blue-500",
+  optional: "text-gray-400",
 };
+
+const PRIORITY_CHIP_OPTIONS: {
+  value: ExpensePriority;
+  labelKey: string;
+}[] = [
+  { value: "essential", labelKey: "home.essential" },
+  { value: "reducible", labelKey: "home.reducible" },
+  { value: "optional", labelKey: "home.optional" },
+];
 
 function useFormatPeriod() {
   const { t } = useTranslation();
@@ -46,6 +56,8 @@ export default function EmergencyFundScreen() {
   const {
     emergencyMonths,
     setEmergencyMonths: saveEmergencyMonths,
+    emergencyPriorities,
+    setEmergencyPriorities,
     wallets,
     categories,
     currency,
@@ -98,8 +110,24 @@ export default function EmergencyFundScreen() {
     () => ({
       essential: t("home.essential"),
       reducible: t("home.reducible"),
+      optional: t("home.optional"),
     }),
     [t],
+  );
+
+  const handleTogglePriority = useCallback(
+    (priority: ExpensePriority) => {
+      if (
+        emergencyPriorities.includes(priority) &&
+        emergencyPriorities.length === 1
+      )
+        return;
+      const next = emergencyPriorities.includes(priority)
+        ? emergencyPriorities.filter((p) => p !== priority)
+        : [...emergencyPriorities, priority];
+      setEmergencyPriorities(next);
+    },
+    [emergencyPriorities, setEmergencyPriorities],
   );
 
   const renderExpenseRow = useCallback(
@@ -144,10 +172,13 @@ export default function EmergencyFundScreen() {
     [walletNameMap, categoryNameMap, priorityLabel],
   );
 
-  const essentialExpenses = expenses.filter((e) => e.priority !== "optional");
+  const essentialExpenses = expenses.filter((e) =>
+    emergencyPriorities.includes(e.priority),
+  );
   const { monthlyEssentialCents, targetCents } = computeEmergencyTarget(
     expenses,
     selectedMonths,
+    emergencyPriorities,
   );
 
   const headerContent = (
@@ -156,16 +187,41 @@ export default function EmergencyFundScreen() {
     </Text>
   );
 
+  const priorityChips = (
+    <View className="mb-4 flex-row" style={{ gap: 8 }}>
+      {PRIORITY_CHIP_OPTIONS.map((option) => {
+        const isActive = emergencyPriorities.includes(option.value);
+        return (
+          <Pressable
+            key={option.value}
+            testID={`priority-chip-${option.value}`}
+            onPress={() => handleTogglePriority(option.value)}
+            className={`rounded-xl px-3 py-2 ${isActive ? "bg-fixo-100" : "bg-white"}`}
+          >
+            <Text
+              className={`text-sm font-medium ${isActive ? "text-fixo-600" : "text-gray-500"}`}
+            >
+              {t(option.labelKey as never)}
+            </Text>
+          </Pressable>
+        );
+      })}
+    </View>
+  );
+
   return (
     <ScreenWrapper title={t("emergency.title")} header={headerContent} scroll>
       {loading ? (
         <ActivityIndicator color={colors.fixo[400]} className="mt-8" />
-      ) : essentialExpenses.length === 0 ? (
-        <EmptyState
-          icon="shield-outline"
-          message={t("emergency.noEssential")}
-        />
       ) : (
+        <>
+          {priorityChips}
+          {essentialExpenses.length === 0 ? (
+            <EmptyState
+              icon="shield-outline"
+              message={t("emergency.noEssential")}
+            />
+          ) : (
         <View className="gap-4 pb-4">
           {/* Essentials Summary */}
           <Card>
@@ -250,6 +306,8 @@ export default function EmergencyFundScreen() {
             </Text>
           </View>
         </View>
+          )}
+        </>
       )}
       <BottomSheet ref={detailSheetRef} snapPoints={["50%"]}>
         <Text className="mb-3 text-sm text-gray-400">

@@ -46,6 +46,8 @@ export const mockDataContextDefaults = {
   deleteExpensesByCategory: jest.fn(() => Promise.resolve()),
   emergencyMonths: 6,
   setEmergencyMonths: jest.fn(() => Promise.resolve()),
+  emergencyPriorities: ["essential", "reducible"] as string[],
+  setEmergencyPriorities: jest.fn(() => Promise.resolve()),
   emergencyMonthlySavingCents: 0,
   setEmergencyMonthlySavingCents: jest.fn(() => Promise.resolve()),
   language: "en" as const,

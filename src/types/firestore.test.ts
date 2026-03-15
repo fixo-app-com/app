@@ -3,6 +3,7 @@ import {
   roundToUnit,
   sumDisplayCents,
   computeTotalCents,
+  computeEmergencyTarget,
 } from "./firestore";
 
 describe("getDisplayAmountCents", () => {
@@ -114,5 +115,56 @@ describe("computeTotalCents", () => {
 
   it("returns 0 for empty array", () => {
     expect(computeTotalCents([], "monthly")).toBe(0);
+  });
+});
+
+describe("computeEmergencyTarget", () => {
+  const expenses = [
+    {
+      amountCents: 80000,
+      billingFrequency: "monthly" as const,
+      priority: "essential" as const,
+    },
+    {
+      amountCents: 3500,
+      billingFrequency: "monthly" as const,
+      priority: "reducible" as const,
+    },
+    {
+      amountCents: 1299,
+      billingFrequency: "monthly" as const,
+      priority: "optional" as const,
+    },
+  ];
+
+  it("defaults to essential and reducible", () => {
+    const { monthlyEssentialCents } = computeEmergencyTarget(expenses, 6);
+    // 80000 + 3500 = 83500 monthly → yearly 1002000 → monthly 83500 → roundToUnit = 83500
+    expect(monthlyEssentialCents).toBe(83500);
+  });
+
+  it("includes only specified priorities", () => {
+    const { monthlyEssentialCents } = computeEmergencyTarget(expenses, 6, [
+      "essential",
+      "reducible",
+    ]);
+    // 80000 + 3500 = 83500 monthly → yearly 1002000 → monthly 83500 → roundToUnit = 83500
+    expect(monthlyEssentialCents).toBe(83500);
+  });
+
+  it("includes all priorities when all specified", () => {
+    const { monthlyEssentialCents } = computeEmergencyTarget(expenses, 6, [
+      "essential",
+      "reducible",
+      "optional",
+    ]);
+    // 80000 + 3500 + 1299 = 84799 → yearly 1017588 → /12 = 84799 → roundToUnit = 84800
+    expect(monthlyEssentialCents).toBe(84800);
+  });
+
+  it("multiplies monthly cost by months for target", () => {
+    const { targetCents } = computeEmergencyTarget(expenses, 6);
+    // 83500 * 6 = 501000 → roundToUnit = 501000
+    expect(targetCents).toBe(501000);
   });
 });

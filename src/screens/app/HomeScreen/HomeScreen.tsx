@@ -56,6 +56,7 @@ export default function HomeScreen() {
     wallets,
     monthlyIncomeCents,
     emergencyMonths,
+    emergencyPriorities,
     setMonthlyIncome,
     viewMode,
     setViewMode,
@@ -72,6 +73,7 @@ export default function HomeScreen() {
     monthlyIncomeCents,
     viewMode,
     emergencyMonths,
+    emergencyPriorities,
   });
 
   const [minTimeElapsed, setMinTimeElapsed] = useState(false);

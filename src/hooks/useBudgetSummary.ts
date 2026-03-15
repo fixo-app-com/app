@@ -1,5 +1,10 @@
 import { useMemo } from "react";
-import type { Category, Expense, Wallet } from "../types/firestore";
+import type {
+  Category,
+  Expense,
+  ExpensePriority,
+  Wallet,
+} from "../types/firestore";
 import {
   computeEmergencyTarget,
   getDisplayAmountCents,
@@ -56,6 +61,7 @@ export function useBudgetSummary({
   monthlyIncomeCents,
   viewMode,
   emergencyMonths,
+  emergencyPriorities,
 }: {
   expenses: Expense[];
   categories: Category[];
@@ -63,6 +69,7 @@ export function useBudgetSummary({
   monthlyIncomeCents: number;
   viewMode: ViewMode;
   emergencyMonths: number;
+  emergencyPriorities: ExpensePriority[];
 }): BudgetSummary {
   return useMemo(() => {
     const isYearly = viewMode === "yearly";
@@ -150,9 +157,11 @@ export function useBudgetSummary({
       .sort((a, b) => b.totalCents - a.totalCents);
 
     // ── Emergency fund ──────────────────────────────────────────
-    const essentialExpenses = expenses.filter((e) => e.priority !== "optional");
+    const essentialExpenses = expenses.filter((e) =>
+      emergencyPriorities.includes(e.priority),
+    );
     const { monthlyEssentialCents, targetCents: emergencyTargetCents } =
-      computeEmergencyTarget(expenses, emergencyMonths);
+      computeEmergencyTarget(expenses, emergencyMonths, emergencyPriorities);
 
     return {
       totalCents,
@@ -175,5 +184,6 @@ export function useBudgetSummary({
     monthlyIncomeCents,
     viewMode,
     emergencyMonths,
+    emergencyPriorities,
   ]);
 }

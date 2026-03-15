@@ -10,6 +10,7 @@ describe("useBudgetSummary", () => {
     monthlyIncomeCents: 300000,
     viewMode: "monthly" as const,
     emergencyMonths: 6,
+    emergencyPriorities: ["essential", "reducible"] as ("essential" | "reducible" | "optional")[],
   };
 
   it("priority splits sum exactly to totalCents", () => {
@@ -60,10 +61,22 @@ describe("useBudgetSummary", () => {
     }
   });
 
-  it("essentialExpenses excludes optional priority", () => {
+  it("essentialExpenses includes only priorities in emergencyPriorities", () => {
     const { result } = renderHook(() => useBudgetSummary(base));
     for (const e of result.current.essentialExpenses) {
-      expect(e.priority).not.toBe("optional");
+      expect(["essential", "reducible"]).toContain(e.priority);
+    }
+  });
+
+  it("essentialExpenses includes only essential when only essential selected", () => {
+    const { result } = renderHook(() =>
+      useBudgetSummary({
+        ...base,
+        emergencyPriorities: ["essential"],
+      }),
+    );
+    for (const e of result.current.essentialExpenses) {
+      expect(e.priority).toBe("essential");
     }
   });
 

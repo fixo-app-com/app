@@ -45,6 +45,7 @@ jest.mock("@react-native-community/slider", () => {
 describe("EmergencyFundScreen", () => {
   beforeEach(() => {
     mockDataContext.expenses = mockExpenses;
+    mockDataContext.emergencyPriorities = ["essential", "reducible"];
   });
 
   it("renders title and subtitle", () => {
@@ -100,4 +101,12 @@ describe("EmergencyFundScreen", () => {
       expect(screen.getByText("emergency.recommendation")).toBeOnTheScreen();
     });
   });
+
+  it("renders priority chips", () => {
+    render(<EmergencyFundScreen />);
+    expect(screen.getByTestId("priority-chip-essential")).toBeOnTheScreen();
+    expect(screen.getByTestId("priority-chip-reducible")).toBeOnTheScreen();
+    expect(screen.getByTestId("priority-chip-optional")).toBeOnTheScreen();
+  });
+
 });

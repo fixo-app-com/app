@@ -83,13 +83,47 @@ export function HomeScreenSkeleton() {
         </View>
       </View>
 
-      {/* Donut / Breakdown */}
+      {/* Essential Split */}
       <View style={{ marginTop: WIDGET_GAP }}>
-        <SkeletonBlock width={80} height={12} opacity={opacity} rounded={4} />
+        <SkeletonBlock width={100} height={12} opacity={opacity} rounded={4} />
         <View style={{ marginTop: 8 }}>
           <Card>
-            <View className="items-center py-4">
-              <SkeletonBlock width={120} height={120} opacity={opacity} rounded={60} />
+            <View className="flex-row items-center py-1">
+              <View className="flex-1 items-center">
+                <SkeletonBlock width={60} height={20} opacity={opacity} />
+                <View style={{ marginTop: 6 }}>
+                  <SkeletonBlock
+                    width={50}
+                    height={10}
+                    opacity={opacity}
+                    rounded={4}
+                  />
+                </View>
+              </View>
+              <View className="w-px self-stretch bg-gray-200" />
+              <View className="flex-1 items-center">
+                <SkeletonBlock width={60} height={20} opacity={opacity} />
+                <View style={{ marginTop: 6 }}>
+                  <SkeletonBlock
+                    width={50}
+                    height={10}
+                    opacity={opacity}
+                    rounded={4}
+                  />
+                </View>
+              </View>
+              <View className="w-px self-stretch bg-gray-200" />
+              <View className="flex-1 items-center">
+                <SkeletonBlock width={60} height={20} opacity={opacity} />
+                <View style={{ marginTop: 6 }}>
+                  <SkeletonBlock
+                    width={50}
+                    height={10}
+                    opacity={opacity}
+                    rounded={4}
+                  />
+                </View>
+              </View>
             </View>
           </Card>
         </View>
