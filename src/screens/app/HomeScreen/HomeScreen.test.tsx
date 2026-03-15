@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react-native";
+import { act, render, screen } from "@testing-library/react-native";
 import HomeScreen from "./HomeScreen";
 import { mockCategories, mockExpenses } from "../../../test/fixtures";
 import { mockDataContextDefaults } from "../../../test/mocks";
@@ -32,29 +32,41 @@ jest.mock("../../../contexts/DataContext", () => ({
 
 describe("HomeScreen", () => {
   beforeEach(() => {
+    jest.useFakeTimers();
     jest.clearAllMocks();
     mockDataOverrides = {};
   });
 
-  it("renders Home title", () => {
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  function renderAndWait() {
     render(<HomeScreen />);
+    act(() => {
+      jest.advanceTimersByTime(500);
+    });
+  }
+
+  it("renders Home title", () => {
+    renderAndWait();
     expect(screen.getAllByText("home.title").length).toBeGreaterThanOrEqual(1);
   });
 
   it("renders monthly/yearly toggle chips", () => {
-    render(<HomeScreen />);
+    renderAndWait();
     expect(screen.getByText("common.monthly")).toBeOnTheScreen();
     expect(screen.getByText("common.yearly")).toBeOnTheScreen();
   });
 
   it("shows set-income prompt when no income is set", () => {
-    render(<HomeScreen />);
+    renderAndWait();
     expect(screen.getByText("home.setMonthlyIncome")).toBeOnTheScreen();
   });
 
   it("displays hero and secondary metrics when income is set", () => {
     mockDataOverrides = { monthlyIncomeCents: 250000 };
-    render(<HomeScreen />);
+    renderAndWait();
     expect(screen.getByTestId("hero-metric")).toBeOnTheScreen();
     expect(
       screen.getAllByText("home.totalCosts").length,
@@ -65,34 +77,34 @@ describe("HomeScreen", () => {
   });
 
   it("renders donut chart when expenses exist", () => {
-    render(<HomeScreen />);
+    renderAndWait();
     expect(screen.getByTestId("donut-chart")).toBeOnTheScreen();
   });
 
   it("does not render donut chart when no expenses", () => {
     mockDataOverrides = { expenses: [] };
-    render(<HomeScreen />);
+    renderAndWait();
     expect(screen.queryByTestId("donut-chart")).toBeNull();
   });
 
   it("does not render donut chart when categories have no expenses", () => {
     mockDataOverrides = { categories: mockCategories, expenses: [] };
-    render(<HomeScreen />);
+    renderAndWait();
     expect(screen.queryByTestId("donut-chart")).toBeNull();
   });
 
   it("renders top expenses widget when expenses exist", () => {
-    render(<HomeScreen />);
+    renderAndWait();
     expect(screen.getByTestId("top-expenses")).toBeOnTheScreen();
   });
 
   it("renders wallet breakdown widget when wallets have spend", () => {
-    render(<HomeScreen />);
+    renderAndWait();
     expect(screen.getByTestId("wallet-breakdown")).toBeOnTheScreen();
   });
 
   it("renders essential split widget when expenses exist", () => {
-    render(<HomeScreen />);
+    renderAndWait();
     expect(screen.getByTestId("essential-split")).toBeOnTheScreen();
   });
 });

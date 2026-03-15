@@ -16,7 +16,6 @@ import type {
 } from "../../../types/firestore";
 import {
   BottomSheet,
-  FullScreenLoader,
   ScreenWrapper,
   SectionHeader,
   useScrollHeader,
@@ -37,6 +36,7 @@ import { DailyBudgetCard } from "./DailyBudgetCard";
 import { EmergencyFundMiniCard } from "./EmergencyFundMiniCard";
 import { GettingStartedCards } from "./GettingStartedCards";
 import { useWidgetOrder } from "./useWidgetOrder";
+import { HomeScreenSkeleton } from "./HomeScreenSkeleton";
 import type { WidgetKey } from "./types";
 
 const METRIC_EXPLAINER_KEYS: Record<string, string> = {
@@ -62,7 +62,7 @@ export default function HomeScreen() {
     isLoading: dataLoading,
   } = useData();
 
-  const { expenses } = useExpenses();
+  const { expenses, loading: expensesLoading } = useExpenses();
   const { order, saveOrder } = useWidgetOrder();
 
   const budget = useBudgetSummary({
@@ -73,6 +73,13 @@ export default function HomeScreen() {
     viewMode,
     emergencyMonths,
   });
+
+  const [minTimeElapsed, setMinTimeElapsed] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setMinTimeElapsed(true), 500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const [selectedPriority, setSelectedPriority] =
     useState<ExpensePriority>("essential");
@@ -349,8 +356,13 @@ export default function HomeScreen() {
     </>
   );
 
-  if (dataLoading) {
-    return <FullScreenLoader />;
+  const showSkeleton =
+    !minTimeElapsed ||
+    dataLoading ||
+    (expensesLoading && expenses.length === 0);
+
+  if (showSkeleton) {
+    return <HomeScreenSkeleton />;
   }
 
   return (

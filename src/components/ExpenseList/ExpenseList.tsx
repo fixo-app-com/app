@@ -1,3 +1,4 @@
+import type { NativeScrollEvent, NativeSyntheticEvent } from "react-native";
 import { ActivityIndicator, FlatList } from "react-native";
 import { useTranslation } from "react-i18next";
 import { EmptyState } from "../../design-system";
@@ -15,6 +16,8 @@ interface ExpenseListProps {
   getCategoryName?: (expense: Expense) => string;
   onPress: (expense: Expense) => void;
   onDelete: (expenseId: string) => Promise<void>;
+  onScroll?: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
+  scrollEventThrottle?: number;
 }
 
 export function ExpenseList({
@@ -25,6 +28,8 @@ export function ExpenseList({
   getCategoryName,
   onPress,
   onDelete,
+  onScroll,
+  scrollEventThrottle,
 }: ExpenseListProps) {
   const { t } = useTranslation();
 
@@ -37,6 +42,8 @@ export function ExpenseList({
       data={expenses}
       keyExtractor={(item) => item.id}
       contentContainerStyle={{ paddingBottom: 80 }}
+      onScroll={onScroll}
+      scrollEventThrottle={scrollEventThrottle}
       renderItem={({ item }) => (
         <SwipeableRow
           onDelete={() => onDelete(item.id)}

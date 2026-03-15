@@ -20,6 +20,8 @@ import {
   HEADER_BLUR_INTENSITY,
   STICKY_TITLE_ROW_HEIGHT,
   HEADER_SHADOW,
+  HEADER_BORDER_FADE_START,
+  HEADER_BORDER_FADE_END,
   CONTENT_TOP_OFFSET,
   CONTENT_TOP_OFFSET_NO_TITLE,
   BOTTOM_INSET_OFFSET,
@@ -125,6 +127,27 @@ export function ScreenWrapper({
     [scrollY],
   );
 
+  // === Modal header border (for !title screens) ===
+  const modalScrollY = externalScrollY ?? internalScrollY;
+  const modalBorderOpacity = useMemo(
+    () =>
+      modalScrollY.interpolate({
+        inputRange: [HEADER_BORDER_FADE_START, HEADER_BORDER_FADE_END],
+        outputRange: [0, 1],
+        extrapolate: "clamp",
+      }),
+    [modalScrollY],
+  );
+
+  const modalScrollHandler = useMemo(
+    () =>
+      Animated.event(
+        [{ nativeEvent: { contentOffset: { y: modalScrollY } } }],
+        { useNativeDriver: false },
+      ),
+    [modalScrollY],
+  );
+
   // === No title: current behavior ===
   if (!title) {
     return (
@@ -135,6 +158,10 @@ export function ScreenWrapper({
         >
           {header}
         </View>
+        <Animated.View
+          style={[styles.modalHeaderBorder, { opacity: modalBorderOpacity }]}
+          pointerEvents="none"
+        />
 
         {scroll ? (
           <KeyboardAvoidingView
@@ -150,6 +177,8 @@ export function ScreenWrapper({
               }}
               keyboardShouldPersistTaps="handled"
               showsVerticalScrollIndicator={false}
+              onScroll={modalScrollHandler}
+              scrollEventThrottle={SCROLL_EVENT_THROTTLE}
             >
               {children}
             </ScrollView>
@@ -261,5 +290,9 @@ const styles = StyleSheet.create({
     height: STICKY_TITLE_ROW_HEIGHT,
     justifyContent: "center",
     alignItems: "center",
+  },
+  modalHeaderBorder: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "#c4c9cf",
   },
 });

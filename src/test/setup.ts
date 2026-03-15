@@ -155,6 +155,7 @@ jest.mock("react-native-reanimated", () => {
     useAnimatedStyle: (fn: () => object) => fn(),
     useAnimatedScrollHandler: () => () => {},
     withTiming: (val: number) => val,
+    withRepeat: (val: number) => val,
     runOnJS: (fn: (...args: unknown[]) => void) => fn,
     interpolate: jest.fn(),
     Easing,

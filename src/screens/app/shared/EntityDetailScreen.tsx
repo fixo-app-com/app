@@ -1,4 +1,5 @@
-import { Text, View } from "react-native";
+import { useMemo, useRef } from "react";
+import { Animated, Text, View } from "react-native";
 import {
   FloatingAction,
   IconButton,
@@ -8,6 +9,7 @@ import {
   SortTrigger,
 } from "../../../design-system";
 import { CurrencyText, ExpenseList } from "../../../components";
+import { SCROLL_EVENT_THROTTLE } from "../../../constants/layout";
 import type { Expense } from "../../../types/firestore";
 import type { useSortSheet } from "../../../hooks/useSortSheet";
 
@@ -44,11 +46,21 @@ export function EntityDetailScreen({
   onExpenseDelete,
   onAdd,
 }: Props) {
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const scrollHandler = useMemo(
+    () =>
+      Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
+        useNativeDriver: false,
+      }),
+    [scrollY],
+  );
+
   const headerContent = (
     <>
       <ScreenHeader
         title={title}
         onBack={onBack}
+        variant="back"
         right={
           <IconButton
             name="create-outline"
@@ -72,7 +84,7 @@ export function EntityDetailScreen({
   );
 
   return (
-    <ScreenWrapper header={headerContent}>
+    <ScreenWrapper header={headerContent} scrollY={scrollY}>
       <ExpenseList
         expenses={expenses}
         loading={loading}
@@ -81,6 +93,8 @@ export function EntityDetailScreen({
         getCategoryName={getCategoryName}
         onPress={onExpensePress}
         onDelete={onExpenseDelete}
+        onScroll={scrollHandler}
+        scrollEventThrottle={SCROLL_EVENT_THROTTLE}
       />
 
       {onAdd && <FloatingAction onPress={onAdd} />}

@@ -6,16 +6,24 @@ interface ScreenHeaderProps {
   title: string;
   onBack: () => void;
   right?: ReactNode;
+  variant?: "close" | "back";
 }
 
-export function ScreenHeader({ title, onBack, right }: ScreenHeaderProps) {
+export function ScreenHeader({
+  title,
+  onBack,
+  right,
+  variant = "close",
+}: ScreenHeaderProps) {
+  const isBack = variant === "back";
+
   return (
     <View className="flex-row items-center justify-between">
       <View className="flex-1 flex-row items-center">
         <Pressable
           onPress={onBack}
           accessibilityRole="button"
-          accessibilityLabel="Close"
+          accessibilityLabel={isBack ? "Back" : "Close"}
           className="-ml-1.5 mr-2 justify-center"
           style={({ pressed }) => ({
             opacity: pressed ? 0.6 : 1,
@@ -23,7 +31,11 @@ export function ScreenHeader({ title, onBack, right }: ScreenHeaderProps) {
           })}
           hitSlop={{ top: 8, bottom: 8, right: 8, left: 0 }}
         >
-          <Ionicons name="close" size={24} color="#6b7280" />
+          <Ionicons
+            name={isBack ? "chevron-back" : "close"}
+            size={24}
+            color="#6b7280"
+          />
         </Pressable>
         <Text
           className="flex-1 text-lg font-semibold text-gray-900"

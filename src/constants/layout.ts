@@ -32,6 +32,10 @@ export const HEADER_SHADOW = {
   elevation: 8,
 } as const;
 
+// ── Modal header border on scroll ────────────────────────────────────
+export const HEADER_BORDER_FADE_START = 0;
+export const HEADER_BORDER_FADE_END = 10;
+
 // ── Content padding offsets (added to insets.top) ───────────────────
 /** Offset from safe-area top to the first content line */
 export const CONTENT_TOP_OFFSET = 24;
