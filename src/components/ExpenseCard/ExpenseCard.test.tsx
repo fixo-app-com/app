@@ -30,7 +30,7 @@ describe("ExpenseCard", () => {
     expect(screen.queryByText("\u20AC155")).toBeNull();
   });
 
-it("calls onPress when tapped", () => {
+  it("calls onPress when tapped", () => {
     const onPress = jest.fn();
     render(<ExpenseCard {...props} onPress={onPress} />);
     fireEvent.press(screen.getByText("Netflix"));
