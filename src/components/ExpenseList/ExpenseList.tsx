@@ -53,7 +53,6 @@ export function ExpenseList({
             name={item.name}
             walletName={getWalletName(item)}
             categoryName={getCategoryName?.(item)}
-            notes={item.notes}
             amountCents={item.amountCents}
             billingFrequency={item.billingFrequency ?? "monthly"}
             priority={item.priority}

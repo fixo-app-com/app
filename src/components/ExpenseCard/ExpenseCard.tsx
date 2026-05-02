@@ -16,7 +16,6 @@ interface ExpenseCardProps {
   name: string;
   walletName: string;
   categoryName?: string;
-  notes: string;
   amountCents: number;
   billingFrequency: BillingFrequency;
   priority?: ExpensePriority;
@@ -28,7 +27,6 @@ export function ExpenseCard({
   name,
   walletName,
   categoryName,
-  notes,
   amountCents,
   billingFrequency,
   priority,
@@ -71,11 +69,6 @@ export function ExpenseCard({
               </>
             )}
           </View>
-          {notes ? (
-            <Text className="mt-1 text-sm text-gray-400" numberOfLines={2}>
-              {notes}
-            </Text>
-          ) : null}
         </View>
         <View className="items-end">
           <CurrencyText

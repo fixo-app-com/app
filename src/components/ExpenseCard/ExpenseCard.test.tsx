@@ -10,7 +10,6 @@ describe("ExpenseCard", () => {
   const props = {
     name: "Netflix",
     walletName: "Revolut",
-    notes: "",
     amountCents: 1299,
     billingFrequency: "monthly" as const,
     onPress: jest.fn(),
@@ -31,12 +30,7 @@ describe("ExpenseCard", () => {
     expect(screen.queryByText("\u20AC155")).toBeNull();
   });
 
-  it("renders notes when provided", () => {
-    render(<ExpenseCard {...props} notes="Monthly subscription" />);
-    expect(screen.getByText("Monthly subscription")).toBeOnTheScreen();
-  });
-
-  it("calls onPress when tapped", () => {
+it("calls onPress when tapped", () => {
     const onPress = jest.fn();
     render(<ExpenseCard {...props} onPress={onPress} />);
     fireEvent.press(screen.getByText("Netflix"));

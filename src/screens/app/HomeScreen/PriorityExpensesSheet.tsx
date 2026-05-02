@@ -138,7 +138,6 @@ export const PriorityExpensesSheet = forwardRef<
                 name={expense.name}
                 walletName={walletMap[expense.walletId] ?? ""}
                 categoryName={categoryMap[expense.categoryId] ?? ""}
-                notes={expense.notes}
                 amountCents={expense.amountCents}
                 billingFrequency={expense.billingFrequency}
                 onPress={() => onExpensePress(expense)}
